@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import FatwaCard from '../../components/FatwaCard.astro';
+
+export async function getStaticPaths() {
+  const allFatwas = await getCollection('fatwas');
+
+  // Build slug → original name + fatwas map
+  const slugMap = new Map<string, { name: string; fatwas: typeof allFatwas }>();
+
+  allFatwas.forEach((fatwa) => {
+    fatwa.data.categories.forEach((cat) => {
+      const slug = cat.toLowerCase().replace(/\s+/g, '-');
+      if (!slugMap.has(slug)) slugMap.set(slug, { name: cat, fatwas: [] });
+      slugMap.get(slug)!.fatwas.push(fatwa);
+    });
+  });
+
+  return [...slugMap.entries()].map(([slug, { name, fatwas }]) => ({
+    params: { category: slug },
+    props: {
+      categoryName: name,
+      fatwas: fatwas.sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime()),
+    },
+  }));
+}
+
+const { categoryName, fatwas } = Astro.props;
+---
+
+<Layout title={categoryName}>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <nav class="text-xs text-stone-400 font-sans mb-4 flex items-center gap-2">
+        <a href="/" class="hover:text-teal-800">Home</a>
+        <span>/</span>
+        <a href="/categories" class="hover:text-teal-800">Categories</a>
+        <span>/</span>
+        <span class="text-stone-600">{categoryName}</span>
+      </nav>
+      <h1 class="font-serif text-3xl text-teal-900 mb-1">{categoryName}</h1>
+      <p class="text-stone-500 text-sm">{fatwas.length} fatwa{fatwas.length !== 1 ? 's' : ''} in this category</p>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} />)}
+    </div>
+
+    <div class="mt-8">
+      <a href="/categories" class="text-sm text-teal-800 hover:text-gold-600 font-sans font-medium transition-colors">← All Categories</a>
+    </div>
+  </div>
+</Layout>

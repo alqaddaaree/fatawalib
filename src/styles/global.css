@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Nice selection color */
+  ::selection {
+    background-color: #1a4a45;
+    color: #f9f4e8;
+  }
+
+  /* Improve Arabic rendering */
+  [lang="ar"], .font-arabic {
+    font-feature-settings: "kern" 1;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+@layer components {
+  /* Fatwa prose overrides */
+  .prose h2:first-of-type {
+    @apply mt-0;
+  }
+
+  /* Smooth card transitions */
+  .fatwa-card {
+    @apply transition-all duration-200;
+  }
+}

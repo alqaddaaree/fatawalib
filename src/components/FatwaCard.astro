@@ -1,0 +1,54 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getScholar } from '../data/scholars';
+
+export interface Props {
+  fatwa: CollectionEntry<'fatwas'>;
+}
+
+const { fatwa } = Astro.props;
+const { id, scholar, categories, date_added, translator } = fatwa.data;
+const scholarInfo = getScholar(scholar);
+---
+
+<article class="bg-white border border-sand-200 rounded-xl p-5 hover:shadow-md hover:border-teal-800/30 transition-all group">
+  <div class="flex items-start justify-between gap-3 mb-3">
+    <div class="flex-1 min-w-0">
+      <!-- Categories -->
+      <div class="flex flex-wrap gap-1.5 mb-2">
+        {categories.slice(0, 3).map((cat) => (
+          <a
+            href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`}
+            class="text-xs font-sans font-medium bg-cream-100 text-teal-800 border border-sand-200 rounded-full px-2.5 py-0.5 hover:bg-teal-900 hover:text-white hover:border-teal-900 transition-colors"
+          >
+            {cat}
+          </a>
+        ))}
+      </div>
+
+      <!-- Title / ID -->
+      <a href={`/fatwa/${id}`} class="block">
+        <h2 class="font-serif text-lg text-teal-900 group-hover:text-gold-600 transition-colors leading-snug line-clamp-2">
+          Fatwa #{id}
+        </h2>
+      </a>
+    </div>
+
+    <!-- Scholar badge -->
+    <span class="shrink-0 text-xs font-sans font-medium bg-teal-900 text-cream-100 rounded-lg px-2.5 py-1 whitespace-nowrap">
+      {scholarInfo.name.replace('Shaykh ', '')}
+    </span>
+  </div>
+
+  <!-- Meta -->
+  <div class="flex items-center gap-3 text-xs text-stone-500 font-sans mt-3 pt-3 border-t border-sand-100">
+    <span>Trans. {translator}</span>
+    <span class="text-sand-300">•</span>
+    <time datetime={date_added.toISOString()}>
+      {date_added.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+    </time>
+    <a href={`/fatwa/${id}`} class="ml-auto text-teal-800 hover:text-gold-600 font-medium transition-colors">
+      Read →
+    </a>
+  </div>
+</article>

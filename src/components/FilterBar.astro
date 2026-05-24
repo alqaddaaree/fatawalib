@@ -1,0 +1,61 @@
+---
+import { scholars } from '../data/scholars';
+export interface Props {
+  activeScholar?: string;
+  activeCategory?: string;
+  allCategories: string[];
+}
+
+const { activeScholar, activeCategory, allCategories } = Astro.props;
+---
+
+<div class="bg-white border border-sand-200 rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+
+  <!-- Scholar filter -->
+  <div class="flex flex-wrap gap-2 flex-1">
+    <a
+      href="/"
+      class:list={[
+        'text-xs font-medium px-3 py-1.5 rounded-full border transition-colors',
+        !activeScholar
+          ? 'bg-teal-900 text-white border-teal-900'
+          : 'border-sand-200 text-stone-600 hover:border-teal-800 hover:text-teal-800',
+      ]}
+    >
+      All Scholars
+    </a>
+    {Object.values(scholars).map((s) => (
+      <a
+        href={`/?scholar=${s.id}`}
+        class:list={[
+          'text-xs font-medium px-3 py-1.5 rounded-full border transition-colors',
+          activeScholar === s.id
+            ? 'bg-teal-900 text-white border-teal-900'
+            : 'border-sand-200 text-stone-600 hover:border-teal-800 hover:text-teal-800',
+        ]}
+      >
+        {s.name.replace('Shaykh ', '')}
+      </a>
+    ))}
+  </div>
+
+  <!-- Category filter -->
+  {allCategories.length > 0 && (
+    <div class="shrink-0">
+      <select
+        onchange="window.location.href = this.value"
+        class="text-xs font-sans border border-sand-200 rounded-lg px-3 py-1.5 text-stone-600 bg-white focus:outline-none focus:border-teal-800 cursor-pointer"
+      >
+        <option value="/">All Categories</option>
+        {allCategories.map((cat) => (
+          <option
+            value={`/?category=${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`}
+            selected={activeCategory === cat.toLowerCase().replace(/\s+/g, '-')}
+          >
+            {cat}
+          </option>
+        ))}
+      </select>
+    </div>
+  )}
+</div>

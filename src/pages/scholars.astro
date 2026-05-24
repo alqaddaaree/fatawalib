@@ -1,0 +1,48 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { scholars } from '../data/scholars';
+import type { ScholarId } from '../data/scholars';
+
+const allFatwas = await getCollection('fatwas');
+
+const counts: Record<ScholarId, number> = {
+  'ibn-baz':      0,
+  'ibn-uthaymin': 0,
+  'al-albani':    0,
+  'muqbil':       0,
+  'yahya':        0,
+};
+allFatwas.forEach((f) => { counts[f.data.scholar]++; });
+---
+
+<Layout title="Scholars">
+  <div class="max-w-4xl mx-auto px-4 py-10">
+    <h1 class="font-serif text-3xl text-teal-900 mb-2">Scholars</h1>
+    <p class="text-stone-500 text-sm mb-8">Browse fatwas by scholar. Click a card to see all their rulings.</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {Object.values(scholars).map((s) => (
+        <a
+          href={`/scholar/${s.id}`}
+          class="group bg-white border border-sand-200 rounded-2xl p-6 hover:shadow-md hover:border-teal-800/30 transition-all flex flex-col gap-3"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-arabic text-2xl text-gold-500 leading-none mb-1">{s.arabicName}</p>
+              <h2 class="font-serif text-lg text-teal-900 group-hover:text-gold-600 transition-colors">{s.name}</h2>
+              <p class="text-xs text-stone-400 font-sans">{s.lifespan}</p>
+            </div>
+            <span class="bg-teal-900 text-cream-100 text-sm font-sans font-semibold rounded-xl w-12 h-12 flex items-center justify-center shrink-0">
+              {counts[s.id]}
+            </span>
+          </div>
+          <p class="text-sm text-stone-500 line-clamp-3">{s.bio}</p>
+          <span class="text-xs font-sans font-medium text-teal-800 group-hover:text-gold-600 transition-colors">
+            View {counts[s.id]} fatwa{counts[s.id] !== 1 ? 's' : ''} →
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Layout>

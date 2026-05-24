@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import FatwaCard from '../components/FatwaCard.astro';
+import FilterBar from '../components/FilterBar.astro';
+import type { ScholarId } from '../data/scholars';
+
+// Fetch and sort all fatwas newest-first
+const allFatwas = (await getCollection('fatwas')).sort(
+  (a, b) => b.data.date_added.getTime() - a.data.date_added.getTime()
+);
+
+// Build flat category list
+const categorySet = new Set<string>();
+allFatwas.forEach((f) => f.data.categories.forEach((c) => categorySet.add(c)));
+const allCategories = [...categorySet].sort();
+
+// Read query params (Astro static: read from URL at build for SSR, or handle client-side)
+// For static output we use client-side JS filtering below.
+---
+
+<Layout title="Recent Fatāwā">
+
+  <!-- Hero strip -->
+  <div class="bg-teal-900 text-cream-100">
+    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-2">
+      <p class="font-arabic text-5xl text-gold-400 leading-none mb-1">فتاوى</p>
+      <h1 class="font-serif text-2xl">Islamic Legal Rulings — Translated</h1>
+      <p class="text-cream-200/70 text-sm max-w-xl">
+        A curated archive of fatwas from senior scholars, translated for English-speaking readers.
+        All content links back to the original Arabic source.
+      </p>
+    </div>
+  </div>
+
+  <div class="max-w-5xl mx-auto px-4 py-8">
+
+    <!-- Filter bar -->
+    <FilterBar allCategories={allCategories} />
+
+    <!-- Grid of fatwas, rendered server-side; JS filters client-side -->
+    <div id="fatwa-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {allFatwas.map((fatwa) => (
+        <div
+          data-scholar={fatwa.data.scholar}
+          data-categories={fatwa.data.categories.map(c => c.toLowerCase().replace(/\s+/g, '-')).join(',')}
+        >
+          <FatwaCard fatwa={fatwa} />
+        </div>
+      ))}
+    </div>
+
+    <!-- Empty state -->
+    <p id="empty-state" class="hidden text-center py-16 text-stone-400 font-serif text-xl">
+      No fatwas match this filter.
+    </p>
+  </div>
+</Layout>
+
+<script>
+  // Client-side filtering from URL params
+  function applyFilters() {
+    const params   = new URLSearchParams(window.location.search);
+    const scholar  = params.get('scholar');
+    const category = params.get('category');
+
+    const cards = document.querySelectorAll<HTMLDivElement>('#fatwa-grid > [data-scholar]');
+    let visible = 0;
+
+    cards.forEach((card) => {
+      const matchesScholar  = !scholar  || card.dataset.scholar === scholar;
+      const matchesCategory = !category || (card.dataset.categories ?? '').split(',').includes(category);
+      const show = matchesScholar && matchesCategory;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    const empty = document.getElementById('empty-state');
+    if (empty) empty.classList.toggle('hidden', visible > 0);
+  }
+
+  applyFilters();
+</script>

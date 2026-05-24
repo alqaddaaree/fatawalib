@@ -1,0 +1,57 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import FatwaCard from '../../components/FatwaCard.astro';
+import { scholars } from '../../data/scholars';
+import type { ScholarId } from '../../data/scholars';
+
+export async function getStaticPaths() {
+  const allFatwas = await getCollection('fatwas');
+  return Object.keys(scholars).map((id) => {
+    const scholarId = id as ScholarId;
+    return {
+      params: { scholar: scholarId },
+      props: {
+        scholar:  scholars[scholarId],
+        fatwas:   allFatwas
+          .filter((f) => f.data.scholar === scholarId)
+          .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime()),
+      },
+    };
+  });
+}
+
+const { scholar, fatwas } = Astro.props;
+---
+
+<Layout title={scholar.name} description={scholar.bio}>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+
+    <!-- Header -->
+    <div class="bg-teal-900 text-cream-100 rounded-2xl p-8 mb-8 flex flex-col sm:flex-row gap-6 items-start">
+      <div class="flex-1">
+        <p class="font-arabic text-5xl text-gold-400 mb-2 leading-none">{scholar.arabicName}</p>
+        <h1 class="font-serif text-2xl mb-1">{scholar.name}</h1>
+        <p class="text-cream-200/60 text-sm font-sans mb-4">{scholar.lifespan}</p>
+        <p class="text-cream-200/80 text-sm max-w-xl">{scholar.bio}</p>
+      </div>
+      <div class="text-center bg-teal-800 rounded-xl px-8 py-5 shrink-0">
+        <p class="font-serif text-4xl text-gold-400">{fatwas.length}</p>
+        <p class="text-xs text-cream-200/60 font-sans mt-1">Translated Fatwas</p>
+      </div>
+    </div>
+
+    <!-- Fatwas grid -->
+    {fatwas.length > 0 ? (
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} />)}
+      </div>
+    ) : (
+      <p class="text-center py-16 text-stone-400 font-serif text-xl">No fatwas yet for this scholar.</p>
+    )}
+
+    <div class="mt-8">
+      <a href="/scholars" class="text-sm text-teal-800 hover:text-gold-600 font-sans font-medium transition-colors">← All Scholars</a>
+    </div>
+  </div>
+</Layout>

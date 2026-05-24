@@ -1,0 +1,111 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { getScholar } from '../../data/scholars';
+
+export async function getStaticPaths() {
+  const fatwas = await getCollection('fatwas');
+  return fatwas.map((fatwa) => ({
+    params: { id: fatwa.data.id },
+    props:  { fatwa },
+  }));
+}
+
+const { fatwa } = Astro.props;
+const { id, scholar, categories, source_url, translator, reviewer, date_issued, date_added } = fatwa.data;
+const scholarInfo = getScholar(scholar);
+const { Content } = await render(fatwa);
+---
+
+<Layout
+  title={`Fatwa #${id} — ${scholarInfo.name}`}
+  description={`A translated fatwa by ${scholarInfo.name}, covering: ${categories.join(', ')}.`}
+>
+  <div class="max-w-3xl mx-auto px-4 py-10">
+
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-stone-400 font-sans mb-6 flex items-center gap-2">
+      <a href="/" class="hover:text-teal-800 transition-colors">Home</a>
+      <span>/</span>
+      <a href={`/scholar/${scholar}`} class="hover:text-teal-800 transition-colors">{scholarInfo.name}</a>
+      <span>/</span>
+      <span class="text-stone-600">Fatwa #{id}</span>
+    </nav>
+
+    <!-- Header card -->
+    <header class="bg-teal-900 text-cream-100 rounded-2xl p-6 mb-8 relative overflow-hidden">
+      <!-- Decorative Arabic text -->
+      <span class="absolute right-4 top-2 font-arabic text-6xl text-teal-800/60 leading-none pointer-events-none select-none">
+        فتوى
+      </span>
+
+      <p class="text-gold-400 text-xs font-sans font-medium uppercase tracking-widest mb-1">Fatwa #{id}</p>
+      <h1 class="font-serif text-2xl mb-4 leading-snug pr-16">
+        {scholarInfo.name}
+        <span class="font-arabic text-lg text-gold-400 ml-2">{scholarInfo.arabicName}</span>
+      </h1>
+
+      <!-- Categories -->
+      <div class="flex flex-wrap gap-2 mb-4">
+        {categories.map((cat) => (
+          <a
+            href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`}
+            class="text-xs font-sans bg-teal-800 hover:bg-gold-600 text-cream-100 rounded-full px-3 py-1 transition-colors"
+          >
+            {cat}
+          </a>
+        ))}
+      </div>
+
+      <!-- Meta grid -->
+      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-cream-200/80 font-sans pt-4 border-t border-teal-800">
+        <div>
+          <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Translator</dt>
+          <dd>{translator}</dd>
+        </div>
+        {reviewer && (
+          <div>
+            <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Reviewer</dt>
+            <dd>{reviewer}</dd>
+          </div>
+        )}
+        <div>
+          <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Date Issued</dt>
+          <dd>{date_issued}</dd>
+        </div>
+        <div>
+          <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Date Added</dt>
+          <dd>{date_added.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</dd>
+        </div>
+      </dl>
+    </header>
+
+    <!-- Fatwa body -->
+    <div class="prose prose-fatwa prose-stone max-w-none prose-headings:font-serif prose-h2:text-teal-900 prose-h2:text-xl prose-h2:border-b prose-h2:border-sand-200 prose-h2:pb-2 prose-a:text-teal-800">
+      <Content />
+    </div>
+
+    <!-- Source link -->
+    <div class="mt-10 pt-6 border-t border-sand-200 flex items-center justify-between flex-wrap gap-3">
+      <p class="text-xs text-stone-400 font-sans">
+        This is a translation. Always consult the original Arabic for accuracy.
+      </p>
+      <a
+        href={source_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-xs font-sans font-medium bg-teal-900 hover:bg-teal-800 text-white px-4 py-2 rounded-lg transition-colors inline-flex items-center gap-1.5"
+      >
+        View Original Source
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mt-6">
+      <a href="/" class="text-sm text-teal-800 hover:text-gold-600 font-sans font-medium transition-colors">← Back to all fatwas</a>
+    </div>
+  </div>
+</Layout>

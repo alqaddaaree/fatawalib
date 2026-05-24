@@ -1,0 +1,24 @@
+{
+  "name": "fatwa-site",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/build-search-index.js && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "build:index": "node scripts/build-search-index.js"
+  },
+  "dependencies": {
+    "@astrojs/tailwind": "^5.1.0",
+    "@tailwindcss/typography": "^0.5.13",
+    "astro": "^4.11.0",
+    "fuse.js": "^7.0.0",
+    "gray-matter": "^4.0.3",
+    "tailwindcss": "^3.4.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.2"
+  }
+}
