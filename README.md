@@ -1,4 +1,6 @@
-# Fatāwā Archive
+# Fatāwā Lirary
+
+www.fatawalibrary.com
 
 A clean, fast static website for publishing translated Islamic fatwas, built with [Astro](https://astro.build), Tailwind CSS, and Fuse.js for client-side search.
 
