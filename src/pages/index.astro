@@ -3,7 +3,6 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import FatwaCard from '../components/FatwaCard.astro';
 import FilterBar from '../components/FilterBar.astro';
-import type { ScholarId } from '../data/scholars';
 
 // Fetch and sort all fatwas newest-first
 const allFatwas = (await getCollection('fatwas')).sort(
@@ -22,12 +21,12 @@ const allCategories = [...categorySet].sort();
 <Layout title="Recent Fatāwā">
 
   <!-- Hero strip -->
-  <div class="bg-teal-900 text-cream-100">
+  <div class="bg-teal-900 dark:bg-stone-900 text-cream-100 dark:text-stone-100">
     <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-2">
       <p class="font-arabic text-5xl text-gold-400 leading-none mb-1">فتاوى</p>
       <h1 class="font-serif text-2xl">Islamic Legal Rulings — Translated</h1>
-      <p class="text-cream-200/70 text-sm max-w-xl">
-        A curated archive of fatwas from senior scholars, translated for English-speaking readers.
+      <p class="text-cream-200/70 dark:text-stone-400 text-sm max-w-xl">
+        FatawaLib is a curated archive of fatwas from senior scholars, translated for English-speaking readers.
         All content links back to the original Arabic source.
       </p>
     </div>
@@ -51,7 +50,7 @@ const allCategories = [...categorySet].sort();
     </div>
 
     <!-- Empty state -->
-    <p id="empty-state" class="hidden text-center py-16 text-stone-400 font-serif text-xl">
+    <p id="empty-state" class="hidden text-center py-16 text-stone-400 dark:text-stone-500 font-serif text-xl">
       No fatwas match this filter.
     </p>
   </div>
@@ -70,7 +69,13 @@ const allCategories = [...categorySet].sort();
     cards.forEach((card) => {
       const matchesScholar  = !scholar  || card.dataset.scholar === scholar;
       const matchesCategory = !category || (card.dataset.categories ?? '').split(',').includes(category);
-      const show = matchesScholar && matchesCategory;
+      const show = scholar && category
+        ? matchesScholar && matchesCategory
+        : scholar
+          ? matchesScholar
+          : category
+            ? matchesCategory
+            : true;
       card.style.display = show ? '' : 'none';
       if (show) visible++;
     });

@@ -9,29 +9,31 @@ export interface Props {
 const { activeScholar, activeCategory, allCategories } = Astro.props;
 ---
 
-<div class="bg-white border border-sand-200 rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+<div data-filter-bar class="bg-white dark:bg-stone-900 border border-sand-200 dark:border-stone-700 rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
 
   <!-- Scholar filter -->
   <div class="flex flex-wrap gap-2 flex-1">
     <a
+      data-scholar-link=""
       href="/"
       class:list={[
         'text-xs font-medium px-3 py-1.5 rounded-full border transition-colors',
         !activeScholar
           ? 'bg-teal-900 text-white border-teal-900'
-          : 'border-sand-200 text-stone-600 hover:border-teal-800 hover:text-teal-800',
+          : 'border-sand-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:border-teal-800 hover:text-teal-800',
       ]}
     >
       All Scholars
     </a>
     {Object.values(scholars).map((s) => (
       <a
+        data-scholar-link={s.id}
         href={`/?scholar=${s.id}`}
         class:list={[
           'text-xs font-medium px-3 py-1.5 rounded-full border transition-colors',
           activeScholar === s.id
             ? 'bg-teal-900 text-white border-teal-900'
-            : 'border-sand-200 text-stone-600 hover:border-teal-800 hover:text-teal-800',
+            : 'border-sand-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:border-teal-800 hover:text-teal-800',
         ]}
       >
         {s.name.replace('Shaykh ', '')}
@@ -43,13 +45,13 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
   {allCategories.length > 0 && (
     <div class="shrink-0">
       <select
-        onchange="window.location.href = this.value"
-        class="text-xs font-sans border border-sand-200 rounded-lg px-3 py-1.5 text-stone-600 bg-white focus:outline-none focus:border-teal-800 cursor-pointer"
+        id="category-filter"
+        class="text-xs font-sans border border-sand-200 dark:border-stone-700 rounded-lg px-3 py-1.5 text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-800 focus:outline-none focus:border-teal-800 cursor-pointer"
       >
-        <option value="/">All Categories</option>
+        <option value="">All Categories</option>
         {allCategories.map((cat) => (
           <option
-            value={`/?category=${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`}
+            value={encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}
             selected={activeCategory === cat.toLowerCase().replace(/\s+/g, '-')}
           >
             {cat}
@@ -59,3 +61,30 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
     </div>
   )}
 </div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const scholar = params.get('scholar') ?? '';
+  const category = params.get('category') ?? '';
+
+  document.querySelectorAll<HTMLAnchorElement>('[data-scholar-link]').forEach((link) => {
+    const scholarId = link.dataset.scholarLink ?? '';
+    const next = new URLSearchParams();
+    if (scholarId) next.set('scholar', scholarId);
+    if (category) next.set('category', category);
+    link.href = next.toString() ? `/?${next.toString()}` : '/';
+  });
+
+  const select = document.getElementById('category-filter') as HTMLSelectElement | null;
+  if (select) {
+    const baseParams = new URLSearchParams();
+    if (scholar) baseParams.set('scholar', scholar);
+    select.dataset.base = baseParams.toString() ? `/?${baseParams.toString()}` : '/?';
+    select.value = category;
+    select.addEventListener('change', () => {
+      const base = select.dataset.base ?? '/?';
+      const categoryPart = select.value ? `${base.includes('?') ? '&' : '?'}category=${select.value}` : '';
+      window.location.href = `${base}${categoryPart}`.replace('/?&', '/?');
+    });
+  }
+</script>

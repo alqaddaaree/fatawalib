@@ -7,6 +7,10 @@
     scroll-behavior: smooth;
   }
 
+  html.dark {
+    color-scheme: dark;
+  }
+
   /* Nice selection color */
   ::selection {
     background-color: #1a4a45;
@@ -17,6 +21,42 @@
   [lang="ar"], .font-arabic {
     font-feature-settings: "kern" 1;
     text-rendering: optimizeLegibility;
+  }
+
+  @media print {
+    header,
+    nav,
+    footer,
+    [data-filter-bar],
+    #theme-toggle,
+    .print\:hidden {
+      display: none !important;
+    }
+
+    html,
+    body {
+      background: #ffffff !important;
+      color: #000000 !important;
+    }
+
+    main,
+    .max-w-5xl,
+    .max-w-3xl {
+      max-width: 100% !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    .prose,
+    .prose * {
+      color: #000000 !important;
+    }
+
+    a {
+      color: #000000 !important;
+      text-decoration: underline !important;
+    }
   }
 }
 
