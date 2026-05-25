@@ -1,1 +1,18 @@
-/node_modules
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# IDEs and monorepos
+.astro/
+.vercel/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Optional: If you ever create a local environment file
+.env
+.env*.local
