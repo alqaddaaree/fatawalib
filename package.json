@@ -10,7 +10,7 @@
     "build:index": "node scripts/build-search-index.js"
   },
   "dependencies": {
-    "@astrojs/sitemap": "3.6.1",
+    "@astrojs/sitemap": "3.5.1",
     "@astrojs/tailwind": "^5.1.0",
     "@tailwindcss/typography": "^0.5.13",
     "astro": "^4.11.0",
