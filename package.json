@@ -2,6 +2,9 @@
   "name": "fatwa-site",
   "type": "module",
   "version": "1.0.0",
+  "engines": {
+    "node": "20.x"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/build-search-index.js && astro build",
