@@ -1,10 +1,6 @@
 import { collection, config, fields } from '@keystatic/core';
 
-const env = (import.meta as { env?: Record<string, string | undefined> }).env ?? {};
-const repoFromSingleVar = env.KEYSTATIC_GITHUB_REPO ?? env.PUBLIC_KEYSTATIC_GITHUB_REPO;
-const repoOwner = env.KEYSTATIC_GITHUB_REPO_OWNER ?? env.PUBLIC_KEYSTATIC_GITHUB_REPO_OWNER;
-const repoName = env.KEYSTATIC_GITHUB_REPO_NAME ?? env.PUBLIC_KEYSTATIC_GITHUB_REPO_NAME;
-const repo = repoFromSingleVar ?? (repoOwner && repoName ? `${repoOwner}/${repoName}` : 'alqaddaaree/fatawalib');
+const repo = 'alqaddaaree/fatawalib';
 
 export default config({
   storage: {
@@ -16,7 +12,7 @@ export default config({
       label: 'Fatwas',
       path: 'src/content/fatwas/*',
       slugField: 'id',
-      format: { contentField: 'body' },
+      format: { data: 'yaml', contentField: 'body' },
       schema: {
         id: fields.slug({
           name: { label: 'Fatwa ID' },
