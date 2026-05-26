@@ -12,12 +12,17 @@ export default config({
       label: 'Fatwas',
       path: 'src/content/fatwas/*',
       slugField: 'id',
-      format: { data: 'yaml', contentField: 'body' },
+      format: { data: 'yaml', contentField: undefined },
       schema: {
         id: fields.slug({
           name: { label: 'Fatwa ID' },
           label: 'Fatwa ID',
           description: 'Used as the filename and URL slug (for example: 006).',
+        }),
+        title: fields.text({
+          label: 'Title',
+          description: 'A short descriptive title for the fatwa.',
+          required: true,
         }),
         scholar: fields.select({
           label: 'Scholar',
@@ -33,6 +38,25 @@ export default config({
         categories: fields.array(fields.text({ label: 'Category' }), {
           label: 'Categories',
           itemLabel: props => props.value || 'Category',
+          required: true,
+        }),
+        question: fields.textArea({
+          label: 'Question',
+          description: 'The question being asked in this fatwa.',
+          required: true,
+        }),
+        answer: fields.textArea({
+          label: 'Answer',
+          description: 'The translated answer for the fatwa.',
+          required: true,
+        }),
+        arabic_question: fields.textArea({
+          label: 'Arabic Question',
+          defaultValue: '',
+        }),
+        arabic_answer: fields.textArea({
+          label: 'Arabic Answer',
+          defaultValue: '',
         }),
         source_url: fields.url({ label: 'Source URL' }),
         translator: fields.text({ label: 'Translator' }),
@@ -44,12 +68,22 @@ export default config({
           label: 'Date Issued (Hijri or ISO)',
           description: 'Example: 1415-03-10 or 1995-08-12',
         }),
-        date_added: fields.date({ label: 'Date Added' }),
-        body: fields.document({
-          label: 'Fatwa Content',
-          description: 'Use headings like ## Question and ## Answer.',
-          formatting: true,
-          links: true,
+        date_issued_gregorian: fields.text({
+          label: 'Date Issued (Gregorian)',
+          description: 'Example: 1994-09-01',
+        }),
+        date_added: fields.date({ label: 'Date Added', required: true }),
+        audience: fields.select({
+          label: 'Audience',
+          options: [
+            { value: 'general', label: 'General' },
+            { value: 'advanced', label: 'Advanced' },
+          ],
+          defaultValue: 'general',
+        }),
+        tags: fields.array(fields.text({ label: 'Tag' }), {
+          label: 'Tags',
+          itemLabel: props => props.value || 'Tag',
         }),
       },
     }),

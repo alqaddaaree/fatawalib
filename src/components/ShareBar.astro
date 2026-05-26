@@ -1,0 +1,10 @@
+---
+const { id, title } = Astro.props as { id: string; title?: string };
+const pageURL = Astro.site ? new URL(`/fatwa/${id}`, Astro.site).toString() : `/fatwa/${id}`;
+const pageURLJson = JSON.stringify(pageURL);
+---
+
+<div class="mt-6 flex items-center gap-3 print:hidden">
+  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title || `Fatwa #${id}`)}&url=${encodeURIComponent(pageURL)}`} target="_blank" rel="noopener noreferrer" class="text-xs px-3 py-1 rounded bg-teal-800 text-white">Share</a>
+  <button class="text-xs px-3 py-1 rounded border" onclick={`navigator.clipboard && navigator.clipboard.writeText(${pageURLJson})`}>Copy link</button>
+</div>

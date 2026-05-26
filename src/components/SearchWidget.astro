@@ -96,7 +96,7 @@
           </div>
           <span class="shrink-0 text-xs font-sans font-medium bg-teal-900 text-cream-100 rounded-lg px-2.5 py-1">${entry.scholarName.replace('Shaykh ', '')}</span>
         </div>
-        <p class="text-sm text-stone-500 line-clamp-2 mt-2">${entry.body.slice(0, 200)}…</p>
+        <p class="text-sm text-stone-500 line-clamp-2 mt-2">${entry.body ? entry.body.slice(0, 200) : ''}…</p>
         <div class="mt-3 pt-3 border-t border-sand-100 flex items-center gap-3 text-xs text-stone-400">
           <span>Trans. ${entry.translator}</span>
           <span class="ml-auto text-teal-800 hover:text-gold-600 font-medium">

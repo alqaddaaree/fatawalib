@@ -6,8 +6,9 @@ export interface Props {
   fatwa: CollectionEntry<'fatwas'>;
 }
 
-const { fatwa } = Astro.props;
-const { id, scholar, categories, date_added, translator } = fatwa.data;
+const { fatwa } = Astro.props as { fatwa: any };
+const { id, scholar, date_added, translator } = fatwa.data;
+const categories = fatwa.data.categories as string[];
 const scholarInfo = getScholar(scholar);
 
 function stripMarkdown(input: string): string {
@@ -33,7 +34,7 @@ function extractQuestion(body: string): string | null {
   return plain ? truncateText(plain, 100) : null;
 }
 
-const cardTitle = extractQuestion(fatwa.body) ?? `Fatwa #${id}`;
+const cardTitle = fatwa.data.question ?? (typeof fatwa.body === 'string' ? extractQuestion(fatwa.body) : null) ?? `Fatwa #${id}`;
 ---
 
 <article class="bg-white dark:bg-stone-900 border border-sand-200 dark:border-stone-700 rounded-xl p-5 hover:shadow-md hover:border-teal-800/30 dark:hover:border-gold-500/40 transition-all group">
@@ -41,7 +42,7 @@ const cardTitle = extractQuestion(fatwa.body) ?? `Fatwa #${id}`;
     <div class="flex-1 min-w-0">
       <!-- Categories -->
       <div class="flex flex-wrap gap-1.5 mb-2">
-        {categories.slice(0, 3).map((cat) => (
+        {categories.slice(0, 3).map((cat: string) => (
           <a
             href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`}
             class="text-xs font-sans font-medium bg-cream-100 dark:bg-stone-800 text-teal-800 dark:text-stone-200 border border-sand-200 dark:border-stone-600 rounded-full px-2.5 py-0.5 hover:bg-teal-900 hover:text-white hover:border-teal-900 transition-colors"

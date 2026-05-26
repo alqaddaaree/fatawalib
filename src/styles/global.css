@@ -18,9 +18,12 @@
   }
 
   /* Improve Arabic rendering */
-  [lang="ar"], .font-arabic {
+  [lang="ar"], .font-arabic, .arabic-text {
     font-feature-settings: "kern" 1;
     text-rendering: optimizeLegibility;
+    font-family: 'Amiri', serif;
+    direction: rtl;
+    text-align: right;
   }
 
   @media print {
@@ -56,6 +59,13 @@
     a {
       color: #000000 !important;
       text-decoration: underline !important;
+    }
+
+    /* Expand Arabic content for print */
+    .arabic-text {
+      direction: rtl !important;
+      text-align: right !important;
+      font-size: 1.05rem !important;
     }
   }
 }

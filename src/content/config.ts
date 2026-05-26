@@ -5,14 +5,22 @@ const scholars = ['ibn-baz', 'ibn-uthaymin', 'al-albani', 'muqbil', 'yahya'] as 
 const fatwasCollection = defineCollection({
   type: 'content',
   schema: z.object({
-    id:          z.string(),
-    scholar:     z.enum(scholars),
-    categories:  z.array(z.string()),
-    source_url:  z.string().url(),
-    translator:  z.string(),
-    reviewer:    z.string().optional(),
-    date_issued: z.string(), // e.g. "1420-05-12" (Hijri) or ISO date
-    date_added:  z.coerce.date(),
+    id:                    z.string(),
+    title:                 z.string(),
+    scholar:               z.enum(scholars),
+    categories:            z.array(z.string()),
+    question:              z.string(),
+    answer:                z.string(),
+    arabic_question:       z.string().optional(),
+    arabic_answer:         z.string().optional(),
+    source_url:            z.string().url().optional(),
+    translator:            z.string().optional(),
+    reviewer:              z.string().optional(),
+    date_issued:           z.string().optional(),
+    date_issued_gregorian: z.string().optional(),
+    date_added:            z.coerce.date(),
+    audience:              z.enum(['general','advanced']).default('general'),
+    tags:                  z.array(z.string()).optional(),
   }),
 });
 

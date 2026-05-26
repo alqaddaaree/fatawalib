@@ -10,6 +10,12 @@ export default defineConfig({
   adapter: vercel(),
   integrations: [react(), tailwind(), sitemap(), keystatic()],
   output: 'hybrid',
+  content: {
+    dir: './src/content',
+    markdown: {
+      extensions: ['.md', '.mdoc'],
+    },
+  },
   markdown: {
     shikiConfig: {
       theme: 'github-light',

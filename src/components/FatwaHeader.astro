@@ -1,0 +1,72 @@
+---
+import { formatHijriDate, formatGregorian } from '../utils/hijri';
+
+interface FatwaHeaderProps {
+  fatwa: {
+    data: {
+      id: string;
+      title?: string;
+      categories: string[];
+      source_url?: string;
+      translator?: string;
+      reviewer?: string;
+      date_issued?: string;
+      date_issued_gregorian?: string;
+      date_added: Date;
+      audience?: string;
+      tags?: string[];
+    };
+  };
+  scholarInfo: {
+    name: string;
+    arabicName?: string;
+  };
+}
+
+const { fatwa, scholarInfo } = Astro.props as FatwaHeaderProps;
+const { id, title, categories, source_url, translator, reviewer, date_issued, date_issued_gregorian, date_added, audience, tags } = fatwa.data;
+---
+
+<header class="bg-teal-900 dark:bg-stone-900 text-cream-100 dark:text-stone-100 rounded-2xl p-6 mb-8 relative overflow-hidden border border-transparent dark:border-stone-700">
+  <span class="absolute right-4 top-2 font-arabic text-6xl text-teal-800/60 dark:text-stone-700 leading-none pointer-events-none select-none">فتوى</span>
+
+  <p class="text-gold-400 text-xs font-sans font-medium uppercase tracking-widest mb-1">Fatwa #{id}</p>
+  <h1 class="font-serif text-2xl mb-4 leading-snug pr-16">{title || `${scholarInfo.name}`}
+    {scholarInfo.arabicName ? <span class="font-arabic text-lg text-gold-400 ml-2">{scholarInfo.arabicName}</span> : null}
+  </h1>
+
+  <div class="flex flex-wrap gap-2 mb-4">
+    {categories.map((cat) => (
+      <a href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`} class="text-xs font-sans bg-teal-800 dark:bg-stone-800 hover:bg-gold-600 text-cream-100 rounded-full px-3 py-1 transition-colors">{cat}</a>
+    ))}
+  </div>
+
+  <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-cream-200/80 dark:text-stone-300 font-sans pt-4 border-t border-teal-800 dark:border-stone-700">
+    <div>
+      <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Audience</dt>
+      <dd>{audience || 'general'}</dd>
+    </div>
+    <div>
+      <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Translator</dt>
+      <dd>{translator}</dd>
+    </div>
+    {reviewer && (
+      <div>
+        <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Reviewer</dt>
+        <dd>{reviewer}</dd>
+      </div>
+    )}
+    <div>
+      <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Date Issued (Hijri)</dt>
+      <dd>{formatHijriDate(date_issued)}</dd>
+    </div>
+    <div>
+      <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Date Issued (Gregorian)</dt>
+      <dd>{formatGregorian(date_issued_gregorian || date_added)}</dd>
+    </div>
+  </dl>
+
+  {tags && tags.length > 0 && (
+    <p class="mt-4 text-xs text-cream-200">Tags: {tags.join(', ')}</p>
+  )}
+</header>

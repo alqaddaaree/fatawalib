@@ -37,7 +37,7 @@ async function buildIndex() {
     return;
   }
 
-  const mdFiles = files.filter((f) => f.endsWith('.md'));
+  const mdFiles = files.filter((f) => f.endsWith('.md') || f.endsWith('.mdoc'));
   console.log(`[search-index] Found ${mdFiles.length} fatwa file(s).`);
 
   const index = [];
@@ -47,14 +47,9 @@ async function buildIndex() {
     const parsed  = matter(raw);
     const { data } = parsed;
 
-    // Strip markdown syntax for plain-text search
-    const body = parsed.content
-      .replace(/#{1,6}\s+/g, '')     // headings
-      .replace(/\*{1,2}([^*]+)\*{1,2}/g, '$1') // bold/italic
-      .replace(/`[^`]+`/g, '')        // inline code
-      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // links
-      .replace(/\n{2,}/g, ' ')
-      .trim();
+    const questionText = String(data.question || '').trim();
+    const answerText = String(data.answer || '').trim();
+    const body = [questionText, answerText].filter(Boolean).join(' ');
 
     index.push({
       id:          data.id,

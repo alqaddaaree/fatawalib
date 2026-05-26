@@ -1,59 +1,42 @@
 ---
-import { getCollection, render } from 'astro:content';
+import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import { getScholar } from '../../data/scholars';
+import FatwaHeader from '../../components/FatwaHeader.astro';
+import BilingualBlock from '../../components/BilingualBlock.astro';
+import SourceBlock from '../../components/SourceBlock.astro';
+import ShareBar from '../../components/ShareBar.astro';
+import RelatedFatwas from '../../components/RelatedFatwas.astro';
 
 export async function getStaticPaths() {
-  const fatwas = await getCollection('fatwas');
-  return fatwas.map((fatwa) => ({
+  const fatwas = await getCollection('fatwas') as CollectionEntry<'fatwas'>[];
+  return fatwas.map((fatwa: CollectionEntry<'fatwas'>) => ({
     params: { id: fatwa.data.id },
     props:  { fatwa },
   }));
 }
 
-const { fatwa } = Astro.props;
-const { id, scholar, categories, source_url, translator, reviewer, date_issued, date_added } = fatwa.data;
+const { fatwa } = Astro.props as { fatwa: CollectionEntry<'fatwas'> };
+const { id, title, scholar, categories, source_url, translator, reviewer, date_issued, date_issued_gregorian, date_added, arabic_question, arabic_answer, audience, tags, question, answer } = fatwa.data;
 const scholarInfo = getScholar(scholar);
-const { Content } = await render(fatwa);
-
-function stripMarkdown(input: string): string {
-  return input
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[[^\]]*\]\([^\)]*\)/g, ' ')
-    .replace(/\[([^\]]+)\]\([^\)]*\)/g, '$1')
-    .replace(/[>*_~#-]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
-
-function truncateText(input: string, max = 160): string {
+function truncateText(input: string, max = 100): string {
   if (input.length <= max) return input;
   return `${input.slice(0, max).trimEnd()}...`;
 }
 
-function extractSection(body: string, section: string, until?: string): string {
-  const escapedSection = section.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const escapedUntil = until ? until.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : null;
-  const pattern = escapedUntil
-    ? new RegExp(`##\\s*${escapedSection}\\s*([\\s\\S]*?)(?:\\n##\\s*${escapedUntil}\\b|\\n##\\s*[^\\n]+|$)`, 'i')
-    : new RegExp(`##\\s*${escapedSection}\\s*([\\s\\S]*?)(?:\\n##\\s*[^\\n]+|$)`, 'i');
-  const match = body.match(pattern);
-  return match?.[1] ? stripMarkdown(match[1]) : '';
-}
+const questionText = question;
+const answerText = answer;
+const generatedDescription = answerText ? `${answerText.slice(0, 160)}...` : `A translated fatwa by ${scholarInfo.name}, covering: ${categories.join(', ')}.`;
 
-const questionText = extractSection(fatwa.body, 'Question', 'Answer');
-const answerText = extractSection(fatwa.body, 'Answer');
-const generatedDescription = truncateText(answerText, 160);
-
-const relatedItems = (await getCollection('fatwas'))
-  .filter((entry) => entry.data.id !== id && entry.data.categories.some((cat) => categories.includes(cat)))
-  .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime())
+const allFatwas = (await getCollection('fatwas')) as CollectionEntry<'fatwas'>[];
+const relatedItems = allFatwas
+  .filter((entry: CollectionEntry<'fatwas'>) => entry.data.id !== id && entry.data.categories.some((cat: string) => categories.includes(cat)))
+  .sort((a: CollectionEntry<'fatwas'>, b: CollectionEntry<'fatwas'>) => b.data.date_added.getTime() - a.data.date_added.getTime())
   .slice(0, 4)
-  .map((entry) => ({
+  .map((entry: CollectionEntry<'fatwas'>) => ({
     fatwa: entry,
     scholar: getScholar(entry.data.scholar),
-    question: truncateText(extractSection(entry.body, 'Question', 'Answer') || `Fatwa #${entry.data.id}`, 100),
+    question: truncateText(entry.data.question || `Fatwa #${entry.data.id}`, 100),
   }));
 
 const qaSchema = JSON.stringify({
@@ -92,78 +75,17 @@ const qaSchema = JSON.stringify({
     </nav>
 
     <!-- Header card -->
-    <header class="bg-teal-900 dark:bg-stone-900 text-cream-100 dark:text-stone-100 rounded-2xl p-6 mb-8 relative overflow-hidden border border-transparent dark:border-stone-700">
-      <!-- Decorative Arabic text -->
-      <span class="absolute right-4 top-2 font-arabic text-6xl text-teal-800/60 dark:text-stone-700 leading-none pointer-events-none select-none">
-        فتوى
-      </span>
+    <FatwaHeader fatwa={fatwa} scholarInfo={scholarInfo} />
 
-      <p class="text-gold-400 text-xs font-sans font-medium uppercase tracking-widest mb-1">Fatwa #{id}</p>
-      <h1 class="font-serif text-2xl mb-4 leading-snug pr-16">
-        {scholarInfo.name}
-        <span class="font-arabic text-lg text-gold-400 ml-2">{scholarInfo.arabicName}</span>
-      </h1>
-
-      <!-- Categories -->
-      <div class="flex flex-wrap gap-2 mb-4">
-        {categories.map((cat) => (
-          <a
-            href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`}
-            class="text-xs font-sans bg-teal-800 dark:bg-stone-800 hover:bg-gold-600 text-cream-100 rounded-full px-3 py-1 transition-colors"
-          >
-            {cat}
-          </a>
-        ))}
-      </div>
-
-      <!-- Meta grid -->
-      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs text-cream-200/80 dark:text-stone-300 font-sans pt-4 border-t border-teal-800 dark:border-stone-700">
-        <div>
-          <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Translator</dt>
-          <dd>{translator}</dd>
-        </div>
-        {reviewer && (
-          <div>
-            <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Reviewer</dt>
-            <dd>{reviewer}</dd>
-          </div>
-        )}
-        <div>
-          <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Date Issued</dt>
-          <dd>{date_issued}</dd>
-        </div>
-        <div>
-          <dt class="text-cream-200/50 uppercase tracking-wider text-[10px] mb-0.5">Date Added</dt>
-          <dd>{date_added.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</dd>
-        </div>
-      </dl>
-    </header>
+    <ShareBar id={id} title={fatwa.data.title || `Fatwa #${id}`} />
 
     <!-- Fatwa body -->
-    <div dir="auto" class="prose prose-fatwa prose-stone dark:prose-invert max-w-none prose-headings:font-serif prose-h2:text-teal-900 dark:prose-h2:text-gold-400 prose-h2:text-xl prose-h2:border-b prose-h2:border-sand-200 dark:prose-h2:border-stone-700 prose-h2:pb-2 prose-a:text-teal-800 dark:prose-a:text-gold-400">
-      <Content />
-    </div>
 
-    <!-- Related fatwas -->
-    {relatedItems.length > 0 && (
-      <section class="mt-10">
-        <h2 class="font-serif text-xl text-teal-900 dark:text-gold-400 mb-4">Related Fatāwā</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {relatedItems.map((item) => (
-            <a
-              href={`/fatwa/${item.fatwa.data.id}`}
-              class="block rounded-xl border border-sand-200 dark:border-stone-700 bg-white dark:bg-stone-900 p-4 hover:border-teal-800/40 dark:hover:border-gold-500/40 transition-colors"
-            >
-              <p class="text-xs text-teal-800 dark:text-gold-400 font-medium mb-1">{item.scholar.name.replace('Shaykh ', '')}</p>
-              <p class="font-serif text-sm text-stone-800 dark:text-stone-100 leading-snug line-clamp-3">{item.question}</p>
-              <p class="text-xs text-stone-500 dark:text-stone-400 mt-2">
-                {item.fatwa.data.date_added.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-              </p>
-            </a>
-          ))}
-        </div>
-      </section>
-    )}
+    <BilingualBlock question={questionText} answer={answerText} arabicQuestion={arabic_question} arabicAnswer={arabic_answer} />
+
+    <SourceBlock source_url={source_url} />
+
+    <RelatedFatwas items={relatedItems} />
 
     <!-- Source link -->
     <div class="mt-10 pt-6 border-t border-sand-200 dark:border-stone-700">
