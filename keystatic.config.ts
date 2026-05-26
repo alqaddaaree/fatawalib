@@ -10,7 +10,7 @@ export default config({
   collections: {
     fatwas: collection({
       label: 'Fatwas',
-      path: 'src/content/fatwas/*',
+      path: 'src/content/fatwas/[slug].md',
       slugField: 'id',
       format: { data: 'yaml', contentField: undefined },
       schema: {
@@ -40,23 +40,27 @@ export default config({
           itemLabel: props => props.value || 'Category',
           required: true,
         }),
-        question: fields.textArea({
+        question: fields.text({
           label: 'Question',
           description: 'The question being asked in this fatwa.',
           required: true,
+          multiline: true,
         }),
-        answer: fields.textArea({
+        answer: fields.text({
           label: 'Answer',
           description: 'The translated answer for the fatwa.',
           required: true,
+          multiline: true,
         }),
-        arabic_question: fields.textArea({
+        arabic_question: fields.text({
           label: 'Arabic Question',
           defaultValue: '',
+          multiline: true,
         }),
-        arabic_answer: fields.textArea({
+        arabic_answer: fields.text({
           label: 'Arabic Answer',
           defaultValue: '',
+          multiline: true,
         }),
         source_url: fields.url({ label: 'Source URL' }),
         translator: fields.text({ label: 'Translator' }),

@@ -140,14 +140,43 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"fatwas": Record<string, {
-  id: string;
-  slug: string;
+		"fatwas": {
+"001.md": {
+	id: "001.md";
+  slug: "001";
   body: string;
   collection: "fatwas";
-  data: InferEntrySchema<"fatwas">;
-  render(): Render[".md"];
-}>;
+  data: InferEntrySchema<"fatwas">
+} & { render(): Render[".md"] };
+"002.md": {
+	id: "002.md";
+  slug: "002";
+  body: string;
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+} & { render(): Render[".md"] };
+"003.md": {
+	id: "003.md";
+  slug: "003";
+  body: string;
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+} & { render(): Render[".md"] };
+"004.md": {
+	id: "004.md";
+  slug: "004";
+  body: string;
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+} & { render(): Render[".md"] };
+"005.md": {
+	id: "005.md";
+  slug: "005";
+  body: string;
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+} & { render(): Render[".md"] };
+};
 
 	};
 
