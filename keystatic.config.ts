@@ -14,7 +14,7 @@ export default config({
   collections: {
     fatwas: collection({
       label: 'Fatwas',
-      path: 'src/content/fatwas/*.md',
+      path: 'src/content/fatwas/*',
       slugField: 'id',
       format: { contentField: 'body' },
       schema: {
