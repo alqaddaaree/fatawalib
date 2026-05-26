@@ -4,7 +4,7 @@ const env = (import.meta as { env?: Record<string, string | undefined> }).env ??
 const repoFromSingleVar = env.KEYSTATIC_GITHUB_REPO ?? env.PUBLIC_KEYSTATIC_GITHUB_REPO;
 const repoOwner = env.KEYSTATIC_GITHUB_REPO_OWNER ?? env.PUBLIC_KEYSTATIC_GITHUB_REPO_OWNER;
 const repoName = env.KEYSTATIC_GITHUB_REPO_NAME ?? env.PUBLIC_KEYSTATIC_GITHUB_REPO_NAME;
-const repo = repoFromSingleVar ?? (repoOwner && repoName ? `${repoOwner}/${repoName}` : 'abderrahmene-mhb/fatwa-site');
+const repo = repoFromSingleVar ?? (repoOwner && repoName ? `${repoOwner}/${repoName}` : 'alqaddaaree/fatawalib');
 
 export default config({
   storage: {
