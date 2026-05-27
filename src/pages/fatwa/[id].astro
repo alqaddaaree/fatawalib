@@ -1,7 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import { getScholar } from '../../data/scholars';
 import FatwaHeader from '../../components/FatwaHeader.astro';
 import BilingualBlock from '../../components/BilingualBlock.astro';
 import SourceBlock from '../../components/SourceBlock.astro';
@@ -14,6 +13,23 @@ export async function getStaticPaths() {
     params: { id: fatwa.data.id },
     props:  { fatwa },
   }));
+}
+
+// Fetch all scholars once and build a lookup map
+const allScholars = await getCollection('scholars') as CollectionEntry<'scholars'>[];
+const scholarMap = new Map(allScholars.map(s => [s.data.id, s.data]));
+
+function getScholar(scholarId: string) {
+  const scholar = scholarMap.get(scholarId);
+  if (!scholar) {
+    return {
+      name: scholarId,
+      arabicName: '',
+      lifespan: '',
+      bio: '',
+    };
+  }
+  return scholar;
 }
 
 const { fatwa } = Astro.props as { fatwa: CollectionEntry<'fatwas'> };

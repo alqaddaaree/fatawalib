@@ -1,13 +1,22 @@
 import { defineCollection, z } from 'astro:content';
 
-const scholars = ['ibn-baz', 'ibn-uthaymin', 'al-albani', 'muqbil', 'yahya'] as const;
+const scholarsCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    id:         z.string(),
+    name:       z.string(),
+    arabicName: z.string(),
+    lifespan:   z.string(),
+    bio:        z.string(),
+  }),
+});
 
 const fatwasCollection = defineCollection({
   type: 'content',
   schema: z.object({
     id:                    z.string(),
     title:                 z.string(),
-    scholar:               z.enum(scholars),
+    scholar:               z.string(),
     categories:            z.array(z.string()),
     question:              z.string(),
     answer:                z.string(),
@@ -21,9 +30,12 @@ const fatwasCollection = defineCollection({
     date_added:            z.coerce.date(),
     audience:              z.enum(['general','advanced']).default('general'),
     tags:                  z.array(z.string()).optional(),
+    footnotes:             z.string().optional(),
+    notes:                 z.string().optional(),
   }),
 });
 
 export const collections = {
+  scholars: scholarsCollection,
   fatwas: fatwasCollection,
 };

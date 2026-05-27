@@ -2,18 +2,18 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import FatwaCard from '../../components/FatwaCard.astro';
-import { scholars } from '../../data/scholars';
-import type { ScholarId } from '../../data/scholars';
 
 export async function getStaticPaths() {
+  const allScholars = await getCollection('scholars');
   const allFatwas = await getCollection('fatwas');
-  return Object.keys(scholars).map((id) => {
-    const scholarId = id as ScholarId;
+  
+  return allScholars.map((scholarEntry) => {
+    const scholarId = scholarEntry.data.id;
     return {
       params: { scholar: scholarId },
       props: {
-        scholar:  scholars[scholarId],
-        fatwas:   allFatwas
+        scholar: scholarEntry.data,
+        fatwas: allFatwas
           .filter((f) => f.data.scholar === scholarId)
           .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime()),
       },
@@ -44,7 +44,7 @@ const { scholar, fatwas } = Astro.props;
     <!-- Fatwas grid -->
     {fatwas.length > 0 ? (
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} />)}
+        {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} scholar={scholar} />)}
       </div>
     ) : (
       <p class="text-center py-16 text-stone-400 font-serif text-xl">No fatwas yet for this scholar.</p>

@@ -1,15 +1,15 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getScholar } from '../data/scholars';
 
 export interface Props {
   fatwa: CollectionEntry<'fatwas'>;
+  scholar?: { name: string };
 }
 
-const { fatwa } = Astro.props as { fatwa: any };
-const { id, scholar, date_added, translator } = fatwa.data;
+const { fatwa, scholar } = Astro.props as { fatwa: any; scholar?: any };
+const { id, scholar: scholarId, date_added, translator } = fatwa.data;
 const categories = fatwa.data.categories as string[];
-const scholarInfo = getScholar(scholar);
+const scholarName = scholar ? scholar.name.replace('Shaykh ', '') : scholarId;
 
 function stripMarkdown(input: string): string {
   return input
@@ -62,7 +62,7 @@ const cardTitle = fatwa.data.question ?? (typeof fatwa.body === 'string' ? extra
 
     <!-- Scholar badge -->
     <span class="shrink-0 text-xs font-sans font-medium bg-teal-900 dark:bg-stone-800 text-cream-100 rounded-lg px-2.5 py-1 whitespace-nowrap">
-      {scholarInfo.name.replace('Shaykh ', '')}
+      {scholarName}
     </span>
   </div>
 

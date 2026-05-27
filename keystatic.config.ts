@@ -8,11 +8,45 @@ export default config({
     repo,
   },
   collections: {
+    scholars: collection({
+      label: 'Scholars',
+      path: 'src/content/scholars/*',
+      slugField: 'id',
+      format: { data: 'yaml', contentField: '' },
+      schema: {
+        id: fields.slug({
+          name: { label: 'Scholar ID' },
+          label: 'Scholar ID',
+          description: 'Used as the filename and URL slug (for example: ibn-baz).',
+        }),
+        name: fields.text({
+          label: 'Name',
+          description: 'Scholar name in English.',
+          required: true,
+        }),
+        arabicName: fields.text({
+          label: 'Arabic Name',
+          description: 'Scholar name in Arabic.',
+          required: true,
+        }),
+        lifespan: fields.text({
+          label: 'Lifespan',
+          description: 'Birth and death years (for example: 1910–1999).',
+          required: true,
+        }),
+        bio: fields.text({
+          label: 'Biography',
+          description: 'Brief biography of the scholar.',
+          required: true,
+          multiline: true,
+        }),
+      },
+    }),
     fatwas: collection({
       label: 'Fatwas',
       path: 'src/content/fatwas/*',
       slugField: 'id',
-      format: { data: 'yaml', contentField: undefined },
+      format: { data: 'yaml', contentField: '' },
       schema: {
         id: fields.slug({
           name: { label: 'Fatwa ID' },
@@ -24,16 +58,9 @@ export default config({
           description: 'A short descriptive title for the fatwa.',
           required: true,
         }),
-        scholar: fields.select({
+        scholar: fields.relationship({
           label: 'Scholar',
-          options: [
-            { value: 'ibn-baz', label: 'Shaykh Ibn Baz' },
-            { value: 'ibn-uthaymin', label: 'Shaykh Ibn Uthaymin' },
-            { value: 'al-albani', label: 'Shaykh al-Albani' },
-            { value: 'muqbil', label: 'Shaykh Muqbil al-Wadii' },
-            { value: 'yahya', label: 'Shaykh Yahya al-Hajuri' },
-          ],
-          defaultValue: 'ibn-baz',
+          collection: 'scholars',
         }),
         categories: fields.array(fields.text({ label: 'Category' }), {
           label: 'Categories',
@@ -88,6 +115,18 @@ export default config({
         tags: fields.array(fields.text({ label: 'Tag' }), {
           label: 'Tags',
           itemLabel: props => props.value || 'Tag',
+        }),
+        footnotes: fields.text({
+          label: 'Footnotes',
+          description: 'Additional footnotes or references.',
+          defaultValue: '',
+          multiline: true,
+        }),
+        notes: fields.text({
+          label: 'Notes',
+          description: 'Any additional notes about the fatwa.',
+          defaultValue: '',
+          multiline: true,
         }),
       },
     }),

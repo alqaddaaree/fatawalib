@@ -177,6 +177,43 @@ declare module 'astro:content' {
   data: InferEntrySchema<"fatwas">
 } & { render(): Render[".md"] };
 };
+"scholars": {
+"al-albani.md": {
+	id: "al-albani.md";
+  slug: "al-albani";
+  body: string;
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+} & { render(): Render[".md"] };
+"ibn-baz.md": {
+	id: "ibn-baz.md";
+  slug: "ibn-baz";
+  body: string;
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+} & { render(): Render[".md"] };
+"ibn-uthaymin.md": {
+	id: "ibn-uthaymin.md";
+  slug: "ibn-uthaymin";
+  body: string;
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+} & { render(): Render[".md"] };
+"muqbil.md": {
+	id: "muqbil.md";
+  slug: "muqbil";
+  body: string;
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+} & { render(): Render[".md"] };
+"yahya.md": {
+	id: "yahya.md";
+  slug: "yahya";
+  body: string;
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+} & { render(): Render[".md"] };
+};
 
 	};
 

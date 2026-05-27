@@ -1,0 +1,7 @@
+---
+id: ibn-uthaymin
+name: Shaykh Ibn ʿUthaymīn
+arabicName: ابن عثيمين
+lifespan: 1925–2001
+bio: Muḥammad ibn Ṣāliḥ al-ʿUthaymīn was a prominent Saudi Islamic scholar known for his extensive writings and recordings on Islamic jurisprudence and ʿaqīdah.
+---

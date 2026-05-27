@@ -1,5 +1,13 @@
 ---
-import { scholars } from '../data/scholars';
+import { getCollection } from 'astro:content';
+
+// Fetch scholars from the collection and build a simple array
+const scholarsData = await getCollection('scholars');
+const scholars = scholarsData.map(s => ({
+  id: s.data.id,
+  name: s.data.name,
+}));
+
 export interface Props {
   activeScholar?: string;
   activeCategory?: string;
@@ -25,7 +33,7 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
     >
       All Scholars
     </a>
-    {Object.values(scholars).map((s) => (
+    {scholars.map((s) => (
       <a
         data-scholar-link={s.id}
         href={`/?scholar=${s.id}`}
