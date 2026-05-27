@@ -963,7 +963,7 @@ Then in `src/components/FatwaCard.astro`, replace:
 with:
 
 ```astro
-<h2 ...>{fatwa.data.title ?? `Fatwa #${id}`}</h2>
+<h2 ...>{fatwa.title ?? `Fatwa #${id}`}</h2>
 ```
 
 ---

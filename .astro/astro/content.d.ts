@@ -140,85 +140,65 @@ declare module 'astro:content' {
 	>;
 
 	type ContentEntryMap = {
-		"fatwas": {
-"001.md": {
-	id: "001.md";
-  slug: "001";
-  body: string;
-  collection: "fatwas";
-  data: InferEntrySchema<"fatwas">
-} & { render(): Render[".md"] };
-"002.md": {
-	id: "002.md";
-  slug: "002";
-  body: string;
-  collection: "fatwas";
-  data: InferEntrySchema<"fatwas">
-} & { render(): Render[".md"] };
-"003.md": {
-	id: "003.md";
-  slug: "003";
-  body: string;
-  collection: "fatwas";
-  data: InferEntrySchema<"fatwas">
-} & { render(): Render[".md"] };
-"004.md": {
-	id: "004.md";
-  slug: "004";
-  body: string;
-  collection: "fatwas";
-  data: InferEntrySchema<"fatwas">
-} & { render(): Render[".md"] };
-"005.md": {
-	id: "005.md";
-  slug: "005";
-  body: string;
-  collection: "fatwas";
-  data: InferEntrySchema<"fatwas">
-} & { render(): Render[".md"] };
-};
-"scholars": {
-"al-albani.md": {
-	id: "al-albani.md";
-  slug: "al-albani";
-  body: string;
-  collection: "scholars";
-  data: InferEntrySchema<"scholars">
-} & { render(): Render[".md"] };
-"ibn-baz.md": {
-	id: "ibn-baz.md";
-  slug: "ibn-baz";
-  body: string;
-  collection: "scholars";
-  data: InferEntrySchema<"scholars">
-} & { render(): Render[".md"] };
-"ibn-uthaymin.md": {
-	id: "ibn-uthaymin.md";
-  slug: "ibn-uthaymin";
-  body: string;
-  collection: "scholars";
-  data: InferEntrySchema<"scholars">
-} & { render(): Render[".md"] };
-"muqbil.md": {
-	id: "muqbil.md";
-  slug: "muqbil";
-  body: string;
-  collection: "scholars";
-  data: InferEntrySchema<"scholars">
-} & { render(): Render[".md"] };
-"yahya.md": {
-	id: "yahya.md";
-  slug: "yahya";
-  body: string;
-  collection: "scholars";
-  data: InferEntrySchema<"scholars">
-} & { render(): Render[".md"] };
-};
-
+		
 	};
 
 	type DataEntryMap = {
-		
+		"fatwas": {
+"001": {
+	id: "001";
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+};
+"002": {
+	id: "002";
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+};
+"003": {
+	id: "003";
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+};
+"004": {
+	id: "004";
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+};
+"005": {
+	id: "005";
+  collection: "fatwas";
+  data: InferEntrySchema<"fatwas">
+};
+};
+"scholars": {
+"al-albani": {
+	id: "al-albani";
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+};
+"ibn-baz": {
+	id: "ibn-baz";
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+};
+"ibn-uthaymin": {
+	id: "ibn-uthaymin";
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+};
+"muqbil": {
+	id: "muqbil";
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+};
+"yahya": {
+	id: "yahya";
+  collection: "scholars";
+  data: InferEntrySchema<"scholars">
+};
+};
+
 	};
 
 	type AnyEntryMap = ContentEntryMap & DataEntryMap;

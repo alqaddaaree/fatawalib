@@ -10,7 +10,7 @@ import RelatedFatwas from '../../components/RelatedFatwas.astro';
 export async function getStaticPaths() {
   const fatwas = await getCollection('fatwas') as CollectionEntry<'fatwas'>[];
   return fatwas.map((fatwa: CollectionEntry<'fatwas'>) => ({
-    params: { id: fatwa.data.id },
+    params: { id: fatwa.id },
     props:  { fatwa },
   }));
 }
@@ -86,7 +86,7 @@ const qaSchema = JSON.stringify({
       <a href="/" class="hover:text-teal-800 dark:hover:text-gold-400 transition-colors">Home</a>
       <span>/</span>
       <a href={`/scholar/${scholar}`} class="hover:text-teal-800 dark:hover:text-gold-400 transition-colors">{scholarInfo.name}</a>
-      <span>/</span>
+      <span>/</span> 
       <span class="text-stone-600 dark:text-stone-300">Fatwa #{id}</span>
     </nav>
 

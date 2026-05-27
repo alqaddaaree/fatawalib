@@ -12,7 +12,7 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import matter from 'gray-matter';
+import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT      = join(__dirname, '..');
@@ -37,15 +37,14 @@ async function buildIndex() {
     return;
   }
 
-  const mdFiles = files.filter((f) => f.endsWith('.md') || f.endsWith('.mdoc'));
-  console.log(`[search-index] Found ${mdFiles.length} fatwa file(s).`);
+  const yamlFiles = files.filter(f => f.endsWith('.yaml') || f.endsWith('.yml'));
+  console.log(`[search-index] Found ${yamlFiles.length} fatwa file(s).`);
 
   const index = [];
 
-  for (const file of mdFiles) {
-    const raw     = await readFile(join(CONTENT, file), 'utf8');
-    const parsed  = matter(raw);
-    const { data } = parsed;
+  for (const file of yamlFiles) {
+    const raw = await readFile(join(CONTENT, file), 'utf8');
+    const data = yaml.load(raw);
 
     const questionText = String(data.question || '').trim();
     const answerText = String(data.answer || '').trim();
