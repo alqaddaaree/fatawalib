@@ -1,0 +1,25 @@
+---
+import Markdoc from '@markdoc/markdoc';
+
+export interface Props {
+  content: any; // Markdoc AST JSON, or plain string (legacy)
+}
+
+const { content } = Astro.props;
+
+let html = '';
+
+if (typeof content === 'string') {
+  // Legacy plain‑text content — display it as‑is, with newlines turned into <br/>
+  html = content.replace(/\n/g, '<br/>');
+} else if (content && typeof content === 'object') {
+  try {
+    const transformed = Markdoc.transform(content);
+    html = Markdoc.renderers.html(transformed) || '';
+  } catch {
+    html = ''; // fallback for invalid AST
+  }
+}
+---
+
+<Fragment set:html={html} />

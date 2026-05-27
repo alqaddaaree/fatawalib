@@ -14,7 +14,18 @@ export default config({
       slugField: 'id',
       format: { data: 'yaml' },
       schema: {
-        id: fields.slug({ name: { label: 'Scholar ID' } }),
+        id: fields.slug({
+          name: { label: 'Scholar ID' },
+          slug: {
+            generate: (formValues: any) => {
+              const name = formValues?.name ?? '';
+              return name
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+            },
+          },
+        }),
         name: fields.text({ label: 'Name', validation: { isRequired: true } }),
         arabicName: fields.text({ label: 'Arabic Name', validation: { isRequired: true } }),
         lifespan: fields.text({ label: 'Lifespan', validation: { isRequired: true } }),
@@ -27,7 +38,21 @@ export default config({
       slugField: 'id',
       format: { data: 'yaml' },
       schema: {
-        id: fields.slug({ name: { label: 'Fatwa ID' } }),
+        id: fields.slug({
+          name: { label: 'Fatwa ID' },
+          slug: {
+            generate: (formValues: any) => {
+              const scholarId = formValues?.scholar ?? '';
+              const title = formValues?.title ?? '';
+              if (!title) return '';
+              const titleSlug = title
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/^-|-$/g, '');
+              return scholarId ? `${scholarId}-${titleSlug}` : titleSlug;
+            },
+          },
+        }),
         title: fields.text({ label: 'Title', validation: { isRequired: true } }),
         scholar: fields.relationship({ label: 'Scholar', collection: 'scholars' }),
         categories: fields.array(
@@ -38,8 +63,14 @@ export default config({
             validation: { length: { min: 1 } },
           }
         ),
-        question: fields.text({ label: 'Question', multiline: true, validation: { isRequired: true } }),
-        answer: fields.text({ label: 'Answer', multiline: true, validation: { isRequired: true } }),
+        question: fields.markdoc({
+          label: 'Question',
+          description: 'The question being asked in this fatwa.',
+        }),
+        answer: fields.markdoc({
+          label: 'Answer',
+          description: 'The translated answer for the fatwa.',
+        }),
         arabic_question: fields.text({ label: 'Arabic Question', defaultValue: '', multiline: true }),
         arabic_answer: fields.text({ label: 'Arabic Answer', defaultValue: '', multiline: true }),
         source_url: fields.url({ label: 'Source URL' }),
@@ -54,8 +85,14 @@ export default config({
           defaultValue: 'general',
         }),
         tags: fields.array(fields.text({ label: 'Tag' }), { label: 'Tags', itemLabel: (props: any) => props.value || 'Tag' }),
-        footnotes: fields.text({ label: 'Footnotes', defaultValue: '', multiline: true }),
-        notes: fields.text({ label: 'Notes', defaultValue: '', multiline: true }),
+        footnotes: fields.markdoc({
+          label: 'Footnotes',
+          description: 'Additional footnotes or references.',
+        }),
+        notes: fields.markdoc({
+          label: 'Notes',
+          description: 'Any additional notes about the fatwa.',
+        }),
       },
     }),
   },

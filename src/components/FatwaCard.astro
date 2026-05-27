@@ -1,77 +1,123 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 
 export interface Props {
-  fatwa: CollectionEntry<'fatwas'>;
+  fatwa: CollectionEntry<"fatwas">;
   scholar?: { name: string };
 }
 
 const { fatwa, scholar } = Astro.props as { fatwa: any; scholar?: any };
-const { id, scholar: scholarId, date_added, translator, question, categories } = fatwa.data;
+const {
+  id: slug,
+  scholar: scholarId,
+  date_added,
+  translator,
+  question,
+  categories,
+} = fatwa.data;
 const categoryList = (categories as string[]) ?? [];
-const scholarName = scholar ? scholar.name.replace('Shaykh ', '') : scholarId;
+const scholarName = scholar ? scholar.name.replace("Shaykh ", "") : scholarId;
 
 function stripMarkdown(input: string): string {
   return input
-    .replace(/```[\s\S]*?```/g, ' ')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/!\[[^\]]*\]\([^\)]*\)/g, ' ')
-    .replace(/\[([^\]]+)\]\([^\)]*\)/g, '$1')
-    .replace(/[>*_~#-]/g, ' ')
-    .replace(/\s+/g, ' ')
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/!\[[^\]]*\]\([^\)]*\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^\)]*\)/g, "$1")
+    .replace(/[>*_~#-]/g, " ")
+    .replace(/\s+/g, " ")
     .trim();
 }
 
 function truncateText(input: string, max = 100): string {
-  if (!input) return '';
+  if (!input) return "";
   if (input.length <= max) return input;
   return `${input.slice(0, max).trimEnd()}...`;
 }
 
 const cardTitle = question
-  ? truncateText(stripMarkdown(question), 100)
-  : `Fatwa #${id}`;
+  ? truncateText(toPlainText(question), 100)
+  : `Fatwa #${slug}`;
+
+  function toPlainText(content: any): string {
+  if (!content) return '';
+  if (typeof content === 'string') return content.replace(/\n/g, ' ');
+
+  function extract(node: any): string {
+    if (!node) return '';
+    if (typeof node === 'string') return node;
+    if (Array.isArray(node)) return node.map(extract).join(' ');
+    if (node.text) return node.text;
+    if (node.children) return extract(node.children);
+    return '';
+  }
+
+  try {
+    return extract(content).replace(/\s+/g, ' ').trim();
+  } catch {
+    return '';
+  }
+}
 ---
 
-<article class="bg-white dark:bg-stone-900 border border-sand-200 dark:border-stone-700 rounded-xl p-5 hover:shadow-md hover:border-teal-800/30 dark:hover:border-gold-500/40 transition-all group">
+<article
+  class="bg-white dark:bg-stone-900 border border-sand-200 dark:border-stone-700 rounded-xl p-5 hover:shadow-md hover:border-teal-800/30 dark:hover:border-gold-500/40 transition-all group"
+>
   <div class="flex items-start justify-between gap-3 mb-3">
     <div class="flex-1 min-w-0">
       <!-- Categories -->
-      {categoryList.length > 0 && (
-        <div class="flex flex-wrap gap-1.5 mb-2">
-          {categoryList.slice(0, 3).map((cat: string) => (
-            <a
-              href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`}
-              class="text-xs font-sans font-medium bg-cream-100 dark:bg-stone-800 text-teal-800 dark:text-stone-200 border border-sand-200 dark:border-stone-600 rounded-full px-2.5 py-0.5 hover:bg-teal-900 hover:text-white hover:border-teal-900 transition-colors"
-            >
-              {cat}
-            </a>
-          ))}
-        </div>
-      )}
+      {
+        categoryList.length > 0 && (
+          <div class="flex flex-wrap gap-1.5 mb-2">
+            {categoryList.slice(0, 3).map((cat: string) => (
+              <a
+                href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, "-"))}`}
+                class="text-xs font-sans font-medium bg-cream-100 dark:bg-stone-800 text-teal-800 dark:text-stone-200 border border-sand-200 dark:border-stone-600 rounded-full px-2.5 py-0.5 hover:bg-teal-900 hover:text-white hover:border-teal-900 transition-colors"
+              >
+                {cat}
+              </a>
+            ))}
+          </div>
+        )
+      }
 
       <!-- Question title -->
-      <a href={`/fatwa/${id}`} class="block">
-        <h2 class="font-serif text-lg text-teal-900 dark:text-cream-100 group-hover:text-gold-600 transition-colors leading-snug line-clamp-2">
+      <a href={`/fatwa/${slug}`} class="block">
+        <h2
+          class="font-serif text-lg text-teal-900 dark:text-cream-100 group-hover:text-gold-600 transition-colors leading-snug line-clamp-2"
+        >
           {cardTitle}
         </h2>
       </a>
     </div>
 
     <!-- Scholar badge -->
-    <span class="shrink-0 text-xs font-sans font-medium bg-teal-900 dark:bg-stone-800 text-cream-100 rounded-lg px-2.5 py-1 whitespace-nowrap">
+    <span
+      class="shrink-0 text-xs font-sans font-medium bg-teal-900 dark:bg-stone-800 text-cream-100 rounded-lg px-2.5 py-1 whitespace-nowrap"
+    >
       {scholarName}
     </span>
   </div>
 
   <!-- Meta -->
-  <div class="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400 font-sans mt-3 pt-3 border-t border-sand-100 dark:border-stone-700">
+  <div
+    class="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400 font-sans mt-3 pt-3 border-t border-sand-100 dark:border-stone-700"
+  >
     <span>Trans. {translator}</span>
     <span class="text-sand-300 dark:text-stone-600">•</span>
     <time datetime={date_added?.toISOString()}>
-      {date_added?.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+      {
+        date_added?.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
+      }
     </time>
-    <a href={`/fatwa/${id}`} class="ml-auto text-teal-800 dark:text-gold-400 hover:text-gold-600 font-medium transition-colors">
+    <a
+      href={`/fatwa/${slug}`}
+      class="ml-auto text-teal-800 dark:text-gold-400 hover:text-gold-600 font-medium transition-colors"
+    >
       Read →
     </a>
   </div>

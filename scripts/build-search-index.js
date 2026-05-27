@@ -15,23 +15,26 @@ import { fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT      = join(__dirname, '..');
-const CONTENT   = join(ROOT, 'src', 'content', 'fatwas');
-const OUTPUT    = join(ROOT, 'public', 'search-index.json');
+const ROOT = join(__dirname, '..');
+const CONTENT = join(ROOT, 'src', 'content', 'fatwas');
+const OUTPUT = join(ROOT, 'public', 'search-index.json');
 
 const SCHOLAR_NAMES = {
-  'ibn-baz':      'Shaykh Ibn Bāz',
+  'ibn-baz': 'Shaykh Ibn Bāz',
   'ibn-uthaymin': 'Shaykh Ibn ʿUthaymīn',
-  'al-albani':    'Shaykh al-Albānī',
-  'muqbil':       'Shaykh Muqbil al-Wādiʿī',
-  'yahya':        'Shaykh Yaḥyā al-Ḥajūrī',
+  'al-albani': 'Shaykh al-Albānī',
+  'muqbil': 'Shaykh Muqbil al-Wādiʿī',
+  'yahya': 'Shaykh Yaḥyā al-Ḥajūrī',
 };
 
-async function buildIndex() {
+async function buildIndex()
+{
   let files;
-  try {
+  try
+  {
     files = await readdir(CONTENT);
-  } catch {
+  } catch
+  {
     console.warn('[search-index] No content directory found at', CONTENT, '— writing empty index.');
     await writeFile(OUTPUT, '[]', 'utf8');
     return;
@@ -42,22 +45,23 @@ async function buildIndex() {
 
   const index = [];
 
-  for (const file of yamlFiles) {
+  for (const file of yamlFiles)
+  {
     const raw = await readFile(join(CONTENT, file), 'utf8');
     const data = yaml.load(raw);
 
-    const questionText = String(data.question || '').trim();
-    const answerText = String(data.answer || '').trim();
+    const questionText = toPlainText(data.question);
+    const answerText = toPlainText(data.answer);
     const body = [questionText, answerText].filter(Boolean).join(' ');
 
     index.push({
-      id:          data.id,
-      scholar:     data.scholar,
+      id: data.id,
+      scholar: data.scholar,
       scholarName: SCHOLAR_NAMES[data.scholar] ?? data.scholar,
-      categories:  data.categories ?? [],
-      translator:  data.translator ?? '',
-      reviewer:    data.reviewer   ?? '',
-      date_added:  data.date_added ?? '',
+      categories: data.categories ?? [],
+      translator: data.translator ?? '',
+      reviewer: data.reviewer ?? '',
+      date_added: data.date_added ?? '',
       body,
     });
   }
@@ -66,7 +70,32 @@ async function buildIndex() {
   console.log(`[search-index] Wrote ${index.length} entries to ${OUTPUT}`);
 }
 
-buildIndex().catch((err) => {
+buildIndex().catch((err) =>
+{
   console.error('[search-index] Failed:', err);
   process.exit(1);
 });
+
+function toPlainText(content)
+{
+  if (!content) return '';
+  if (typeof content === 'string') return content.replace(/\n/g, ' ');
+
+  function extract(node)
+  {
+    if (!node) return '';
+    if (typeof node === 'string') return node;
+    if (Array.isArray(node)) return node.map(extract).join(' ');
+    if (node.text) return node.text;
+    if (node.children) return extract(node.children);
+    return '';
+  }
+
+  try
+  {
+    return extract(content).replace(/\s+/g, ' ').trim();
+  } catch
+  {
+    return '';
+  }
+}
