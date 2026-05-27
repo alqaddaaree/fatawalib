@@ -19,20 +19,25 @@ export default config({
         }),
         name: fields.text({
           label: 'Name',
-          validation: { isRequired: true },
+          validation: { length: { min: 1 } },
         }),
         arabicName: fields.text({
           label: 'Arabic Name',
-          validation: { isRequired: true },
+          validation: { length: { min: 1 } },
         }),
         lifespan: fields.text({
           label: 'Lifespan',
-          validation: { isRequired: true },
+          validation: { length: { min: 1 } },
         }),
         bio: fields.text({
           label: 'Biography',
           multiline: true,
-          validation: { isRequired: true },
+          validation: { length: { min: 1 } },
+        }),
+        content: fields.text({
+          label: 'Content',
+          defaultValue: '',
+          multiline: true,
         }),
       },
     }),
@@ -47,7 +52,7 @@ export default config({
         }),
         title: fields.text({
           label: 'Title',
-          validation: { isRequired: true },
+          validation: { length: { min: 1 } },
         }),
         scholar: fields.relationship({
           label: 'Scholar',
@@ -58,18 +63,23 @@ export default config({
           {
             label: 'Categories',
             itemLabel: (props: any) => props.value || 'Category',
-            validation: { isRequired: true },
+            validation: { length: { min: 1 } },
           }
         ),
         question: fields.text({
           label: 'Question',
           multiline: true,
-          validation: { isRequired: true },
+          validation: { length: { min: 1 } },
         }),
         answer: fields.text({
-          label: 'Answer', 
+          label: 'Answer',
           multiline: true,
-          validation: { isRequired: true },
+          validation: { length: { min: 1 } },
+        }),
+        content: fields.text({
+          label: 'Content',
+          defaultValue: '',
+          multiline: true,
         }),
         arabic_question: fields.text({
           label: 'Arabic Question',
