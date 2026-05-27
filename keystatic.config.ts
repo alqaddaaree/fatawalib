@@ -12,33 +12,27 @@ export default config({
       label: 'Scholars',
       path: 'src/content/scholars/*',
       slugField: 'id',
-      format: { data: 'yaml' },
+      format: { data: 'yaml', contentField: 'content' },
       schema: {
         id: fields.slug({
           name: { label: 'Scholar ID' },
-          label: 'Scholar ID',
-          description: 'Used as the filename and URL slug (for example: ibn-baz).',
         }),
         name: fields.text({
           label: 'Name',
-          description: 'Scholar name in English.',
-          required: true,
+          validation: { isRequired: true },
         }),
         arabicName: fields.text({
           label: 'Arabic Name',
-          description: 'Scholar name in Arabic.',
-          required: true,
+          validation: { isRequired: true },
         }),
         lifespan: fields.text({
           label: 'Lifespan',
-          description: 'Birth and death years (for example: 1910–1999).',
-          required: true,
+          validation: { isRequired: true },
         }),
         bio: fields.text({
           label: 'Biography',
-          description: 'Brief biography of the scholar.',
-          required: true,
           multiline: true,
+          validation: { isRequired: true },
         }),
       },
     }),
@@ -46,38 +40,36 @@ export default config({
       label: 'Fatwas',
       path: 'src/content/fatwas/*',
       slugField: 'id',
-      format: { data: 'yaml' },
+      format: { data: 'yaml', contentField: 'content' },
       schema: {
         id: fields.slug({
           name: { label: 'Fatwa ID' },
-          label: 'Fatwa ID',
-          description: 'Used as the filename and URL slug (for example: 006).',
         }),
         title: fields.text({
           label: 'Title',
-          description: 'A short descriptive title for the fatwa.',
-          required: true,
+          validation: { isRequired: true },
         }),
         scholar: fields.relationship({
           label: 'Scholar',
           collection: 'scholars',
         }),
-        categories: fields.array(fields.text({ label: 'Category' }), {
-          label: 'Categories',
-          itemLabel: props => props.value || 'Category',
-          required: true,
-        }),
+        categories: fields.array(
+          fields.text({ label: 'Category' }),
+          {
+            label: 'Categories',
+            itemLabel: (props: any) => props.value || 'Category',
+            validation: { isRequired: true },
+          }
+        ),
         question: fields.text({
           label: 'Question',
-          description: 'The question being asked in this fatwa.',
-          required: true,
           multiline: true,
+          validation: { isRequired: true },
         }),
         answer: fields.text({
-          label: 'Answer',
-          description: 'The translated answer for the fatwa.',
-          required: true,
+          label: 'Answer', 
           multiline: true,
+          validation: { isRequired: true },
         }),
         arabic_question: fields.text({
           label: 'Arabic Question',
@@ -103,7 +95,10 @@ export default config({
           label: 'Date Issued (Gregorian)',
           description: 'Example: 1994-09-01',
         }),
-        date_added: fields.date({ label: 'Date Added', required: true }),
+        date_added: fields.date({
+          label: 'Date Added',
+          validation: { isRequired: true },
+        }),
         audience: fields.select({
           label: 'Audience',
           options: [
@@ -112,19 +107,20 @@ export default config({
           ],
           defaultValue: 'general',
         }),
-        tags: fields.array(fields.text({ label: 'Tag' }), {
-          label: 'Tags',
-          itemLabel: props => props.value || 'Tag',
-        }),
+        tags: fields.array(
+          fields.text({ label: 'Tag' }),
+          {
+            label: 'Tags',
+            itemLabel: (props: any) => props.value || 'Tag',
+          }
+        ),
         footnotes: fields.text({
           label: 'Footnotes',
-          description: 'Additional footnotes or references.',
           defaultValue: '',
           multiline: true,
         }),
         notes: fields.text({
           label: 'Notes',
-          description: 'Any additional notes about the fatwa.',
           defaultValue: '',
           multiline: true,
         }),
