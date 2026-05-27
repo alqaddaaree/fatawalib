@@ -5,43 +5,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: {
-          50:  '#fdfbf7',
-          100: '#f9f4e8',
-          200: '#f2e9d0',
-        },
-        sand: {
-          100: '#ede4d0',
-          200: '#ddd0b2',
-          300: '#c9b896',
-        },
-        teal: {
-          800: '#1a4a45',
-          900: '#0f2e2b',
-        },
-        gold: {
-          400: '#c9a84c',
-          500: '#b8922e',
-          600: '#9c7a1e',
+        literary: {
+          'bg-page':       '#FAF8F4',
+          'bg-card':       '#F5F1EA',
+          'border':        '#E5DFD3',
+          'border-dark':   '#C9BC9F',
+          'text-primary':  '#2C2418',
+          'text-secondary': '#7A6A52',
+          'text-muted':    '#9A8A72',
+          'accent':        '#8B7355',
+          'accent-hover':  '#6B5440',
+          'tag-bg':        '#EDE8DF',
         },
       },
       fontFamily: {
-        serif:  ['"Libre Baskerville"', 'Georgia', 'serif'],
+        serif:  ['"EB Garamond"', 'Georgia', 'serif'],
         sans:   ['"Source Sans 3"', 'system-ui', 'sans-serif'],
         arabic: ['"Amiri"', 'serif'],
       },
       typography: (theme) => ({
         fatwa: {
           css: {
-            '--tw-prose-body':        theme('colors.stone[800]'),
-            '--tw-prose-headings':    theme('colors.teal[900]'),
-            '--tw-prose-links':       theme('colors.teal[800]'),
-            '--tw-prose-bold':        theme('colors.stone[900]'),
-            '--tw-prose-quotes':      theme('colors.stone[700]'),
-            '--tw-prose-quote-borders': theme('colors.gold[400]'),
+            '--tw-prose-body':        '#2C2418',
+            '--tw-prose-headings':    '#2C2418',
+            '--tw-prose-links':       '#8B7355',
+            '--tw-prose-bold':        '#2C2418',
+            '--tw-prose-quotes':      '#7A6A52',
+            '--tw-prose-quote-borders': '#8B7355',
             'h2': {
               fontFamily: theme('fontFamily.serif').join(', '),
-              letterSpacing: '-0.01em',
+              fontWeight: '400',
+              fontStyle: 'italic',
+              letterSpacing: 'normal',
             },
           },
         },

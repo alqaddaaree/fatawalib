@@ -23,17 +23,18 @@ const categories = [...categoryMap.entries()]
 
 <Layout title="Categories">
   <div class="max-w-4xl mx-auto px-4 py-10">
-    <h1 class="font-serif text-3xl text-teal-900 mb-2">Categories</h1>
-    <p class="text-stone-500 text-sm mb-8">Browse all fatwa categories. Numbers show how many fatwas are in each.</p>
+    <h1 class="font-serif text-3xl mb-2" style="color: var(--text-primary);">Categories</h1>
+    <p style="color: var(--text-secondary);" class="text-sm mb-8">Browse all fatwa categories. Numbers show how many fatwas are in each.</p>
 
     <div class="flex flex-wrap gap-3">
       {categories.map(({ name, count, slug }) => (
         <a
           href={`/category/${slug}`}
-          class="group flex items-center gap-2 bg-white border border-sand-200 rounded-xl px-4 py-2.5 hover:border-teal-800/40 hover:shadow-sm transition-all"
+          class="group flex items-center gap-2 rounded-sm px-4 py-2.5 transition-all"
+          style="background-color: var(--bg-card); border: 1px solid var(--border-default);"
         >
-          <span class="font-sans text-sm text-stone-700 group-hover:text-teal-900 transition-colors">{name}</span>
-          <span class="text-xs font-medium bg-cream-100 text-stone-500 rounded-full px-2 py-0.5 group-hover:bg-teal-900 group-hover:text-white transition-colors">
+          <span class="font-sans text-sm transition-colors" style="color: var(--text-primary);">{name}</span>
+          <span class="text-xs font-medium rounded-full px-2 py-0.5 transition-colors" style="background-color: var(--bg-tag); color: var(--text-muted);">
             {count}
           </span>
         </a>

@@ -44,7 +44,7 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
       rel="stylesheet"
     />
 
@@ -53,38 +53,39 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
     <slot name="head" />
   </head>
 
-  <body class="bg-cream-50 text-stone-800 dark:bg-stone-950 dark:text-stone-100 font-sans min-h-screen flex flex-col">
+  <body class="min-h-screen flex flex-col" style="background-color: var(--bg-page); color: var(--text-primary);">
 
     <!-- Top bar -->
-    <header class="bg-teal-900 text-cream-100 dark:bg-stone-900 dark:text-stone-100 shadow-md">
+    <header style="background-color: var(--accent); color: var(--bg-page);">
       <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-4 flex-wrap">
         <a href="/" class="flex flex-col leading-tight group">
-          <span class="font-arabic text-2xl text-gold-400 group-hover:text-gold-300 transition-colors">مكتبة الفتاوى</span>
-          <span class="font-serif text-base tracking-wide text-cream-200 dark:text-stone-300 group-hover:text-white transition-colors">Fatawa Library</span>
+          <span class="font-arabic text-2xl transition-colors" style="color: var(--accent-hover);">مكتبة الفتاوى</span>
+          <span class="font-serif text-base tracking-wide transition-colors" style="color: var(--bg-page);">Fatawa Library</span>
         </a>
         <nav class="flex items-center gap-3 sm:gap-4 text-sm font-sans font-medium">
-          <a href="/" class="text-cream-200 dark:text-stone-300 hover:text-white transition-colors">Home</a>
-          <a href="/scholars" class="text-cream-200 dark:text-stone-300 hover:text-white transition-colors">Scholars</a>
-          <a href="/categories" class="text-cream-200 dark:text-stone-300 hover:text-white transition-colors">Categories</a>
-          <a href="/about" class="text-cream-200 dark:text-stone-300 hover:text-white transition-colors">About</a>
+          <a href="/" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Home</a>
+          <a href="/scholars" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Scholars</a>
+          <a href="/categories" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Categories</a>
+          <a href="/about" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">About</a>
 
           <form action="/search" method="get" class="hidden md:flex items-center gap-1">
             <input
               type="search"
               name="q"
               placeholder="Search fatwas"
-              class="w-44 lg:w-52 bg-cream-50/95 text-stone-800 placeholder:text-stone-500 border border-sand-200 rounded-md px-2.5 py-1.5 text-xs focus:outline-none focus:border-gold-400"
+              class="w-44 lg:w-52 px-2.5 py-1.5 text-xs focus:outline-none"
+              style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);"
             />
             <button
               type="submit"
-              class="bg-gold-500 hover:bg-gold-400 text-white px-3 py-1.5 rounded text-xs transition-colors"
-              aria-label="Search"
+              class="px-3 py-1.5 text-xs text-white transition-colors font-medium"
+              style="background-color: var(--accent); border: 1px solid var(--accent);"
             >
               Search
             </button>
           </form>
 
-          <a href="/search" class="md:hidden text-cream-200 dark:text-stone-300 hover:text-white transition-colors" aria-label="Search">
+          <a href="/search" class="md:hidden opacity-70 hover:opacity-100 transition-opacity" aria-label="Search">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-3.5-3.5" />
@@ -94,7 +95,8 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
           <button
             id="theme-toggle"
             type="button"
-            class="inline-flex items-center justify-center rounded-md border border-cream-100/30 dark:border-stone-600 p-1.5 text-cream-200 dark:text-stone-300 hover:text-white hover:border-cream-100/60 transition-colors"
+            class="inline-flex items-center justify-center p-1.5 transition-opacity opacity-70 hover:opacity-100"
+            style="border: 1px solid rgba(255, 255, 255, 0.3);"
             aria-label="Toggle dark mode"
           >
             <svg data-theme-icon="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -115,13 +117,13 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
     </main>
 
     <!-- Footer -->
-    <footer class="bg-teal-900 dark:bg-stone-900 text-cream-200 dark:text-stone-300 mt-16">
+    <footer style="background-color: var(--accent); color: var(--bg-page);">
       <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row gap-4 justify-between items-start text-sm">
         <div>
-          <p class="font-arabic text-gold-400 text-lg mb-1">مكتبة الفتاوى</p>
-          <p class="text-cream-200/70 dark:text-stone-400">Fatawa Library: translations of Islamic legal rulings from senior scholars.</p>
+          <p class="font-arabic text-lg mb-1" style="color: var(--accent-hover);">مكتبة الفتاوى</p>
+          <p style="color: rgba(245, 241, 234, 0.7);">Fatawa Library: translations of Islamic legal rulings from senior scholars.</p>
         </div>
-        <div class="text-cream-200/50 dark:text-stone-500 text-xs mt-2 sm:mt-0 sm:text-right">
+        <div style="color: rgba(245, 241, 234, 0.5);" class="text-xs mt-2 sm:mt-0 sm:text-right">
           <p>Translations are provided for educational purposes.</p>
           <p class="mt-1">Always refer to a qualified scholar for personal guidance.</p>
           <p class="mt-1">2026 Fatawa Library</p>

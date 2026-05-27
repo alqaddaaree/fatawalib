@@ -4,7 +4,7 @@ const { question, answer, arabicQuestion, arabicAnswer } = Astro.props;
 
 <section class="mb-8">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-    <article class="prose prose-fatwa max-w-none">
+    <article class="prose prose-fatwa max-w-none" style="--tw-prose-body: var(--text-primary); --tw-prose-headings: var(--text-primary); --tw-prose-links: var(--accent); --tw-prose-quotes: var(--text-secondary);">
       <h2>Question</h2>
       <p>{question}</p>
 
@@ -12,7 +12,7 @@ const { question, answer, arabicQuestion, arabicAnswer } = Astro.props;
       <p>{answer}</p>
     </article>
 
-    <aside class="arabic-text prose max-w-none">
+    <aside class="arabic-text prose max-w-none" style="--tw-prose-body: var(--text-primary); --tw-prose-headings: var(--text-primary); --tw-prose-links: var(--accent); --tw-prose-quotes: var(--text-secondary);">
       <h2 class="font-arabic">السؤال</h2>
       <p>{arabicQuestion || '—'}</p>
 

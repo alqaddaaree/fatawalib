@@ -3,6 +3,19 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --bg-page: #FAF8F4;
+    --bg-card: #F5F1EA;
+    --border-default: #E5DFD3;
+    --border-emphasis: #C9BC9F;
+    --text-primary: #2C2418;
+    --text-secondary: #7A6A52;
+    --text-muted: #9A8A72;
+    --accent: #8B7355;
+    --accent-hover: #6B5440;
+    --bg-tag: #EDE8DF;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -13,8 +26,8 @@
 
   /* Nice selection color */
   ::selection {
-    background-color: #1a4a45;
-    color: #f9f4e8;
+    background-color: var(--accent);
+    color: var(--bg-page);
   }
 
   /* Improve Arabic rendering */

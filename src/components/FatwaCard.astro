@@ -61,7 +61,8 @@ const cardTitle = question
 ---
 
 <article
-  class="bg-white dark:bg-stone-900 border border-sand-200 dark:border-stone-700 rounded-xl p-5 hover:shadow-md hover:border-teal-800/30 dark:hover:border-gold-500/40 transition-all group"
+  style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);"
+  class="rounded-sm p-5 transition-all group"
 >
   <div class="flex items-start justify-between gap-3 mb-3">
     <div class="flex-1 min-w-0">
@@ -72,7 +73,8 @@ const cardTitle = question
             {categoryList.slice(0, 3).map((cat: string) => (
               <a
                 href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, "-"))}`}
-                class="text-xs font-sans font-medium bg-cream-100 dark:bg-stone-800 text-teal-800 dark:text-stone-200 border border-sand-200 dark:border-stone-600 rounded-full px-2.5 py-0.5 hover:bg-teal-900 hover:text-white hover:border-teal-900 transition-colors"
+                class="text-xs font-sans font-medium uppercase transition-colors"
+                style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis); padding: 0.375rem 0.625rem; letter-spacing: 0.07em;"
               >
                 {cat}
               </a>
@@ -84,7 +86,8 @@ const cardTitle = question
       <!-- Question title -->
       <a href={`/fatwa/${slug}`} class="block">
         <h2
-          class="font-serif text-lg text-teal-900 dark:text-cream-100 group-hover:text-gold-600 transition-colors leading-snug line-clamp-2"
+          class="font-serif italic font-400 text-lg leading-snug line-clamp-2 transition-colors"
+          style="color: var(--text-primary);"
         >
           {cardTitle}
         </h2>
@@ -93,7 +96,8 @@ const cardTitle = question
 
     <!-- Scholar badge -->
     <span
-      class="shrink-0 text-xs font-sans font-medium bg-teal-900 dark:bg-stone-800 text-cream-100 rounded-lg px-2.5 py-1 whitespace-nowrap"
+      class="shrink-0 text-xs font-sans font-medium rounded-sm px-2.5 py-1 whitespace-nowrap"
+      style="background-color: var(--accent); color: var(--bg-page);"
     >
       {scholarName}
     </span>
@@ -101,10 +105,11 @@ const cardTitle = question
 
   <!-- Meta -->
   <div
-    class="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400 font-sans mt-3 pt-3 border-t border-sand-100 dark:border-stone-700"
+    class="flex items-center gap-3 text-xs font-sans mt-3 pt-3"
+    style="border-top: 1px solid var(--border-default); color: var(--text-muted);"
   >
     <span>Trans. {translator}</span>
-    <span class="text-sand-300 dark:text-stone-600">•</span>
+    <span>•</span>
     <time datetime={date_added?.toISOString()}>
       {
         date_added?.toLocaleDateString("en-US", {
@@ -116,7 +121,8 @@ const cardTitle = question
     </time>
     <a
       href={`/fatwa/${slug}`}
-      class="ml-auto text-teal-800 dark:text-gold-400 hover:text-gold-600 font-medium transition-colors"
+      class="ml-auto font-medium transition-colors"
+      style="color: var(--accent);"
     >
       Read →
     </a>

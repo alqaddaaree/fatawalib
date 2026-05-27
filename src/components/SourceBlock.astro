@@ -2,16 +2,16 @@
 const { source_url } = Astro.props;
 ---
 
-<div class="mt-10 pt-6 border-t border-sand-200 dark:border-stone-700">
-  <p class="text-xs text-stone-400 dark:text-stone-500 font-sans mb-3">This is a translation. Always consult the original Arabic for accuracy.</p>
-  <details class="group rounded-lg border border-sand-200 dark:border-stone-700 bg-white dark:bg-stone-900 p-4">
-    <summary class="cursor-pointer list-none text-sm font-sans text-teal-800 dark:text-gold-400 font-medium flex items-center justify-between">
+<div class="mt-10 pt-6" style="border-top: 1px solid var(--border-default);">
+  <p class="text-xs font-sans mb-3" style="color: var(--text-muted);">This is a translation. Always consult the original Arabic for accuracy.</p>
+  <details class="group rounded-sm p-4" style="background-color: var(--bg-card); border: 1px solid var(--border-default);">
+    <summary class="cursor-pointer list-none text-sm font-sans font-medium flex items-center justify-between" style="color: var(--accent);">
       <span>View Original Source</span>
       <span class="transition-transform group-open:rotate-180">▾</span>
     </summary>
-    <div class="mt-3 text-xs text-stone-600 dark:text-stone-300 break-all">
+    <div class="mt-3 text-xs break-all" style="color: var(--text-secondary);">
       <p class="mb-2">{source_url}</p>
-      <a href={source_url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 bg-teal-900 hover:bg-teal-800 text-white px-3 py-1.5 rounded-md transition-colors">Open source URL</a>
+      <a href={source_url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-white px-3 py-1.5 rounded-sm transition-colors font-medium" style="background-color: var(--accent);">Open source URL</a>
     </div>
   </details>
 </div>

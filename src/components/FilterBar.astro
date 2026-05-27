@@ -17,7 +17,7 @@ export interface Props {
 const { activeScholar, activeCategory, allCategories } = Astro.props;
 ---
 
-<div data-filter-bar class="bg-white dark:bg-stone-900 border border-sand-200 dark:border-stone-700 rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+<div data-filter-bar class="rounded-sm p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center" style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);">
 
   <!-- Scholar filter -->
   <div class="flex flex-wrap gap-2 flex-1">
@@ -25,11 +25,12 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
       data-scholar-link=""
       href="/"
       class:list={[
-        'text-xs font-medium px-3 py-1.5 rounded-full border transition-colors',
+        'text-xs font-medium px-3 py-1.5 rounded-sm border transition-colors font-sans',
         !activeScholar
-          ? 'bg-teal-900 text-white border-teal-900'
-          : 'border-sand-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:border-teal-800 hover:text-teal-800',
+          ? 'text-white'
+          : 'border-current text-stone-600 hover:border-teal-800 hover:text-teal-800',
       ]}
+      style={!activeScholar ? `background-color: var(--accent); color: var(--bg-page); border: 1px solid var(--accent);` : `border-color: var(--border-default); color: var(--text-secondary);`}
     >
       All Scholars
     </a>
@@ -38,11 +39,12 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
         data-scholar-link={s.id}
         href={`/?scholar=${s.id}`}
         class:list={[
-          'text-xs font-medium px-3 py-1.5 rounded-full border transition-colors',
+          'text-xs font-medium px-3 py-1.5 rounded-sm border transition-colors font-sans',
           activeScholar === s.id
-            ? 'bg-teal-900 text-white border-teal-900'
-            : 'border-sand-200 dark:border-stone-700 text-stone-600 dark:text-stone-300 hover:border-teal-800 hover:text-teal-800',
+            ? 'text-white'
+            : 'border-current text-stone-600 hover:border-teal-800 hover:text-teal-800',
         ]}
+        style={activeScholar === s.id ? `background-color: var(--accent); color: var(--bg-page); border: 1px solid var(--accent);` : `border-color: var(--border-default); color: var(--text-secondary);`}
       >
         {s.name.replace('Shaykh ', '')}
       </a>
@@ -54,7 +56,8 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
     <div class="shrink-0">
       <select
         id="category-filter"
-        class="text-xs font-sans border border-sand-200 dark:border-stone-700 rounded-lg px-3 py-1.5 text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-800 focus:outline-none focus:border-teal-800 cursor-pointer"
+        class="text-xs font-sans px-3 py-1.5 focus:outline-none cursor-pointer rounded-sm"
+        style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);"
       >
         <option value="">All Categories</option>
         {allCategories.map((cat) => (

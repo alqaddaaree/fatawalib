@@ -21,11 +21,11 @@ const allCategories = [...categorySet].sort();
 <Layout title="Recent Fatāwā">
 
   <!-- Hero strip -->
-  <div class="bg-teal-900 dark:bg-stone-900 text-cream-100 dark:text-stone-100">
+  <div style="background-color: var(--accent); color: var(--bg-page);">
     <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-2">
-      <p class="font-arabic text-5xl text-gold-400 leading-none mb-1">فتاوى</p>
+      <p class="font-arabic text-5xl leading-none mb-1" style="color: var(--accent-hover);">فتاوى</p>
       <h1 class="font-serif text-2xl">Islamic Legal Rulings — Translated</h1>
-      <p class="text-cream-200/70 dark:text-stone-400 text-sm max-w-xl">
+      <p class="text-sm max-w-xl" style="color: rgba(245, 241, 234, 0.7);">
         Fatawa Library is a curated archive of fatwas from senior scholars, translated for English-speaking readers.
         All content links back to the original Arabic source.
       </p>
@@ -50,7 +50,7 @@ const allCategories = [...categorySet].sort();
     </div>
 
     <!-- Empty state -->
-    <p id="empty-state" class="hidden text-center py-16 text-stone-400 dark:text-stone-500 font-serif text-xl">
+    <p id="empty-state" class="hidden text-center py-16 font-serif text-xl" style="color: var(--text-secondary);">
       No fatwas match this filter.
     </p>
   </div>
