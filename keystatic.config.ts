@@ -12,7 +12,7 @@ export default config({
       label: 'Scholars',
       path: 'src/content/scholars/*',
       slugField: 'id',
-      format: { data: 'yaml', contentField: '' },
+      format: { data: 'yaml' },
       schema: {
         id: fields.slug({
           name: { label: 'Scholar ID' },
@@ -46,7 +46,7 @@ export default config({
       label: 'Fatwas',
       path: 'src/content/fatwas/*',
       slugField: 'id',
-      format: { data: 'yaml', contentField: '' },
+      format: { data: 'yaml' },
       schema: {
         id: fields.slug({
           name: { label: 'Fatwa ID' },
