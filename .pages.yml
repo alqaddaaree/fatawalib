@@ -1,11 +1,12 @@
-media: false
-collections:
+# .pages.yml
+# No media: false - just omit it entirely
+content:
   - name: scholars
     label: Scholars
+    type: collection
     path: src/content/scholars
     create: true
     delete: true
-    filename: "{name}.yaml"
     fields:
       - name: name
         label: Name
@@ -23,52 +24,40 @@ collections:
         label: Biography
         type: text
         required: true
-        multiline: true
 
   - name: fatwas
     label: Fatwas
+    type: collection
     path: src/content/fatwas
     create: true
     delete: true
-    filename: "{id}.yaml"
     fields:
-      - name: id
-        label: Slug (ID)
-        type: string
-        required: true
-        hint: "Unique slug, e.g., ibn-baz-praying-with-shoes"
       - name: title
         label: Title
         type: string
         required: true
       - name: scholar
-        label: Scholar ID
+        label: Scholar
         type: string
         required: true
-        hint: "Enter scholar slug, e.g., ibn-baz"
       - name: categories
         label: Categories
         type: string
         required: true
-        hint: "Comma separated: Prayer, Purification"
       - name: question
         label: Question
         type: text
-        multiline: true
+        required: true
       - name: answer
         label: Answer
         type: text
-        multiline: true
+        required: true
       - name: arabic_question
         label: Arabic Question
         type: text
-        multiline: true
-        default: ""
       - name: arabic_answer
         label: Arabic Answer
         type: text
-        multiline: true
-        default: ""
       - name: source_url
         label: Source URL
         type: string
@@ -78,7 +67,6 @@ collections:
       - name: reviewer
         label: Reviewer
         type: string
-        default: ""
       - name: date_issued
         label: Date Issued (Hijri or ISO)
         type: string
@@ -93,18 +81,17 @@ collections:
         label: Audience
         type: select
         options:
-          - general
-          - advanced
+          - label: General
+            value: general
+          - label: Advanced
+            value: advanced
         default: general
       - name: tags
         label: Tags
         type: string
-        hint: "Comma separated: prayer, shoes"
       - name: footnotes
         label: Footnotes
         type: text
-        multiline: true
       - name: notes
         label: Notes
         type: text
-        multiline: true
