@@ -5,6 +5,7 @@ content:
     label: Scholars
     type: collection
     path: src/content/scholars
+    extension: yaml
     create: true
     delete: true
     fields:
