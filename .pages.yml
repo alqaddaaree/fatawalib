@@ -84,10 +84,11 @@ content:
         label: Audience
         type: select
         options:
-          - label: General
-            value: general
-          - label: Advanced
-            value: advanced
+          values:
+            - label: General
+              value: general
+            - label: Advanced
+              value: advanced
         default: general
       - name: tags
         label: Tags
