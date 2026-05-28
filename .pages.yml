@@ -1,0 +1,114 @@
+# .pages.yml in the root of your repository
+
+collections:
+  - name: scholars
+    label: Scholars
+    path: src/content/scholars
+    description: "Islamic scholars (muftis, imams)"
+    create: true
+    delete: true
+    filename: "{fields.name}.yaml"          # auto slug from name
+    fields:
+      - name: name
+        label: Name
+        type: string
+        required: true
+      - name: arabicName
+        label: Arabic Name
+        type: string
+        required: true
+      - name: lifespan
+        label: Lifespan
+        type: string
+        required: true
+      - name: bio
+        label: Biography
+        type: text                           # multiline text
+        required: true
+
+  - name: fatwas
+    label: Fatwas
+    path: src/content/fatwas
+    description: "Islamic rulings (fatāwā)"
+    create: true
+    delete: true
+    filename: "{fields.scholar}-{fields.title}.yaml"   # auto slug from scholar + title
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: scholar
+        label: Scholar
+        type: relation
+        collection: scholars                  # reference to the scholars collection
+        display: name                         # show scholar name in dropdown
+        required: true
+      - name: categories
+        label: Categories
+        type: list
+        field:
+          type: string
+        required: true
+        min: 1
+      - name: question
+        label: Question
+        type: markdown                        # Markdoc works as markdown
+        description: "The question being asked"
+      - name: answer
+        label: Answer
+        type: markdown
+        description: "The translated answer"
+      - name: arabic_question
+        label: Arabic Question
+        type: string
+        multiline: true
+        default: ""
+      - name: arabic_answer
+        label: Arabic Answer
+        type: string
+        multiline: true
+        default: ""
+      - name: source_url
+        label: Source URL
+        type: string
+        format: url
+      - name: translator
+        label: Translator
+        type: string
+      - name: reviewer
+        label: Reviewer
+        type: string
+        default: ""
+      - name: date_issued
+        label: Date Issued (Hijri or ISO)
+        type: string
+      - name: date_issued_gregorian
+        label: Date Issued (Gregorian)
+        type: string
+      - name: date_added
+        label: Date Added
+        type: date
+        required: true
+      - name: audience
+        label: Audience
+        type: select
+        options:
+          - value: general
+            label: General
+          - value: advanced
+            label: Advanced
+        default: general
+      - name: tags
+        label: Tags
+        type: list
+        field:
+          type: string
+      - name: footnotes
+        label: Footnotes
+        type: markdown
+        description: "Additional footnotes or references"
+      - name: notes
+        label: Notes
+        type: markdown
+        description: "Any additional notes about the fatwa"
