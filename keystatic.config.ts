@@ -39,11 +39,15 @@ export default config({
       format: { data: 'yaml' },
       schema: {
         id: fields.slug({
-          name: { label: 'Fatwa ID' },
-          slug: {
-            generate: () => 'test-slug',
-          },
-        }),
+  name: { label: 'Fatwa ID' },
+  slug: {
+    generate: (formValues: any) => {
+      const title = formValues?.title ?? '';
+      if (!title) return '';
+      return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    },
+  },
+}),
         title: fields.text({ label: 'Title', validation: { isRequired: true } }),
         scholar: fields.relationship({ label: 'Scholar', collection: 'scholars' }),
         categories: fields.array(
