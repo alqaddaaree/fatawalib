@@ -1,12 +1,15 @@
+# .pages.yml
+media: false
 content:
+
   - name: scholars
     label: Scholars
     type: collection
     path: src/content/scholars
-    description: "Islamic scholars (muftis, imams)"
-    create: true
-    delete: true
-    filename: "{fields.name}.yaml"
+    operations:
+      create: true
+      delete: true
+    filename: '{name}.yaml'
     fields:
       - name: name
         label: Name
@@ -29,10 +32,10 @@ content:
     label: Fatwas
     type: collection
     path: src/content/fatwas
-    description: "Islamic rulings (fatāwā)"
-    create: true
-    delete: true
-    filename: "{fields.scholar}-{fields.title}.yaml"
+    operations:
+      create: true
+      delete: true
+    filename: '{scholar}-{title}.yaml'
     fields:
       - name: title
         label: Title
@@ -40,46 +43,42 @@ content:
         required: true
       - name: scholar
         label: Scholar
-        type: relation
+        type: reference
         collection: scholars
-        display: name
         required: true
       - name: categories
         label: Categories
-        type: list
-        field:
-          type: string
+        type: string
+        list: true
         required: true
-        min: 1
       - name: question
         label: Question
-        type: markdown
-        description: "The question being asked"
+        type: rich-text
+        description: 'The question being asked'
       - name: answer
         label: Answer
-        type: markdown
-        description: "The translated answer"
+        type: rich-text
+        description: 'The translated answer'
       - name: arabic_question
         label: Arabic Question
-        type: string
+        type: text
         multiline: true
-        default: ""
+        default: ''
       - name: arabic_answer
         label: Arabic Answer
-        type: string
+        type: text
         multiline: true
-        default: ""
+        default: ''
       - name: source_url
         label: Source URL
         type: string
-        format: url
       - name: translator
         label: Translator
         type: string
       - name: reviewer
         label: Reviewer
         type: string
-        default: ""
+        default: ''
       - name: date_issued
         label: Date Issued (Hijri or ISO)
         type: string
@@ -94,21 +93,20 @@ content:
         label: Audience
         type: select
         options:
-          - value: general
-            label: General
-          - value: advanced
-            label: Advanced
+          - label: General
+            value: general
+          - label: Advanced
+            value: advanced
         default: general
       - name: tags
         label: Tags
-        type: list
-        field:
-          type: string
+        type: string
+        list: true
       - name: footnotes
         label: Footnotes
-        type: markdown
-        description: "Additional footnotes or references"
+        type: rich-text
+        description: 'Additional footnotes or references'
       - name: notes
         label: Notes
-        type: markdown
-        description: "Any additional notes about the fatwa"
+        type: rich-text
+        description: 'Any additional notes about the fatwa'
