@@ -14,7 +14,12 @@ export default config({
       slugField: 'id',
       format: { data: 'yaml' },
       schema: {
-        id: fields.slug({ name: { label: 'Scholar ID' } }),
+        id: fields.slug({
+  name: { label: 'Scholar ID' },
+  slug: {
+    description: 'Format: lowercased-name-with-hyphens (e.g., ibn-baz, al-albani). Must be unique.',
+  },
+}),
         name: fields.text({ label: 'Name', validation: { isRequired: true } }),
         arabicName: fields.text({ label: 'Arabic Name', validation: { isRequired: true } }),
         lifespan: fields.text({ label: 'Lifespan', validation: { isRequired: true } }),
@@ -27,7 +32,12 @@ export default config({
       slugField: 'id',
       format: { data: 'yaml' },
       schema: {
-        id: fields.slug({ name: { label: 'Fatwa ID' } }),
+        id: fields.slug({
+  name: { label: 'Fatwa ID' },
+  slug: {
+    description: 'Format: scholar-brief-title (e.g., ibn-baz-praying-with-shoes). Must be unique.',
+  },
+}),
         title: fields.text({ label: 'Title', validation: { isRequired: true } }),
         scholar: fields.relationship({ label: 'Scholar', collection: 'scholars' }),
         categories: fields.array(
