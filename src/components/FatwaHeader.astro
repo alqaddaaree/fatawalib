@@ -37,7 +37,7 @@ const { id, title, categories, source_url, translator, reviewer, date_issued, da
 
   <div class="flex flex-wrap gap-2 mb-4">
     {categories.map((cat) => (
-      <a href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`} class="text-xs font-sans rounded-sm px-3 py-1 transition-colors uppercase font-medium letter-spacing-wide" style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis);">{cat}</a>
+      <a href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`} class="text-xs font-sans rounded-sm px-3 py-1 transition-colors uppercase font-medium" style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis); letter-spacing: 0.07em;">{cat}</a>
     ))}
   </div>
 
