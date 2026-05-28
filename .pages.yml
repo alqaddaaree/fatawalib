@@ -45,6 +45,7 @@ content:
       - name: categories
         label: Categories
         type: string
+        list: true
         required: true
       - name: question
         label: Question
@@ -91,6 +92,7 @@ content:
       - name: tags
         label: Tags
         type: string
+        list: true
       - name: footnotes
         label: Footnotes
         type: text
