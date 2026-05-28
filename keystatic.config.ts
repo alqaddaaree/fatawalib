@@ -14,18 +14,7 @@ export default config({
       slugField: 'id',
       format: { data: 'yaml' },
       schema: {
-        id: fields.slug({
-          name: { label: 'Scholar ID' },
-          slug: {
-            generate: (formValues: any) => {
-              const name = formValues?.name ?? '';
-              return name
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-')
-                .replace(/^-|-$/g, '');
-            },
-          },
-        }),
+        id: fields.slug({ name: { label: 'Scholar ID' } }),
         name: fields.text({ label: 'Name', validation: { isRequired: true } }),
         arabicName: fields.text({ label: 'Arabic Name', validation: { isRequired: true } }),
         lifespan: fields.text({ label: 'Lifespan', validation: { isRequired: true } }),
@@ -38,27 +27,7 @@ export default config({
       slugField: 'id',
       format: { data: 'yaml' },
       schema: {
-        id: fields.slug({
-  name: { label: 'Fatwa ID' },
-  slug: {
-    generate: (formValues: any) => {
-      console.log('formValues', formValues);   // <-- look in browser console
-      const title = formValues?.title ?? '';
-      if (!title) return '';
-
-      let scholarId = '';
-      const rawScholar = formValues?.scholar;
-      if (typeof rawScholar === 'string') {
-        scholarId = rawScholar;
-      } else if (rawScholar && typeof rawScholar === 'object' && rawScholar.id) {
-        scholarId = rawScholar.id;
-      }
-
-      const titleSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      return scholarId ? `${scholarId}-${titleSlug}` : titleSlug;
-    },
-  },
-}),
+        id: fields.slug({ name: { label: 'Fatwa ID' } }),
         title: fields.text({ label: 'Title', validation: { isRequired: true } }),
         scholar: fields.relationship({ label: 'Scholar', collection: 'scholars' }),
         categories: fields.array(
