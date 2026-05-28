@@ -29,6 +29,7 @@ content:
     label: Fatwas
     type: collection
     path: src/content/fatwas
+    extension: yaml
     create: true
     delete: true
     fields:
