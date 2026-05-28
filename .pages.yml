@@ -1,15 +1,11 @@
-# .pages.yml
 media: false
-content:
-
+collections:
   - name: scholars
     label: Scholars
-    type: collection
     path: src/content/scholars
-    operations:
-      create: true
-      delete: true
-    filename: '{name}.yaml'
+    create: true
+    delete: true
+    filename: "{name}.yaml"
     fields:
       - name: name
         label: Name
@@ -27,48 +23,52 @@ content:
         label: Biography
         type: text
         required: true
+        multiline: true
 
   - name: fatwas
     label: Fatwas
-    type: collection
     path: src/content/fatwas
-    operations:
-      create: true
-      delete: true
-    filename: '{scholar}-{title}.yaml'
+    create: true
+    delete: true
+    filename: "{id}.yaml"
     fields:
+      - name: id
+        label: Slug (ID)
+        type: string
+        required: true
+        hint: "Unique slug, e.g., ibn-baz-praying-with-shoes"
       - name: title
         label: Title
         type: string
         required: true
       - name: scholar
-        label: Scholar
-        type: reference
-        collection: scholars
+        label: Scholar ID
+        type: string
         required: true
+        hint: "Enter scholar slug, e.g., ibn-baz"
       - name: categories
         label: Categories
         type: string
-        list: true
         required: true
+        hint: "Comma separated: Prayer, Purification"
       - name: question
         label: Question
-        type: rich-text
-        description: 'The question being asked'
+        type: text
+        multiline: true
       - name: answer
         label: Answer
-        type: rich-text
-        description: 'The translated answer'
+        type: text
+        multiline: true
       - name: arabic_question
         label: Arabic Question
         type: text
         multiline: true
-        default: ''
+        default: ""
       - name: arabic_answer
         label: Arabic Answer
         type: text
         multiline: true
-        default: ''
+        default: ""
       - name: source_url
         label: Source URL
         type: string
@@ -78,7 +78,7 @@ content:
       - name: reviewer
         label: Reviewer
         type: string
-        default: ''
+        default: ""
       - name: date_issued
         label: Date Issued (Hijri or ISO)
         type: string
@@ -93,20 +93,18 @@ content:
         label: Audience
         type: select
         options:
-          - label: General
-            value: general
-          - label: Advanced
-            value: advanced
+          - general
+          - advanced
         default: general
       - name: tags
         label: Tags
         type: string
-        list: true
+        hint: "Comma separated: prayer, shoes"
       - name: footnotes
         label: Footnotes
-        type: rich-text
-        description: 'Additional footnotes or references'
+        type: text
+        multiline: true
       - name: notes
         label: Notes
-        type: rich-text
-        description: 'Any additional notes about the fatwa'
+        type: text
+        multiline: true
