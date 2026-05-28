@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 // Fetch scholars from the collection and build a simple array
 const scholarsData = await getCollection('scholars');
 const scholars = scholarsData.map(s => ({
-  id: s.data.id,
+  id: s.id,
   name: s.data.name,
 }));
 

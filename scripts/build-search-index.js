@@ -2,7 +2,7 @@
 /**
  * scripts/build-search-index.js
  *
- * Reads all Markdown files from src/content/fatwas/, extracts frontmatter
+ * Reads all YAML files from src/content/fatwas/, extracts frontmatter
  * and body text, and writes a JSON search index to public/search-index.json.
  *
  * Run automatically as part of `npm run build`, or manually with:
@@ -49,13 +49,14 @@ async function buildIndex()
   {
     const raw = await readFile(join(CONTENT, file), 'utf8');
     const data = yaml.load(raw);
+    const slug = file.replace(/\.ya?ml$/, '');   // filename without extension becomes the ID/slug
 
     const questionText = toPlainText(data.question);
     const answerText = toPlainText(data.answer);
     const body = [questionText, answerText].filter(Boolean).join(' ');
 
     index.push({
-      id: data.id,
+      slug,                                      // use slug instead of old id
       scholar: data.scholar,
       scholarName: SCHOLAR_NAMES[data.scholar] ?? data.scholar,
       categories: data.categories ?? [],

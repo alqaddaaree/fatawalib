@@ -145,28 +145,28 @@ declare module 'astro:content' {
 
 	type DataEntryMap = {
 		"fatwas": {
-"001": {
-	id: "001";
+"al-albani-narrating-weak-hadith-for-targhib-and-tarhib": {
+	id: "al-albani-narrating-weak-hadith-for-targhib-and-tarhib";
   collection: "fatwas";
   data: InferEntrySchema<"fatwas">
 };
-"002": {
-	id: "002";
+"ibn-baz-praying-with-shoes": {
+	id: "ibn-baz-praying-with-shoes";
   collection: "fatwas";
   data: InferEntrySchema<"fatwas">
 };
-"003": {
-	id: "003";
+"ibn-uthaymin-using-eye-drops-while-fasting.yaml": {
+	id: "ibn-uthaymin-using-eye-drops-while-fasting.yaml";
   collection: "fatwas";
   data: InferEntrySchema<"fatwas">
 };
-"004": {
-	id: "004";
+"muqbil-traveling-to-seek-knowledge": {
+	id: "muqbil-traveling-to-seek-knowledge";
   collection: "fatwas";
   data: InferEntrySchema<"fatwas">
 };
-"005": {
-	id: "005";
+"yahya-working-in-mixed-goods-companies": {
+	id: "yahya-working-in-mixed-goods-companies";
   collection: "fatwas";
   data: InferEntrySchema<"fatwas">
 };

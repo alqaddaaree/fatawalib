@@ -10,7 +10,9 @@
     "build": "node scripts/build-search-index.js && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "build:index": "node scripts/build-search-index.js"
+    "build:index": "node scripts/build-search-index.js",
+    "clean": "rm -rf .astro .vercel dist node_modules",
+    "rebuild": "npm run clean && npm install && npm run build"
   },
   "dependencies": {
     "@astrojs/react": "^3.6.3",

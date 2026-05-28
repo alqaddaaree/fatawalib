@@ -6,19 +6,19 @@ import SourceBlock from '../../components/SourceBlock.astro';
 import ShareBar from '../../components/ShareBar.astro';
 import RelatedFatwas from '../../components/RelatedFatwas.astro';
 import MarkdocRenderer from '../../components/MarkdocRenderer.astro';
-import Markdoc from '@markdoc/markdoc';
 
 export async function getStaticPaths() {
   const fatwas = await getCollection('fatwas');
   return fatwas.map((fatwa) => ({
-    params: { slug: fatwa.id },
+    params: { slug: fatwa.id },   // fatwa.id = filename without .yaml
     props:  { fatwa },
   }));
 }
 
 // Fetch all scholars for the lookup map
 const allScholars = await getCollection('scholars');
-const scholarMap = new Map(allScholars.map(s => [s.data.id, s.data]));
+// 🔥 Force the map keys to be strings, not literal unions
+const scholarMap = new Map<string, any>(allScholars.map(s => [s.id, s.data]));
 
 function getScholar(scholarId: string) {
   const scholar = scholarMap.get(scholarId);
@@ -33,21 +33,17 @@ function getScholar(scholarId: string) {
   return scholar;
 }
 
-// Helper to extract plain text from Markdoc AST or plain string
 function toPlainText(content: any): string {
   if (!content) return '';
-  if (typeof content === 'string') return content.replace(/\n/g, ' '); // legacy plain text
-
-  // Recursively extract text from Markdoc AST nodes
+  if (typeof content === 'string') return content.replace(/\n/g, ' ');
   function extract(node: any): string {
     if (!node) return '';
     if (typeof node === 'string') return node;
     if (Array.isArray(node)) return node.map(extract).join(' ');
-    if (node.text) return node.text; // text node
+    if (node.text) return node.text;
     if (node.children) return extract(node.children);
     return '';
   }
-
   try {
     return extract(content).replace(/\s+/g, ' ').trim();
   } catch {
@@ -70,7 +66,10 @@ if (!fatwa) {
   return Astro.redirect('/404');
 }
 
-const { id, title, scholar, categories, source_url, translator, reviewer, date_issued, date_issued_gregorian, date_added, arabic_question, arabic_answer, audience, tags, question, answer, footnotes, notes } = fatwa.data;
+// 🔥 Store the current fatwa's id (slug) in a variable
+const currentId = fatwa.id;
+
+const { title, scholar, categories, source_url, translator, reviewer, date_issued, date_issued_gregorian, date_added, arabic_question, arabic_answer, audience, tags, question, answer, footnotes, notes } = fatwa.data;
 const scholarInfo = getScholar(scholar);
 
 const questionPlain = toPlainText(question);
@@ -82,7 +81,8 @@ const generatedDescription = answerPlain
 // Related fatwas
 const allFatwas = await getCollection('fatwas');
 const relatedItems = allFatwas
-  .filter(entry => entry.id !== id && entry.data.categories.some((cat: string) => categories.includes(cat)))
+  // 🔥 Fixed: use currentId instead of undefined 'id'
+  .filter(entry => entry.id !== currentId && entry.data.categories.some((cat: string) => categories.includes(cat)))
   .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime())
   .slice(0, 4)
   .map(entry => ({
@@ -96,8 +96,8 @@ const qaSchema = JSON.stringify({
   '@type': 'QAPage',
   mainEntity: {
     '@type': 'Question',
-    name: questionPlain || `Fatwa #${id}`,
-    text: questionPlain || `Fatwa #${id}`,
+    name: questionPlain || `Fatwa #${currentId}`,
+    text: questionPlain || `Fatwa #${currentId}`,
     answerCount: 1,
     acceptedAnswer: {
       '@type': 'Answer',
@@ -123,39 +123,33 @@ const qaSchema = JSON.stringify({
       <span>/</span>
       <a href={`/scholar/${scholar}`} class="hover:text-teal-800 dark:hover:text-gold-400 transition-colors">{scholarInfo.name}</a>
       <span>/</span>
-      <span class="text-stone-600 dark:text-stone-300">{title || `Fatwa #${id}`}</span>
+      <span class="text-stone-600 dark:text-stone-300">{title || `Fatwa #${currentId}`}</span>
     </nav>
 
-    <!-- Header card -->
     <FatwaHeader fatwa={fatwa} scholarInfo={scholarInfo} />
 
-    <ShareBar id={id} title={title || `Fatwa #${id}`} />
+    <ShareBar id={currentId} title={title || `Fatwa #${currentId}`} />
 
-    <!-- Fatwa body: Question -->
     <div class="prose prose-stone dark:prose-invert max-w-none mt-8" dir="auto">
       <MarkdocRenderer content={question} />
     </div>
 
-    <!-- Arabic question (if any) -->
     {arabic_question && (
       <div class="prose prose-stone dark:prose-invert max-w-none mt-6" dir="rtl" lang="ar">
         <MarkdocRenderer content={arabic_question} />
       </div>
     )}
 
-    <!-- Fatwa body: Answer -->
     <div class="prose prose-stone dark:prose-invert max-w-none mt-8" dir="auto">
       <MarkdocRenderer content={answer} />
     </div>
 
-    <!-- Arabic answer (if any) -->
     {arabic_answer && (
       <div class="prose prose-stone dark:prose-invert max-w-none mt-6" dir="rtl" lang="ar">
         <MarkdocRenderer content={arabic_answer} />
       </div>
     )}
 
-    <!-- Footnotes -->
     {footnotes && (
       <div class="prose prose-stone dark:prose-invert max-w-none mt-8 border-t border-sand-200 dark:border-stone-700 pt-4">
         <h2 class="font-serif text-xl text-teal-900 dark:text-gold-400">Footnotes</h2>
@@ -163,7 +157,6 @@ const qaSchema = JSON.stringify({
       </div>
     )}
 
-    <!-- Notes -->
     {notes && (
       <div class="prose prose-stone dark:prose-invert max-w-none mt-8 border-t border-sand-200 dark:border-stone-700 pt-4">
         <h2 class="font-serif text-xl text-teal-900 dark:text-gold-400">Notes</h2>
@@ -175,7 +168,6 @@ const qaSchema = JSON.stringify({
 
     <RelatedFatwas items={relatedItems} />
 
-    <!-- Source link -->
     <div class="mt-10 pt-6 border-t border-sand-200 dark:border-stone-700">
       <p class="text-xs text-stone-400 dark:text-stone-500 font-sans mb-3">
         This is a translation. Always consult the original Arabic for accuracy.
@@ -202,10 +194,9 @@ const qaSchema = JSON.stringify({
       </details>
     </div>
 
-    <!-- Navigation -->
     <div class="mt-6 flex items-center justify-between gap-3 flex-wrap">
       <a href="/" class="text-sm text-teal-800 dark:text-gold-400 hover:text-gold-600 font-sans font-medium transition-colors">← Back to all fatwas</a>
-      <a href={`mailto:fatawalib@example.com?subject=Report%20a%20mistake%20in%20Fatwa%20%23${id}`} class="text-xs text-stone-500 dark:text-stone-400 hover:text-teal-800 dark:hover:text-gold-400 transition-colors">
+      <a href={`mailto:fatawalib@example.com?subject=Report%20a%20mistake%20in%20Fatwa%20%23${currentId}`} class="text-xs text-stone-500 dark:text-stone-400 hover:text-teal-800 dark:hover:text-gold-400 transition-colors">
         Report a mistake
       </a>
     </div>

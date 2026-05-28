@@ -7,27 +7,10 @@ export interface Props {
 }
 
 const { fatwa, scholar } = Astro.props as { fatwa: any; scholar?: any };
-const {
-  id: slug,
-  scholar: scholarId,
-  date_added,
-  translator,
-  question,
-  categories,
-} = fatwa.data;
+const slug = fatwa.id;                             // 🔥 use id, not slug
+const { scholar: scholarId, date_added, translator, question, categories } = fatwa.data;
 const categoryList = (categories as string[]) ?? [];
 const scholarName = scholar ? scholar.name.replace("Shaykh ", "") : scholarId;
-
-function stripMarkdown(input: string): string {
-  return input
-    .replace(/```[\s\S]*?```/g, " ")
-    .replace(/`([^`]+)`/g, "$1")
-    .replace(/!\[[^\]]*\]\([^\)]*\)/g, " ")
-    .replace(/\[([^\]]+)\]\([^\)]*\)/g, "$1")
-    .replace(/[>*_~#-]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 function truncateText(input: string, max = 100): string {
   if (!input) return "";
@@ -35,14 +18,9 @@ function truncateText(input: string, max = 100): string {
   return `${input.slice(0, max).trimEnd()}...`;
 }
 
-const cardTitle = question
-  ? truncateText(toPlainText(question), 100)
-  : `Fatwa #${slug}`;
-
-  function toPlainText(content: any): string {
+function toPlainText(content: any): string {
   if (!content) return '';
   if (typeof content === 'string') return content.replace(/\n/g, ' ');
-
   function extract(node: any): string {
     if (!node) return '';
     if (typeof node === 'string') return node;
@@ -51,13 +29,16 @@ const cardTitle = question
     if (node.children) return extract(node.children);
     return '';
   }
-
   try {
     return extract(content).replace(/\s+/g, ' ').trim();
   } catch {
     return '';
   }
 }
+
+const cardTitle = question
+  ? truncateText(toPlainText(question), 100)
+  : `Fatwa #${slug}`;
 ---
 
 <article
@@ -66,64 +47,39 @@ const cardTitle = question
 >
   <div class="flex items-start justify-between gap-3 mb-3">
     <div class="flex-1 min-w-0">
-      <!-- Categories -->
-      {
-        categoryList.length > 0 && (
-          <div class="flex flex-wrap gap-1.5 mb-2">
-            {categoryList.slice(0, 3).map((cat: string) => (
-              <a
-                href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, "-"))}`}
-                class="text-xs font-sans font-medium uppercase transition-colors"
-                style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis); padding: 0.375rem 0.625rem; letter-spacing: 0.07em;"
-              >
-                {cat}
-              </a>
-            ))}
-          </div>
-        )
-      }
+      {categoryList.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mb-2">
+          {categoryList.slice(0, 3).map((cat: string) => (
+            <a
+              href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, "-"))}`}
+              class="text-xs font-sans font-medium uppercase transition-colors"
+              style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis); padding: 0.375rem 0.625rem; letter-spacing: 0.07em;"
+            >
+              {cat}
+            </a>
+          ))}
+        </div>
+      )}
 
-      <!-- Question title -->
       <a href={`/fatwa/${slug}`} class="block">
-        <h2
-          class="font-serif italic font-400 text-lg leading-snug line-clamp-2 transition-colors"
-          style="color: var(--text-primary);"
-        >
+        <h2 class="font-serif italic font-400 text-lg leading-snug line-clamp-2 transition-colors" style="color: var(--text-primary);">
           {cardTitle}
         </h2>
       </a>
     </div>
 
-    <!-- Scholar badge -->
-    <span
-      class="shrink-0 text-xs font-sans font-medium rounded-sm px-2.5 py-1 whitespace-nowrap"
-      style="background-color: var(--accent); color: var(--bg-page);"
-    >
+    <span class="shrink-0 text-xs font-sans font-medium rounded-sm px-2.5 py-1 whitespace-nowrap" style="background-color: var(--accent); color: var(--bg-page);">
       {scholarName}
     </span>
   </div>
 
-  <!-- Meta -->
-  <div
-    class="flex items-center gap-3 text-xs font-sans mt-3 pt-3"
-    style="border-top: 1px solid var(--border-default); color: var(--text-muted);"
-  >
+  <div class="flex items-center gap-3 text-xs font-sans mt-3 pt-3" style="border-top: 1px solid var(--border-default); color: var(--text-muted);">
     <span>Trans. {translator}</span>
     <span>•</span>
     <time datetime={date_added?.toISOString()}>
-      {
-        date_added?.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        })
-      }
+      {date_added?.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
     </time>
-    <a
-      href={`/fatwa/${slug}`}
-      class="ml-auto font-medium transition-colors"
-      style="color: var(--accent);"
-    >
+    <a href={`/fatwa/${slug}`} class="ml-auto font-medium transition-colors" style="color: var(--accent);">
       Read →
     </a>
   </div>

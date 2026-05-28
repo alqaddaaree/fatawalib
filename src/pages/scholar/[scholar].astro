@@ -8,7 +8,7 @@ export async function getStaticPaths() {
   const allFatwas = await getCollection('fatwas');
   
   return allScholars.map((scholarEntry) => {
-    const scholarId = scholarEntry.data.id;
+    const scholarId = scholarEntry.id;
     return {
       params: { scholar: scholarId },
       props: {
