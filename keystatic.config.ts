@@ -42,9 +42,20 @@ export default config({
   name: { label: 'Fatwa ID' },
   slug: {
     generate: (formValues: any) => {
+      console.log('formValues', formValues);   // <-- look in browser console
       const title = formValues?.title ?? '';
       if (!title) return '';
-      return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+      let scholarId = '';
+      const rawScholar = formValues?.scholar;
+      if (typeof rawScholar === 'string') {
+        scholarId = rawScholar;
+      } else if (rawScholar && typeof rawScholar === 'object' && rawScholar.id) {
+        scholarId = rawScholar.id;
+      }
+
+      const titleSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      return scholarId ? `${scholarId}-${titleSlug}` : titleSlug;
     },
   },
 }),
