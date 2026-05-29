@@ -1,6 +1,6 @@
 ---
 export interface Props {
-  title:       string;
+  title: string;
   description?: string;
 }
 
@@ -11,7 +11,7 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
 ---
 
 <!doctype html>
-<html lang="en" dir="auto">
+<html lang="en" data-theme="parchment">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -24,27 +24,28 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
     <meta property="og:url" content={canonicalURL.toString()} />
     <meta property="og:image" content={ogImage.toString()} />
 
+    <!-- Restore saved theme (data-theme) -->
     <script is:inline>
       (() => {
         try {
           const savedTheme = localStorage.getItem('theme');
-          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-            document.documentElement.classList.add('dark');
+          if (savedTheme && ['parchment', 'slate', 'vellum', 'ink'].includes(savedTheme)) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
           } else {
-            document.documentElement.classList.remove('dark');
+            // default to parchment
+            document.documentElement.setAttribute('data-theme', 'parchment');
           }
         } catch {
-          document.documentElement.classList.remove('dark');
+          document.documentElement.setAttribute('data-theme', 'parchment');
         }
       })();
     </script>
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Inter (sans) + Amiri (Arabic) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
       rel="stylesheet"
     />
 
@@ -53,77 +54,77 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
     <slot name="head" />
   </head>
 
-  <body class="min-h-screen flex flex-col" style="background-color: var(--bg-page); color: var(--text-primary);">
+  <body class="min-h-screen flex flex-col antialiased" style="background-color: var(--bg-page); color: var(--text-primary);">
 
-    <!-- Top bar -->
-    <header style="background-color: var(--accent); color: var(--bg-page);">
-      <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-4 flex-wrap">
+    <!-- █████ FIXED THEME BAR (as in preview) █████ -->
+    <div class="fixed top-0 left-0 right-0 z-50 h-[52px] flex items-center px-5 gap-4 text-[10px] font-medium uppercase tracking-wide"
+         style="background: #111010; border-bottom: 1px solid #1E1E1E;">
+      <span class="text-[#3A3830]">Theme</span>
+      <div class="w-px h-[18px] bg-[#1E1E1E]"></div>
+      <div class="flex gap-1">
+        <button data-theme-btn="parchment" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
+          <span class="w-2 h-2 rounded-full bg-[#8B7355]"></span>Parchment
+        </button>
+        <button data-theme-btn="slate" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
+          <span class="w-2 h-2 rounded-full bg-[#C4A25A]"></span>Slate
+        </button>
+        <button data-theme-btn="vellum" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
+          <span class="w-2 h-2 rounded-full bg-[#345C27]"></span>Vellum
+        </button>
+        <button data-theme-btn="ink" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
+          <span class="w-2 h-2 rounded-full bg-[#A8621A]"></span>Ink
+        </button>
+      </div>
+      <div class="ml-auto text-[10px] text-[#282620] tracking-wide">fatawa-library / refactored</div>
+    </div>
+
+    <!-- █████ SITE HEADER █████ -->
+    <header class="site-header mt-[52px] border-b border-border/20" style="background-color: var(--hdr-bg, var(--accent));">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
         <a href="/" class="flex flex-col leading-tight group">
-          <span class="font-arabic text-2xl transition-colors" style="color: var(--accent-hover);">مكتبة الفتاوى</span>
-          <span class="font-serif text-base tracking-wide transition-colors" style="color: var(--bg-page);">Fatawa Library</span>
+          <span class="font-arabic text-xl transition-colors" style="color: var(--hdr-ar, var(--accent-hover));">مكتبة الفتاوى</span>
+          <span class="font-sans text-sm tracking-wide transition-colors" style="color: var(--hdr-text, var(--bg-page)); opacity: 0.85;">Fatawa Library</span>
         </a>
-        <nav class="flex items-center gap-3 sm:gap-4 text-sm font-sans font-medium">
-          <a href="/" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Home</a>
-          <a href="/scholars" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Scholars</a>
-          <a href="/categories" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Categories</a>
-          <a href="/about" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">About</a>
+        <nav class="flex items-center gap-4 text-sm font-sans font-medium">
+          <a href="/" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">Home</a>
+          <a href="/scholars" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">Scholars</a>
+          <a href="/categories" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">Categories</a>
+          <a href="/about" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">About</a>
 
           <form action="/search" method="get" class="hidden md:flex items-center gap-1">
-            <input
-              type="search"
-              name="q"
-              placeholder="Search fatwas"
-              class="w-44 lg:w-52 px-2.5 py-1.5 text-xs focus:outline-none"
-              style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);"
-            />
-            <button
-              type="submit"
-              class="px-3 py-1.5 text-xs text-white transition-colors font-medium"
-              style="background-color: var(--accent); border: 1px solid var(--accent);"
-            >
+            <input type="search" name="q" placeholder="Search fatwas"
+                   class="w-44 lg:w-52 px-2.5 py-1.5 text-xs focus:outline-none rounded-sm"
+                   style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);" />
+            <button type="submit"
+                    class="px-3 py-1.5 text-xs font-medium transition-colors rounded-sm"
+                    style="background-color: var(--accent); color: var(--bg-page); border: 1px solid var(--accent);">
               Search
             </button>
           </form>
 
-          <a href="/search" class="md:hidden opacity-70 hover:opacity-100 transition-opacity" aria-label="Search">
+          <a href="/search" class="md:hidden opacity-65 hover:opacity-100 transition-opacity" aria-label="Search">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-3.5-3.5" />
             </svg>
           </a>
-
-          <button
-            id="theme-toggle"
-            type="button"
-            class="inline-flex items-center justify-center p-1.5 transition-opacity opacity-70 hover:opacity-100"
-            style="border: 1px solid rgba(255, 255, 255, 0.3);"
-            aria-label="Toggle dark mode"
-          >
-            <svg data-theme-icon="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-            </svg>
-            <svg data-theme-icon="moon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3c0 4.97 4.03 9 9 9 .27 0 .53-.01.79-.21z" />
-            </svg>
-          </button>
         </nav>
       </div>
     </header>
 
-    <!-- Page content -->
+    <!-- █████ MAIN CONTENT (slot for page-specific layout) █████ -->
     <main class="flex-1">
       <slot />
     </main>
 
-    <!-- Footer -->
-    <footer style="background-color: var(--accent); color: var(--bg-page);">
-      <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row gap-4 justify-between items-start text-sm">
+    <!-- █████ FOOTER █████ -->
+    <footer class="site-footer mt-12 border-t border-border/20" style="background-color: var(--hdr-bg, var(--accent));">
+      <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col sm:flex-row gap-4 justify-between items-start text-sm">
         <div>
-          <p class="font-arabic text-lg mb-1" style="color: var(--accent-hover);">مكتبة الفتاوى</p>
-          <p style="color: rgba(245, 241, 234, 0.7);">Fatawa Library: translations of Islamic legal rulings from senior scholars.</p>
+          <p class="font-arabic text-lg mb-1" style="color: var(--hdr-ar, var(--accent-hover));">مكتبة الفتاوى</p>
+          <p class="text-xs" style="color: var(--hdr-sub, rgba(245,241,234,0.7));">Fatawa Library: translations of Islamic legal rulings from senior scholars.</p>
         </div>
-        <div style="color: rgba(245, 241, 234, 0.5);" class="text-xs mt-2 sm:mt-0 sm:text-right">
+        <div class="text-right text-xs" style="color: var(--hdr-sub, rgba(245,241,234,0.5));">
           <p>Translations are provided for educational purposes.</p>
           <p class="mt-1">Always refer to a qualified scholar for personal guidance.</p>
           <p class="mt-1">2026 Fatawa Library</p>
@@ -133,27 +134,61 @@ const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
 
     <script is:inline>
       (() => {
-        const toggle = document.getElementById('theme-toggle');
-        const sun = document.querySelector('[data-theme-icon="sun"]');
-        const moon = document.querySelector('[data-theme-icon="moon"]');
+        // Theme switcher logic (supports 4 themes)
+        const html = document.documentElement;
+        const btns = document.querySelectorAll('[data-theme-btn]');
 
-        if (!(toggle instanceof HTMLButtonElement) || !sun || !moon) return;
-
-        const syncIcons = () => {
-          const isDark = document.documentElement.classList.contains('dark');
-          sun.classList.toggle('hidden', isDark);
-          moon.classList.toggle('hidden', !isDark);
+        const setTheme = (themeName) => {
+          html.setAttribute('data-theme', themeName);
+          localStorage.setItem('theme', themeName);
+          // Optional: update active button style
+          btns.forEach(btn => {
+            if (btn.getAttribute('data-theme-btn') === themeName) {
+              btn.classList.add('active');
+              btn.style.color = '#D0C8B8';
+              btn.style.borderColor = '#2A2A2A';
+              btn.style.backgroundColor = '#1A1918';
+            } else {
+              btn.classList.remove('active');
+              btn.style.color = '';
+              btn.style.borderColor = '';
+              btn.style.backgroundColor = '';
+            }
+          });
         };
 
-        syncIcons();
+        const saved = localStorage.getItem('theme');
+        const defaultTheme = (saved && ['parchment','slate','vellum','ink'].includes(saved)) ? saved : 'parchment';
+        setTheme(defaultTheme);
 
-        toggle.addEventListener('click', () => {
-          const isDark = document.documentElement.classList.toggle('dark');
-          localStorage.setItem('theme', isDark ? 'dark' : 'light');
-          syncIcons();
+        btns.forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const theme = btn.getAttribute('data-theme-btn');
+            if (theme) setTheme(theme);
+          });
         });
       })();
     </script>
 
+    <style>
+      /* Additional header/footer adaptation for dark themes (as per preview) */
+      html[data-theme="slate"] .site-header,
+      html[data-theme="slate"] .site-footer,
+      html[data-theme="ink"] .site-header,
+      html[data-theme="ink"] .site-footer {
+        background-color: var(--bg-card) !important;
+      }
+      html[data-theme="slate"] .site-header,
+      html[data-theme="ink"] .site-header {
+        border-bottom-color: var(--border-default);
+      }
+      .theme-btn.active {
+        color: #D0C8B8;
+        border-color: #2A2A2A;
+        background: #1A1918;
+        border-radius: 2px;
+      }
+    </style>
   </body>
 </html>

@@ -2,37 +2,17 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout
-  title="About Fatawa Library"
-  description="Learn what Fatawa Library is, which scholars are represented, and how to contact us."
->
+<Layout title="About">
   <div class="max-w-3xl mx-auto px-4 py-10">
-    <h1 class="font-serif text-3xl mb-6" style="color: var(--text-primary);">About Fatawa Library</h1>
-
-    <div class="prose prose-fatwa prose-stone max-w-none" style="--tw-prose-body: var(--text-primary); --tw-prose-headings: var(--text-primary); --tw-prose-links: var(--accent); --tw-prose-quotes: var(--text-secondary);">
-      <h2>What Fatawa Library Is</h2>
-      <p>
-        Fatawa Library is a curated library of translated Islamic fatwas, built to help English-speaking readers
-        access rulings from trusted scholars with clear links to the original source material.
-      </p>
-
-      <h2>Scholars Included</h2>
-      <p>
-        The library features translations from senior scholars, including well-known scholars from the Salafi
-        scholarly tradition. Each entry identifies the issuing scholar and source URL.
-      </p>
-
-      <h2>Translation Disclaimer</h2>
-      <p>
-        All translations are provided for educational benefit. They may not fully capture every nuance of the
-        original Arabic text. For precision and personal religious questions, consult qualified scholars directly.
-      </p>
-
+    <h1 class="font-sans text-3xl font-medium mb-6 text-primary">About Fatawa Library</h1>
+    <div class="prose prose-stone dark:prose-invert max-w-none">
+      <p>Fatawa Library is a curated archive of Islamic legal rulings (fatāwā) from major scholars, translated into English for the benefit of English‑speaking readers.</p>
+      <h2>Our Mission</h2>
+      <p>We strive to provide accurate, reliable translations of fatwas from trusted scholars, with full references to original Arabic sources. All content is reviewed for accuracy.</p>
+      <h2>Disclaimer</h2>
+      <p>Translations are for informational purposes only. Always consult a qualified scholar for personal religious guidance.</p>
       <h2>Contact</h2>
-      <p>
-        For corrections or inquiries, contact:
-        <a href="mailto:fatawalib@example.com">fatawalib@example.com</a>
-      </p>
+      <p>For corrections or inquiries, please email <a href="mailto:fatawalib@example.com" class="text-accent hover:underline">fatawalib@example.com</a>.</p>
     </div>
   </div>
 </Layout>

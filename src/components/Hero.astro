@@ -1,0 +1,41 @@
+---
+interface Props {
+  stats: {
+    rulings: number;
+    scholars: number;
+    categories: number;
+  };
+}
+
+const { stats } = Astro.props;
+---
+
+<div class="hero relative overflow-hidden border-b border-border" style="background-color: var(--hero-bg);">
+  <!-- Arabic watermark -->
+  <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none font-arabic text-[220px] leading-none opacity-10" style="color: var(--hero-ar);">
+    فتاوى
+  </div>
+  <div class="max-w-5xl mx-auto px-4 py-10 relative">
+    <h1 class="font-sans text-3xl md:text-4xl font-medium tracking-tight mb-2" style="color: var(--hero-text);">
+      Islamic Legal Rulings — Translated
+    </h1>
+    <p class="text-sm max-w-xl" style="color: var(--hero-sub); line-height: 1.7;">
+      Fatawa Library is a curated archive of fatwas from senior scholars, translated for English‑speaking readers.
+      All content links back to the original Arabic source.
+    </p>
+    <div class="flex gap-6 mt-4">
+      <div>
+        <div class="text-2xl font-sans font-medium" style="color: var(--hero-text); opacity: 0.9;">{stats.rulings}</div>
+        <div class="text-[10px] font-sans font-medium uppercase tracking-wide" style="color: var(--hero-sub);">Rulings</div>
+      </div>
+      <div>
+        <div class="text-2xl font-sans font-medium" style="color: var(--hero-text); opacity: 0.9;">{stats.scholars}</div>
+        <div class="text-[10px] font-sans font-medium uppercase tracking-wide" style="color: var(--hero-sub);">Scholars</div>
+      </div>
+      <div>
+        <div class="text-2xl font-sans font-medium" style="color: var(--hero-text); opacity: 0.9;">{stats.categories}</div>
+        <div class="text-[10px] font-sans font-medium uppercase tracking-wide" style="color: var(--hero-sub);">Categories</div>
+      </div>
+    </div>
+  </div>
+</div>

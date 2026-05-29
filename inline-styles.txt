@@ -1,0 +1,407 @@
+src/components/FilterBar.astro-17-const { activeScholar, activeCategory, allCategories } = Astro.props;
+src/components/FilterBar.astro-18----
+src/components/FilterBar.astro-19-
+src/components/FilterBar.astro:20:<div data-filter-bar class="rounded-sm p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center" style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);">
+src/components/FilterBar.astro-21-
+src/components/FilterBar.astro-22-  <!-- Scholar filter -->
+src/components/FilterBar.astro-23-  <div class="flex flex-wrap gap-2 flex-1">
+--
+src/components/FilterBar.astro-57-      <select
+src/components/FilterBar.astro-58-        id="category-filter"
+src/components/FilterBar.astro-59-        class="text-xs font-sans px-3 py-1.5 focus:outline-none cursor-pointer rounded-sm"
+src/components/FilterBar.astro:60:        style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);"
+src/components/FilterBar.astro-61-      >
+src/components/FilterBar.astro-62-        <option value="">All Categories</option>
+src/components/FilterBar.astro-63-        {allCategories.map((cat) => (
+--
+src/components/FatwaCard.astro-42----
+src/components/FatwaCard.astro-43-
+src/components/FatwaCard.astro-44-<article
+src/components/FatwaCard.astro:45:  style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);"
+src/components/FatwaCard.astro-46-  class="rounded-sm p-5 transition-all group"
+src/components/FatwaCard.astro-47->
+src/components/FatwaCard.astro-48-  <div class="flex items-start justify-between gap-3 mb-3">
+--
+src/components/FatwaCard.astro-53-            <a
+src/components/FatwaCard.astro-54-              href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, "-"))}`}
+src/components/FatwaCard.astro-55-              class="text-xs font-sans font-medium uppercase transition-colors"
+src/components/FatwaCard.astro:56:              style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis); padding: 0.375rem 0.625rem; letter-spacing: 0.07em;"
+src/components/FatwaCard.astro-57-            >
+src/components/FatwaCard.astro-58-              {cat}
+src/components/FatwaCard.astro-59-            </a>
+--
+src/components/FatwaCard.astro-62-      )}
+src/components/FatwaCard.astro-63-
+src/components/FatwaCard.astro-64-      <a href={`/fatwa/${slug}`} class="block">
+src/components/FatwaCard.astro:65:        <h2 class="font-serif italic font-400 text-lg leading-snug line-clamp-2 transition-colors" style="color: var(--text-primary);">
+src/components/FatwaCard.astro-66-          {cardTitle}
+src/components/FatwaCard.astro-67-        </h2>
+src/components/FatwaCard.astro-68-      </a>
+src/components/FatwaCard.astro-69-    </div>
+src/components/FatwaCard.astro-70-
+src/components/FatwaCard.astro:71:    <span class="shrink-0 text-xs font-sans font-medium rounded-sm px-2.5 py-1 whitespace-nowrap" style="background-color: var(--accent); color: var(--bg-page);">
+src/components/FatwaCard.astro-72-      {scholarName}
+src/components/FatwaCard.astro-73-    </span>
+src/components/FatwaCard.astro-74-  </div>
+src/components/FatwaCard.astro-75-
+src/components/FatwaCard.astro:76:  <div class="flex items-center gap-3 text-xs font-sans mt-3 pt-3" style="border-top: 1px solid var(--border-default); color: var(--text-muted);">
+src/components/FatwaCard.astro-77-    <span>Trans. {translator}</span>
+src/components/FatwaCard.astro-78-    <span>•</span>
+src/components/FatwaCard.astro-79-    <time datetime={date_added?.toISOString()}>
+src/components/FatwaCard.astro-80-      {date_added?.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+src/components/FatwaCard.astro-81-    </time>
+src/components/FatwaCard.astro:82:    <a href={`/fatwa/${slug}`} class="ml-auto font-medium transition-colors" style="color: var(--accent);">
+src/components/FatwaCard.astro-83-      Read →
+src/components/FatwaCard.astro-84-    </a>
+src/components/FatwaCard.astro-85-  </div>
+--
+src/components/SearchWidget.astro-4-
+src/components/SearchWidget.astro-5-<div id="search-root" class="max-w-3xl mx-auto px-4 py-10">
+src/components/SearchWidget.astro-6-  <div class="mb-8">
+src/components/SearchWidget.astro:7:    <h1 class="font-serif text-3xl mb-2" style="color: var(--text-primary);">Search Fatāwā</h1>
+src/components/SearchWidget.astro:8:    <p style="color: var(--text-secondary);" class="text-sm">Search by keyword, scholar, or category across all translated fatwas.</p>
+src/components/SearchWidget.astro-9-  </div>
+src/components/SearchWidget.astro-10-
+src/components/SearchWidget.astro-11-  <!-- Search input -->
+src/components/SearchWidget.astro-12-  <div class="relative mb-6">
+src/components/SearchWidget.astro:13:    <span class="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color: var(--text-muted);">
+src/components/SearchWidget.astro-14-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+src/components/SearchWidget.astro-15-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+src/components/SearchWidget.astro-16-      </svg>
+--
+src/components/SearchWidget.astro-21-      placeholder="Search fatwas…"
+src/components/SearchWidget.astro-22-      autocomplete="off"
+src/components/SearchWidget.astro-23-      class="w-full pl-10 pr-4 py-3 text-base font-sans focus:outline-none rounded-sm"
+src/components/SearchWidget.astro:24:      style="background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-default);"
+src/components/SearchWidget.astro-25-    />
+src/components/SearchWidget.astro-26-  </div>
+src/components/SearchWidget.astro-27-
+src/components/SearchWidget.astro-28-  <!-- Status / results count -->
+src/components/SearchWidget.astro:29:  <p id="search-status" class="text-xs mb-4 font-sans" style="color: var(--text-muted);"></p>
+src/components/SearchWidget.astro-30-
+src/components/SearchWidget.astro-31-  <!-- Results -->
+src/components/SearchWidget.astro-32-  <div id="search-results" class="space-y-3"></div>
+src/components/SearchWidget.astro-33-
+src/components/SearchWidget.astro-34-  <!-- No results -->
+src/components/SearchWidget.astro:35:  <div id="no-results" class="hidden text-center py-12" style="color: var(--text-secondary);">
+src/components/SearchWidget.astro-36-    <p class="font-serif text-xl mb-2">No results found</p>
+src/components/SearchWidget.astro:37:    <p class="text-sm">Try different keywords or browse by <a href="/categories" class="underline transition-colors" style="color: var(--accent);">category</a>.</p>
+src/components/SearchWidget.astro-38-  </div>
+src/components/SearchWidget.astro-39-</div>
+src/components/SearchWidget.astro-40-
+--
+src/components/SearchWidget.astro-84-
+src/components/SearchWidget.astro-85-  function renderCard(entry: FatwaEntry): string {
+src/components/SearchWidget.astro-86-    const cats = entry.categories
+src/components/SearchWidget.astro:87:      .map((c) => `<span class="inline-block text-xs rounded-sm px-2.5 py-0.5 font-sans font-medium uppercase" style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis); letter-spacing: 0.07em;">${c}</span>`)
+src/components/SearchWidget.astro-88-      .join('');
+src/components/SearchWidget.astro-89-    return `
+src/components/SearchWidget.astro:90:      <article class="rounded-sm p-5 transition-all" style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);">
+src/components/SearchWidget.astro-91-        <div class="flex items-start justify-between gap-3 mb-2">
+src/components/SearchWidget.astro-92-          <div>
+src/components/SearchWidget.astro-93-            <div class="flex flex-wrap gap-1.5 mb-2">${cats}</div>
+src/components/SearchWidget.astro:94:            <a href="/fatwa/${entry.id}" class="font-serif text-lg italic" style="color: var(--text-primary);">
+src/components/SearchWidget.astro-95-              Fatwa #${entry.id}
+src/components/SearchWidget.astro-96-            </a>
+src/components/SearchWidget.astro-97-          </div>
+src/components/SearchWidget.astro:98:          <span class="shrink-0 text-xs font-sans font-medium rounded-sm px-2.5 py-1" style="background-color: var(--accent); color: var(--bg-page);">${entry.scholarName.replace('Shaykh ', '')}</span>
+src/components/SearchWidget.astro-99-        </div>
+src/components/SearchWidget.astro:100:        <p class="text-sm line-clamp-2 mt-2" style="color: var(--text-secondary);">${entry.body ? entry.body.slice(0, 200) : ''}…</p>
+src/components/SearchWidget.astro:101:        <div class="mt-3 pt-3 border-none flex items-center gap-3 text-xs font-sans" style="border-top: 1px solid var(--border-default); color: var(--text-muted);">
+src/components/SearchWidget.astro-102-          <span>Trans. ${entry.translator}</span>
+src/components/SearchWidget.astro-103-          <span class="ml-auto font-medium">
+src/components/SearchWidget.astro:104:            <a href="/fatwa/${entry.id}" style="color: var(--accent);">Read →</a>
+src/components/SearchWidget.astro-105-          </span>
+src/components/SearchWidget.astro-106-        </div>
+src/components/SearchWidget.astro-107-      </article>
+--
+src/components/FatwaHeader.astro-27-const { id, title, categories, source_url, translator, reviewer, date_issued, date_issued_gregorian, date_added, audience, tags } = fatwa.data;
+src/components/FatwaHeader.astro-28----
+src/components/FatwaHeader.astro-29-
+src/components/FatwaHeader.astro:30:<header class="rounded-sm p-6 mb-8 relative overflow-hidden" style="background-color: var(--accent); color: var(--bg-page); border: 1px solid var(--border-emphasis);">
+src/components/FatwaHeader.astro-31-  <span class="absolute right-4 top-2 font-arabic text-6xl leading-none pointer-events-none select-none opacity-20">فتوى</span>
+src/components/FatwaHeader.astro-32-
+src/components/FatwaHeader.astro:33:  <p class="text-xs font-sans font-medium uppercase tracking-widest mb-1" style="color: var(--accent-hover);">Fatwa #{id}</p>
+src/components/FatwaHeader.astro-34-  <h1 class="font-serif text-2xl mb-4 leading-snug pr-16">{title || `${scholarInfo.name}`}
+src/components/FatwaHeader.astro:35:    {scholarInfo.arabicName ? <span class="font-arabic text-lg ml-2" style="color: var(--accent-hover);">{scholarInfo.arabicName}</span> : null}
+src/components/FatwaHeader.astro-36-  </h1>
+src/components/FatwaHeader.astro-37-
+src/components/FatwaHeader.astro-38-  <div class="flex flex-wrap gap-2 mb-4">
+src/components/FatwaHeader.astro-39-    {categories.map((cat) => (
+src/components/FatwaHeader.astro:40:      <a href={`/category/${encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}`} class="text-xs font-sans rounded-sm px-3 py-1 transition-colors uppercase font-medium" style="background-color: var(--bg-tag); color: var(--accent); border: 1px solid var(--border-emphasis); letter-spacing: 0.07em;">{cat}</a>
+src/components/FatwaHeader.astro-41-    ))}
+src/components/FatwaHeader.astro-42-  </div>
+src/components/FatwaHeader.astro-43-
+src/components/FatwaHeader.astro:44:  <dl class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs font-sans pt-4" style="border-top: 1px solid var(--border-emphasis); color: rgba(245, 241, 234, 0.8);">
+src/components/FatwaHeader.astro-45-    <div>
+src/components/FatwaHeader.astro:46:      <dt class="uppercase tracking-wider text-[10px] mb-0.5" style="color: rgba(245, 241, 234, 0.5);">Audience</dt>
+src/components/FatwaHeader.astro-47-      <dd>{audience || 'general'}</dd>
+src/components/FatwaHeader.astro-48-    </div>
+src/components/FatwaHeader.astro-49-    <div>
+src/components/FatwaHeader.astro:50:      <dt class="uppercase tracking-wider text-[10px] mb-0.5" style="color: rgba(245, 241, 234, 0.5);">Translator</dt>
+src/components/FatwaHeader.astro-51-      <dd>{translator}</dd>
+src/components/FatwaHeader.astro-52-    </div>
+src/components/FatwaHeader.astro-53-    {reviewer && (
+src/components/FatwaHeader.astro-54-      <div>
+src/components/FatwaHeader.astro:55:        <dt class="uppercase tracking-wider text-[10px] mb-0.5" style="color: rgba(245, 241, 234, 0.5);">Reviewer</dt>
+src/components/FatwaHeader.astro-56-        <dd>{reviewer}</dd>
+src/components/FatwaHeader.astro-57-      </div>
+src/components/FatwaHeader.astro-58-    )}
+src/components/FatwaHeader.astro-59-    <div>
+src/components/FatwaHeader.astro:60:      <dt class="uppercase tracking-wider text-[10px] mb-0.5" style="color: rgba(245, 241, 234, 0.5);">Date Issued (Hijri)</dt>
+src/components/FatwaHeader.astro-61-      <dd>{formatHijriDate(date_issued)}</dd>
+src/components/FatwaHeader.astro-62-    </div>
+src/components/FatwaHeader.astro-63-    <div>
+src/components/FatwaHeader.astro:64:      <dt class="uppercase tracking-wider text-[10px] mb-0.5" style="color: rgba(245, 241, 234, 0.5);">Date Issued (Gregorian)</dt>
+src/components/FatwaHeader.astro-65-      <dd>{formatGregorian(date_issued_gregorian || date_added)}</dd>
+src/components/FatwaHeader.astro-66-    </div>
+src/components/FatwaHeader.astro-67-  </dl>
+src/components/FatwaHeader.astro-68-
+src/components/FatwaHeader.astro-69-  {tags && tags.length > 0 && (
+src/components/FatwaHeader.astro:70:    <p class="mt-4 text-xs" style="color: rgba(245, 241, 234, 0.7);">Tags: {tags.join(', ')}</p>
+src/components/FatwaHeader.astro-71-  )}
+src/components/FatwaHeader.astro-72-</header>
+--
+src/components/BilingualBlock.astro-4-
+src/components/BilingualBlock.astro-5-<section class="mb-8">
+src/components/BilingualBlock.astro-6-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+src/components/BilingualBlock.astro:7:    <article class="prose prose-fatwa max-w-none" style="--tw-prose-body: var(--text-primary); --tw-prose-headings: var(--text-primary); --tw-prose-links: var(--accent); --tw-prose-quotes: var(--text-secondary);">
+src/components/BilingualBlock.astro-8-      <h2>Question</h2>
+src/components/BilingualBlock.astro-9-      <p>{question}</p>
+src/components/BilingualBlock.astro-10-
+--
+src/components/BilingualBlock.astro-12-      <p>{answer}</p>
+src/components/BilingualBlock.astro-13-    </article>
+src/components/BilingualBlock.astro-14-
+src/components/BilingualBlock.astro:15:    <aside class="arabic-text prose max-w-none" style="--tw-prose-body: var(--text-primary); --tw-prose-headings: var(--text-primary); --tw-prose-links: var(--accent); --tw-prose-quotes: var(--text-secondary);">
+src/components/BilingualBlock.astro-16-      <h2 class="font-arabic">السؤال</h2>
+src/components/BilingualBlock.astro-17-      <p>{arabicQuestion || '—'}</p>
+src/components/BilingualBlock.astro-18-
+--
+src/components/SourceBlock.astro-2-const { source_url } = Astro.props;
+src/components/SourceBlock.astro-3----
+src/components/SourceBlock.astro-4-
+src/components/SourceBlock.astro:5:<div class="mt-10 pt-6" style="border-top: 1px solid var(--border-default);">
+src/components/SourceBlock.astro:6:  <p class="text-xs font-sans mb-3" style="color: var(--text-muted);">This is a translation. Always consult the original Arabic for accuracy.</p>
+src/components/SourceBlock.astro:7:  <details class="group rounded-sm p-4" style="background-color: var(--bg-card); border: 1px solid var(--border-default);">
+src/components/SourceBlock.astro:8:    <summary class="cursor-pointer list-none text-sm font-sans font-medium flex items-center justify-between" style="color: var(--accent);">
+src/components/SourceBlock.astro-9-      <span>View Original Source</span>
+src/components/SourceBlock.astro-10-      <span class="transition-transform group-open:rotate-180">▾</span>
+src/components/SourceBlock.astro-11-    </summary>
+src/components/SourceBlock.astro:12:    <div class="mt-3 text-xs break-all" style="color: var(--text-secondary);">
+src/components/SourceBlock.astro-13-      <p class="mb-2">{source_url}</p>
+src/components/SourceBlock.astro:14:      <a href={source_url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-white px-3 py-1.5 rounded-sm transition-colors font-medium" style="background-color: var(--accent);">Open source URL</a>
+src/components/SourceBlock.astro-15-    </div>
+src/components/SourceBlock.astro-16-  </details>
+src/components/SourceBlock.astro-17-</div>
+--
+src/components/ShareBar.astro-5----
+src/components/ShareBar.astro-6-
+src/components/ShareBar.astro-7-<div class="mt-6 flex items-center gap-3 print:hidden">
+src/components/ShareBar.astro:8:  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title || `Fatwa #${id}`)}&url=${encodeURIComponent(pageURL)}`} target="_blank" rel="noopener noreferrer" class="text-xs px-3 py-1 rounded-sm text-white font-medium transition-colors" style="background-color: var(--accent);">Share</a>
+src/components/ShareBar.astro:9:  <button class="text-xs px-3 py-1 rounded-sm font-medium transition-colors" style="border: 1px solid var(--border-default); color: var(--accent);" onclick={`navigator.clipboard && navigator.clipboard.writeText(${pageURLJson})`}>Copy link</button>
+src/components/ShareBar.astro-10-</div>
+--
+src/components/RelatedFatwas.astro-10-
+src/components/RelatedFatwas.astro-11-{items && items.length > 0 ? (
+src/components/RelatedFatwas.astro-12-  <section class="mt-10">
+src/components/RelatedFatwas.astro:13:    <h2 class="font-serif text-xl mb-4" style="color: var(--text-primary);">Related Fatāwā</h2>
+src/components/RelatedFatwas.astro-14-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+src/components/RelatedFatwas.astro-15-      {items.map((item) => (
+src/components/RelatedFatwas.astro:16:        <a href={`/fatwa/${item.fatwa.id}`} class="block rounded-sm p-4 transition-colors" style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);">
+src/components/RelatedFatwas.astro:17:          <p class="text-xs font-medium mb-1" style="color: var(--accent);">
+src/components/RelatedFatwas.astro-18-            {item.scholar.name.replace('Shaykh ', '')}
+src/components/RelatedFatwas.astro-19-          </p>
+src/components/RelatedFatwas.astro:20:          <p class="font-serif text-sm leading-snug line-clamp-3" style="color: var(--text-primary);">{item.question}</p>
+src/components/RelatedFatwas.astro:21:          <p class="text-xs mt-2" style="color: var(--text-muted);">{item.fatwa.date_added.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+src/components/RelatedFatwas.astro-22-        </a>
+src/components/RelatedFatwas.astro-23-      ))}
+src/components/RelatedFatwas.astro-24-    </div>
+--
+src/layouts/Layout.astro-53-    <slot name="head" />
+src/layouts/Layout.astro-54-  </head>
+src/layouts/Layout.astro-55-
+src/layouts/Layout.astro:56:  <body class="min-h-screen flex flex-col" style="background-color: var(--bg-page); color: var(--text-primary);">
+src/layouts/Layout.astro-57-
+src/layouts/Layout.astro-58-    <!-- Top bar -->
+src/layouts/Layout.astro:59:    <header style="background-color: var(--accent); color: var(--bg-page);">
+src/layouts/Layout.astro-60-      <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-4 flex-wrap">
+src/layouts/Layout.astro-61-        <a href="/" class="flex flex-col leading-tight group">
+src/layouts/Layout.astro:62:          <span class="font-arabic text-2xl transition-colors" style="color: var(--accent-hover);">مكتبة الفتاوى</span>
+src/layouts/Layout.astro:63:          <span class="font-serif text-base tracking-wide transition-colors" style="color: var(--bg-page);">Fatawa Library</span>
+src/layouts/Layout.astro-64-        </a>
+src/layouts/Layout.astro-65-        <nav class="flex items-center gap-3 sm:gap-4 text-sm font-sans font-medium">
+src/layouts/Layout.astro:66:          <a href="/" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Home</a>
+src/layouts/Layout.astro:67:          <a href="/scholars" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Scholars</a>
+src/layouts/Layout.astro:68:          <a href="/categories" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">Categories</a>
+src/layouts/Layout.astro:69:          <a href="/about" style="color: var(--bg-page);" class="opacity-70 hover:opacity-100 transition-opacity">About</a>
+src/layouts/Layout.astro-70-
+src/layouts/Layout.astro-71-          <form action="/search" method="get" class="hidden md:flex items-center gap-1">
+src/layouts/Layout.astro-72-            <input
+--
+src/layouts/Layout.astro-74-              name="q"
+src/layouts/Layout.astro-75-              placeholder="Search fatwas"
+src/layouts/Layout.astro-76-              class="w-44 lg:w-52 px-2.5 py-1.5 text-xs focus:outline-none"
+src/layouts/Layout.astro:77:              style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);"
+src/layouts/Layout.astro-78-            />
+src/layouts/Layout.astro-79-            <button
+src/layouts/Layout.astro-80-              type="submit"
+src/layouts/Layout.astro-81-              class="px-3 py-1.5 text-xs text-white transition-colors font-medium"
+src/layouts/Layout.astro:82:              style="background-color: var(--accent); border: 1px solid var(--accent);"
+src/layouts/Layout.astro-83-            >
+src/layouts/Layout.astro-84-              Search
+src/layouts/Layout.astro-85-            </button>
+--
+src/layouts/Layout.astro-96-            id="theme-toggle"
+src/layouts/Layout.astro-97-            type="button"
+src/layouts/Layout.astro-98-            class="inline-flex items-center justify-center p-1.5 transition-opacity opacity-70 hover:opacity-100"
+src/layouts/Layout.astro:99:            style="border: 1px solid rgba(255, 255, 255, 0.3);"
+src/layouts/Layout.astro-100-            aria-label="Toggle dark mode"
+src/layouts/Layout.astro-101-          >
+src/layouts/Layout.astro-102-            <svg data-theme-icon="sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+--
+src/layouts/Layout.astro-117-    </main>
+src/layouts/Layout.astro-118-
+src/layouts/Layout.astro-119-    <!-- Footer -->
+src/layouts/Layout.astro:120:    <footer style="background-color: var(--accent); color: var(--bg-page);">
+src/layouts/Layout.astro-121-      <div class="max-w-5xl mx-auto px-4 py-8 flex flex-col sm:flex-row gap-4 justify-between items-start text-sm">
+src/layouts/Layout.astro-122-        <div>
+src/layouts/Layout.astro:123:          <p class="font-arabic text-lg mb-1" style="color: var(--accent-hover);">مكتبة الفتاوى</p>
+src/layouts/Layout.astro:124:          <p style="color: rgba(245, 241, 234, 0.7);">Fatawa Library: translations of Islamic legal rulings from senior scholars.</p>
+src/layouts/Layout.astro-125-        </div>
+src/layouts/Layout.astro:126:        <div style="color: rgba(245, 241, 234, 0.5);" class="text-xs mt-2 sm:mt-0 sm:text-right">
+src/layouts/Layout.astro-127-          <p>Translations are provided for educational purposes.</p>
+src/layouts/Layout.astro-128-          <p class="mt-1">Always refer to a qualified scholar for personal guidance.</p>
+src/layouts/Layout.astro-129-          <p class="mt-1">2026 Fatawa Library</p>
+--
+src/pages/category/[category].astro-34-
+src/pages/category/[category].astro-35-    <!-- Header -->
+src/pages/category/[category].astro-36-    <div class="mb-8">
+src/pages/category/[category].astro:37:      <nav class="text-xs font-sans mb-4 flex items-center gap-2" style="color: var(--text-muted);">
+src/pages/category/[category].astro:38:        <a href="/" class="transition-colors" style="color: var(--accent);">Home</a>
+src/pages/category/[category].astro-39-        <span>/</span>
+src/pages/category/[category].astro:40:        <a href="/categories" class="transition-colors" style="color: var(--accent);">Categories</a>
+src/pages/category/[category].astro-41-        <span>/</span>
+src/pages/category/[category].astro:42:        <span style="color: var(--text-secondary);">{categoryName}</span>
+src/pages/category/[category].astro-43-      </nav>
+src/pages/category/[category].astro:44:      <h1 class="font-serif text-3xl mb-1" style="color: var(--text-primary);">{categoryName}</h1>
+src/pages/category/[category].astro:45:      <p style="color: var(--text-secondary);" class="text-sm">{fatwas.length} fatwa{fatwas.length !== 1 ? 's' : ''} in this category</p>
+src/pages/category/[category].astro-46-    </div>
+src/pages/category/[category].astro-47-
+src/pages/category/[category].astro-48-    <!-- Grid -->
+--
+src/pages/category/[category].astro-51-    </div>
+src/pages/category/[category].astro-52-
+src/pages/category/[category].astro-53-    <div class="mt-8">
+src/pages/category/[category].astro:54:      <a href="/categories" class="text-sm font-sans font-medium transition-colors" style="color: var(--accent);">← All Categories</a>
+src/pages/category/[category].astro-55-    </div>
+src/pages/category/[category].astro-56-  </div>
+src/pages/category/[category].astro-57-</Layout>
+--
+src/pages/scholar/[scholar].astro-28-  <div class="max-w-5xl mx-auto px-4 py-10">
+src/pages/scholar/[scholar].astro-29-
+src/pages/scholar/[scholar].astro-30-    <!-- Header -->
+src/pages/scholar/[scholar].astro:31:    <div class="rounded-sm p-8 mb-8 flex flex-col sm:flex-row gap-6 items-start" style="background-color: var(--accent); color: var(--bg-page);">
+src/pages/scholar/[scholar].astro-32-      <div class="flex-1">
+src/pages/scholar/[scholar].astro:33:        <p class="font-arabic text-5xl mb-2 leading-none" style="color: var(--accent-hover);">{scholar.arabicName}</p>
+src/pages/scholar/[scholar].astro-34-        <h1 class="font-serif text-2xl mb-1">{scholar.name}</h1>
+src/pages/scholar/[scholar].astro:35:        <p class="text-sm font-sans mb-4" style="color: rgba(245, 241, 234, 0.6);">{scholar.lifespan}</p>
+src/pages/scholar/[scholar].astro:36:        <p class="text-sm max-w-xl" style="color: rgba(245, 241, 234, 0.8);">{scholar.bio}</p>
+src/pages/scholar/[scholar].astro-37-      </div>
+src/pages/scholar/[scholar].astro:38:      <div class="text-center rounded-sm px-8 py-5 shrink-0" style="background-color: var(--accent-hover);">
+src/pages/scholar/[scholar].astro:39:        <p class="font-serif text-4xl" style="color: var(--accent-hover); opacity: 0.3;">{fatwas.length}</p>
+src/pages/scholar/[scholar].astro:40:        <p class="text-xs font-sans mt-1" style="color: rgba(245, 241, 234, 0.6);">Translated Fatwas</p>
+src/pages/scholar/[scholar].astro-41-      </div>
+src/pages/scholar/[scholar].astro-42-    </div>
+src/pages/scholar/[scholar].astro-43-
+--
+src/pages/scholar/[scholar].astro-47-        {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} scholar={scholar} />)}
+src/pages/scholar/[scholar].astro-48-      </div>
+src/pages/scholar/[scholar].astro-49-    ) : (
+src/pages/scholar/[scholar].astro:50:      <p class="text-center py-16 font-serif text-xl" style="color: var(--text-secondary);">No fatwas yet for this scholar.</p>
+src/pages/scholar/[scholar].astro-51-    )}
+src/pages/scholar/[scholar].astro-52-
+src/pages/scholar/[scholar].astro-53-    <div class="mt-8">
+src/pages/scholar/[scholar].astro:54:      <a href="/scholars" class="text-sm font-sans font-medium transition-colors" style="color: var(--accent);">← All Scholars</a>
+src/pages/scholar/[scholar].astro-55-    </div>
+src/pages/scholar/[scholar].astro-56-  </div>
+src/pages/scholar/[scholar].astro-57-</Layout>
+--
+src/pages/scholars.astro-16-
+src/pages/scholars.astro-17-<Layout title="Scholars">
+src/pages/scholars.astro-18-  <div class="max-w-4xl mx-auto px-4 py-10">
+src/pages/scholars.astro:19:    <h1 class="font-serif text-3xl mb-2" style="color: var(--text-primary);">Scholars</h1>
+src/pages/scholars.astro:20:    <p style="color: var(--text-secondary);" class="text-sm mb-8">Browse fatwas by scholar. Click a card to see all their rulings.</p>
+src/pages/scholars.astro-21-
+src/pages/scholars.astro-22-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+src/pages/scholars.astro-23-      {allScholars.map((scholar) => {
+--
+src/pages/scholars.astro-27-          <a
+src/pages/scholars.astro-28-            href={`/scholar/${scholarId}`}
+src/pages/scholars.astro-29-            class="group rounded-sm p-6 flex flex-col gap-3 transition-all"
+src/pages/scholars.astro:30:            style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);"
+src/pages/scholars.astro-31-          >
+src/pages/scholars.astro-32-            <div class="flex items-center justify-between">
+src/pages/scholars.astro-33-              <div>
+src/pages/scholars.astro:34:                <p class="font-arabic text-2xl leading-none mb-1" style="color: var(--accent-hover);">{s.arabicName}</p>
+src/pages/scholars.astro:35:                <h2 class="font-serif text-lg transition-colors" style="color: var(--text-primary);">{s.name}</h2>
+src/pages/scholars.astro:36:                <p class="text-xs font-sans" style="color: var(--text-muted);">{s.lifespan}</p>
+src/pages/scholars.astro-37-              </div>
+src/pages/scholars.astro:38:              <span class="flex items-center justify-center shrink-0 w-12 h-12 text-sm font-sans font-semibold rounded-sm" style="background-color: var(--accent); color: var(--bg-page);">
+src/pages/scholars.astro-39-                {counts[scholarId]}
+src/pages/scholars.astro-40-              </span>
+src/pages/scholars.astro-41-            </div>
+src/pages/scholars.astro:42:            <p class="text-sm line-clamp-3" style="color: var(--text-secondary);">{s.bio}</p>
+src/pages/scholars.astro:43:            <span class="text-xs font-sans font-medium transition-colors" style="color: var(--accent);">
+src/pages/scholars.astro-44-              View {counts[scholarId]} fatwa{counts[scholarId] !== 1 ? 's' : ''} →
+src/pages/scholars.astro-45-            </span>
+src/pages/scholars.astro-46-          </a>
+--
+src/pages/categories.astro-23-
+src/pages/categories.astro-24-<Layout title="Categories">
+src/pages/categories.astro-25-  <div class="max-w-4xl mx-auto px-4 py-10">
+src/pages/categories.astro:26:    <h1 class="font-serif text-3xl mb-2" style="color: var(--text-primary);">Categories</h1>
+src/pages/categories.astro:27:    <p style="color: var(--text-secondary);" class="text-sm mb-8">Browse all fatwa categories. Numbers show how many fatwas are in each.</p>
+src/pages/categories.astro-28-
+src/pages/categories.astro-29-    <div class="flex flex-wrap gap-3">
+src/pages/categories.astro-30-      {categories.map(({ name, count, slug }) => (
+src/pages/categories.astro-31-        <a
+src/pages/categories.astro-32-          href={`/category/${slug}`}
+src/pages/categories.astro-33-          class="group flex items-center gap-2 rounded-sm px-4 py-2.5 transition-all"
+src/pages/categories.astro:34:          style="background-color: var(--bg-card); border: 1px solid var(--border-default);"
+src/pages/categories.astro-35-        >
+src/pages/categories.astro:36:          <span class="font-sans text-sm transition-colors" style="color: var(--text-primary);">{name}</span>
+src/pages/categories.astro:37:          <span class="text-xs font-medium rounded-full px-2 py-0.5 transition-colors" style="background-color: var(--bg-tag); color: var(--text-muted);">
+src/pages/categories.astro-38-            {count}
+src/pages/categories.astro-39-          </span>
+src/pages/categories.astro-40-        </a>
+--
+src/pages/index.astro-21-<Layout title="Recent Fatāwā">
+src/pages/index.astro-22-
+src/pages/index.astro-23-  <!-- Hero strip -->
+src/pages/index.astro:24:  <div style="background-color: var(--accent); color: var(--bg-page);">
+src/pages/index.astro-25-    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-2">
+src/pages/index.astro:26:      <p class="font-arabic text-5xl leading-none mb-1" style="color: var(--accent-hover);">فتاوى</p>
+src/pages/index.astro-27-      <h1 class="font-serif text-2xl">Islamic Legal Rulings — Translated</h1>
+src/pages/index.astro:28:      <p class="text-sm max-w-xl" style="color: rgba(245, 241, 234, 0.7);">
+src/pages/index.astro-29-        Fatawa Library is a curated archive of fatwas from senior scholars, translated for English-speaking readers.
+src/pages/index.astro-30-        All content links back to the original Arabic source.
+src/pages/index.astro-31-      </p>
+--
+src/pages/index.astro-50-    </div>
+src/pages/index.astro-51-
+src/pages/index.astro-52-    <!-- Empty state -->
+src/pages/index.astro:53:    <p id="empty-state" class="hidden text-center py-16 font-serif text-xl" style="color: var(--text-secondary);">
+src/pages/index.astro-54-      No fatwas match this filter.
+src/pages/index.astro-55-    </p>
+src/pages/index.astro-56-  </div>
+--
+src/pages/about.astro-7-  description="Learn what Fatawa Library is, which scholars are represented, and how to contact us."
+src/pages/about.astro-8->
+src/pages/about.astro-9-  <div class="max-w-3xl mx-auto px-4 py-10">
+src/pages/about.astro:10:    <h1 class="font-serif text-3xl mb-6" style="color: var(--text-primary);">About Fatawa Library</h1>
+src/pages/about.astro-11-
+src/pages/about.astro:12:    <div class="prose prose-fatwa prose-stone max-w-none" style="--tw-prose-body: var(--text-primary); --tw-prose-headings: var(--text-primary); --tw-prose-links: var(--accent); --tw-prose-quotes: var(--text-secondary);">
+src/pages/about.astro-13-      <h2>What Fatawa Library Is</h2>
+src/pages/about.astro-14-      <p>
+src/pages/about.astro-15-        Fatawa Library is a curated library of translated Islamic fatwas, built to help English-speaking readers

@@ -10,15 +10,20 @@ const { items } = Astro.props as { items: RelatedItem[] };
 
 {items && items.length > 0 ? (
   <section class="mt-10">
-    <h2 class="font-serif text-xl mb-4" style="color: var(--text-primary);">Related Fatāwā</h2>
+    <h2 class="font-sans text-xl font-medium mb-4 text-primary">Related Fatāwā</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       {items.map((item) => (
-        <a href={`/fatwa/${item.fatwa.id}`} class="block rounded-sm p-4 transition-colors" style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);">
-          <p class="text-xs font-medium mb-1" style="color: var(--accent);">
+        <a
+          href={`/fatwa/${item.fatwa.id}`}
+          class="block rounded-sm p-4 transition-colors bg-card border border-border text-primary hover:border-emphasis"
+        >
+          <p class="text-xs font-medium mb-1 text-accent">
             {item.scholar.name.replace('Shaykh ', '')}
           </p>
-          <p class="font-serif text-sm leading-snug line-clamp-3" style="color: var(--text-primary);">{item.question}</p>
-          <p class="text-xs mt-2" style="color: var(--text-muted);">{item.fatwa.date_added.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+          <p class="font-sans text-sm leading-snug line-clamp-3 text-primary">{item.question}</p>
+          <p class="text-xs mt-2 text-muted">
+            {item.fatwa.date_added.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+          </p>
         </a>
       ))}
     </div>

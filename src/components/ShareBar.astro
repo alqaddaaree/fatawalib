@@ -5,6 +5,18 @@ const pageURLJson = JSON.stringify(pageURL);
 ---
 
 <div class="mt-6 flex items-center gap-3 print:hidden">
-  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title || `Fatwa #${id}`)}&url=${encodeURIComponent(pageURL)}`} target="_blank" rel="noopener noreferrer" class="text-xs px-3 py-1 rounded-sm text-white font-medium transition-colors" style="background-color: var(--accent);">Share</a>
-  <button class="text-xs px-3 py-1 rounded-sm font-medium transition-colors" style="border: 1px solid var(--border-default); color: var(--accent);" onclick={`navigator.clipboard && navigator.clipboard.writeText(${pageURLJson})`}>Copy link</button>
+  <a
+    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title || `Fatwa #${id}`)}&url=${encodeURIComponent(pageURL)}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    class="text-xs px-3 py-1 rounded-sm text-page font-medium transition-colors bg-accent hover:bg-accent-hover"
+  >
+    Share
+  </a>
+  <button
+    class="text-xs px-3 py-1 rounded-sm font-medium transition-colors border border-border text-accent hover:bg-accent hover:text-page"
+    onclick={`navigator.clipboard && navigator.clipboard.writeText(${pageURLJson})`}
+  >
+    Copy link
+  </button>
 </div>

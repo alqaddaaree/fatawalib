@@ -155,8 +155,8 @@ declare module 'astro:content' {
   collection: "fatwas";
   data: InferEntrySchema<"fatwas">
 };
-"ibn-uthaymin-using-eye-drops-while-fasting.yaml": {
-	id: "ibn-uthaymin-using-eye-drops-while-fasting.yaml";
+"ibn-uthaymin-using-eye-drops-while-fasting": {
+	id: "ibn-uthaymin-using-eye-drops-while-fasting";
   collection: "fatwas";
   data: InferEntrySchema<"fatwas">
 };

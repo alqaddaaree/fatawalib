@@ -27,17 +27,19 @@ const { scholar, fatwas } = Astro.props;
 <Layout title={scholar.name} description={scholar.bio}>
   <div class="max-w-5xl mx-auto px-4 py-10">
 
-    <!-- Header -->
-    <div class="rounded-sm p-8 mb-8 flex flex-col sm:flex-row gap-6 items-start" style="background-color: var(--accent); color: var(--bg-page);">
-      <div class="flex-1">
-        <p class="font-arabic text-5xl mb-2 leading-none" style="color: var(--accent-hover);">{scholar.arabicName}</p>
-        <h1 class="font-serif text-2xl mb-1">{scholar.name}</h1>
-        <p class="text-sm font-sans mb-4" style="color: rgba(245, 241, 234, 0.6);">{scholar.lifespan}</p>
-        <p class="text-sm max-w-xl" style="color: rgba(245, 241, 234, 0.8);">{scholar.bio}</p>
+    <!-- Scholar header (accent background) -->
+    <div class="rounded-sm p-8 mb-8 flex flex-col sm:flex-row gap-6 items-start bg-accent text-page border border-emphasis relative overflow-hidden">
+      <!-- Subtle watermark -->
+      <span class="absolute right-4 top-2 font-arabic text-6xl leading-none pointer-events-none select-none opacity-20">عالم</span>
+      <div class="flex-1 relative z-10">
+        <p class="font-arabic text-5xl mb-2 leading-none text-accent-hover">{scholar.arabicName}</p>
+        <h1 class="font-sans text-2xl font-medium mb-1 text-page">{scholar.name}</h1>
+        <p class="text-sm font-sans mb-4 text-page/60">{scholar.lifespan}</p>
+        <p class="text-sm max-w-xl text-page/80">{scholar.bio}</p>
       </div>
-      <div class="text-center rounded-sm px-8 py-5 shrink-0" style="background-color: var(--accent-hover);">
-        <p class="font-serif text-4xl" style="color: var(--accent-hover); opacity: 0.3;">{fatwas.length}</p>
-        <p class="text-xs font-sans mt-1" style="color: rgba(245, 241, 234, 0.6);">Translated Fatwas</p>
+      <div class="text-center rounded-sm px-8 py-5 shrink-0 bg-accent-hover/40 border border-emphasis/30">
+        <p class="font-serif text-4xl text-page/90">{fatwas.length}</p>
+        <p class="text-[10px] font-semibold uppercase tracking-wider text-page/60">Translated Fatwas</p>
       </div>
     </div>
 
@@ -47,11 +49,11 @@ const { scholar, fatwas } = Astro.props;
         {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} scholar={scholar} />)}
       </div>
     ) : (
-      <p class="text-center py-16 font-serif text-xl" style="color: var(--text-secondary);">No fatwas yet for this scholar.</p>
+      <p class="text-center py-16 font-sans text-xl text-secondary">No fatwas yet for this scholar.</p>
     )}
 
     <div class="mt-8">
-      <a href="/scholars" class="text-sm font-sans font-medium transition-colors" style="color: var(--accent);">← All Scholars</a>
+      <a href="/scholars" class="text-sm font-sans font-medium text-accent hover:text-accent-hover transition-colors">← All Scholars</a>
     </div>
   </div>
 </Layout>

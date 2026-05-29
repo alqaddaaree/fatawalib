@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
+  /* Default theme: Parchment (light) */
+  :root,
+  html[data-theme="parchment"] {
     --bg-page: #FAF8F4;
     --bg-card: #F5F1EA;
     --border-default: #E5DFD3;
@@ -14,67 +16,142 @@
     --accent: #8B7355;
     --accent-hover: #6B5440;
     --bg-tag: #EDE8DF;
+
+    /* Header/footer specific (light themes use accent as background) */
+    --hdr-bg: var(--accent);
+    --hdr-text: #FAF8F4;
+    --hdr-sub: rgba(250, 248, 244, 0.55);
+    --hdr-ar: rgba(250, 248, 244, 0.7);
+    --hero-bg: var(--accent);
+    --hero-text: #FAF8F4;
+    --hero-sub: rgba(250, 248, 244, 0.65);
+    --hero-ar: rgba(250, 248, 244, 0.18);
   }
 
+  /* Slate (dark) */
+  html[data-theme="slate"] {
+    --bg-page: #151820;
+    --bg-card: #1C2030;
+    --border-default: #252C40;
+    --border-emphasis: #3A4870;
+    --text-primary: #E6E1D6;
+    --text-secondary: #968E84;
+    --text-muted: #5A5650;
+    --accent: #C4A25A;
+    --accent-hover: #D8BC74;
+    --bg-tag: #181C2C;
+
+    /* For dark themes, header/footer use bg-card instead of accent */
+    --hdr-bg: var(--bg-card);
+    --hdr-text: var(--text-primary);
+    --hdr-sub: rgba(230, 225, 214, 0.45);
+    --hdr-ar: var(--accent);
+    --hero-bg: var(--bg-page);
+    --hero-text: var(--text-primary);
+    --hero-sub: rgba(230, 225, 214, 0.5);
+    --hero-ar: rgba(58, 72, 112, 0.6);
+  }
+
+  /* Vellum (light, green) */
+  html[data-theme="vellum"] {
+    --bg-page: #F4F7EF;
+    --bg-card: #EAF0E2;
+    --border-default: #CDD9BE;
+    --border-emphasis: #A5BC90;
+    --text-primary: #1A2714;
+    --text-secondary: #476038;
+    --text-muted: #789068;
+    --accent: #345C27;
+    --accent-hover: #1E3E15;
+    --bg-tag: #DBE8CE;
+
+    --hdr-bg: var(--accent);
+    --hdr-text: #F4F7EF;
+    --hdr-sub: rgba(244, 247, 239, 0.5);
+    --hdr-ar: rgba(244, 247, 239, 0.65);
+    --hero-bg: var(--accent);
+    --hero-text: #F4F7EF;
+    --hero-sub: rgba(244, 247, 239, 0.6);
+    --hero-ar: rgba(244, 247, 239, 0.16);
+  }
+
+  /* Ink (near-black) */
+  html[data-theme="ink"] {
+    --bg-page: #0C0A08;
+    --bg-card: #131110;
+    --border-default: #201C16;
+    --border-emphasis: #38301E;
+    --text-primary: #EDE7DE;
+    --text-secondary: #A49880;
+    --text-muted: #5C5244;
+    --accent: #A8621A;
+    --accent-hover: #C87C2A;
+    --bg-tag: #181410;
+
+    --hdr-bg: var(--bg-card);
+    --hdr-text: var(--text-primary);
+    --hdr-sub: rgba(237, 231, 222, 0.4);
+    --hdr-ar: var(--accent);
+    --hero-bg: var(--bg-page);
+    --hero-text: var(--text-primary);
+    --hero-sub: rgba(237, 231, 222, 0.5);
+    --hero-ar: rgba(56, 48, 30, 0.8);
+  }
+
+  /* Base HTML & body styles */
   html {
     scroll-behavior: smooth;
+    background-color: var(--bg-page);
+    color: var(--text-primary);
   }
 
-  html.dark {
-    color-scheme: dark;
+  body {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
   }
 
-  /* Nice selection color */
-  ::selection {
-    background-color: var(--accent);
-    color: var(--bg-page);
+  /* Headings – Inter, no italics */
+  h1, h2, h3, h4, h5, h6,
+  .font-serif {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-style: normal;
   }
 
-  /* Improve Arabic rendering */
+  /* Arabic text */
   [lang="ar"], .font-arabic, .arabic-text {
-    font-feature-settings: "kern" 1;
-    text-rendering: optimizeLegibility;
     font-family: 'Amiri', serif;
     direction: rtl;
     text-align: right;
   }
 
+  ::selection {
+    background-color: var(--accent);
+    color: var(--bg-page);
+  }
+
   @media print {
-    header,
-    nav,
-    footer,
-    [data-filter-bar],
-    #theme-toggle,
-    .print\:hidden {
+    header, nav, footer, [data-filter-bar], #theme-toggle, .print\:hidden {
       display: none !important;
     }
-
-    html,
-    body {
+    html, body {
       background: #ffffff !important;
       color: #000000 !important;
     }
-
-    main,
-    .max-w-5xl,
-    .max-w-3xl {
+    main, .max-w-5xl, .max-w-3xl {
       max-width: 100% !important;
       width: 100% !important;
       margin: 0 !important;
       padding: 0 !important;
     }
-
-    .prose,
-    .prose * {
+    .prose, .prose * {
       color: #000000 !important;
     }
-
     a {
       color: #000000 !important;
       text-decoration: underline !important;
     }
-
-    /* Expand Arabic content for print */
     .arabic-text {
       direction: rtl !important;
       text-align: right !important;
@@ -84,12 +161,9 @@
 }
 
 @layer components {
-  /* Fatwa prose overrides */
   .prose h2:first-of-type {
     @apply mt-0;
   }
-
-  /* Smooth card transitions */
   .fatwa-card {
     @apply transition-all duration-200;
   }

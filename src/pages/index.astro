@@ -11,38 +11,57 @@ const allFatwas = (await getCollection('fatwas')).sort(
 
 // Build flat category list
 const categorySet = new Set<string>();
-allFatwas.forEach((f) => f.data.categories.forEach((c) => categorySet.add(c)));
+allFatwas.forEach((f) => f.data.categories.forEach((c: string) => categorySet.add(c)));
 const allCategories = [...categorySet].sort();
 
-// Read query params (Astro static: read from URL at build for SSR, or handle client-side)
-// For static output we use client-side JS filtering below.
+// Stats for hero
+const scholarCount = (await getCollection('scholars')).length;
+const categoryCount = allCategories.length;
+const fatwaCount = allFatwas.length;
 ---
 
 <Layout title="Recent Fatāwā">
 
-  <!-- Hero strip -->
-  <div style="background-color: var(--accent); color: var(--bg-page);">
-    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-2">
-      <p class="font-arabic text-5xl leading-none mb-1" style="color: var(--accent-hover);">فتاوى</p>
-      <h1 class="font-serif text-2xl">Islamic Legal Rulings — Translated</h1>
-      <p class="text-sm max-w-xl" style="color: rgba(245, 241, 234, 0.7);">
+  <!-- Hero strip (using CSS variables from theme) -->
+  <div class="hero relative overflow-hidden border-b border-border" style="background-color: var(--hero-bg, var(--accent));">
+    <!-- Watermark text -->
+    <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none font-arabic text-[220px] leading-none opacity-10" style="color: var(--hero-ar, rgba(0,0,0,0.1));">
+      فتاوى
+    </div>
+    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-3 relative">
+      <p class="font-arabic text-5xl leading-none" style="color: var(--hero-ar, var(--accent-hover));">مكتبة الفتاوى</p>
+      <h1 class="font-sans text-3xl font-medium tracking-tight" style="color: var(--hero-text, var(--text-primary));">Islamic Legal Rulings — Translated</h1>
+      <p class="text-sm max-w-xl" style="color: var(--hero-sub, rgba(0,0,0,0.6));">
         Fatawa Library is a curated archive of fatwas from senior scholars, translated for English-speaking readers.
         All content links back to the original Arabic source.
       </p>
+      <div class="flex gap-6 mt-2">
+        <div>
+          <div class="font-serif text-2xl" style="color: var(--hero-text, var(--text-primary));">{fatwaCount}</div>
+          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--hero-sub);">Rulings</div>
+        </div>
+        <div>
+          <div class="font-serif text-2xl" style="color: var(--hero-text, var(--text-primary));">{scholarCount}</div>
+          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--hero-sub);">Scholars</div>
+        </div>
+        <div>
+          <div class="font-serif text-2xl" style="color: var(--hero-text, var(--text-primary));">{categoryCount}</div>
+          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--hero-sub);">Categories</div>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- Main content area -->
   <div class="max-w-5xl mx-auto px-4 py-8">
-
-    <!-- Filter bar -->
     <FilterBar allCategories={allCategories} />
 
-    <!-- Grid of fatwas, rendered server-side; JS filters client-side -->
+    <!-- Grid of fatwas -->
     <div id="fatwa-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {allFatwas.map((fatwa) => (
         <div
           data-scholar={fatwa.data.scholar}
-          data-categories={fatwa.data.categories.map(c => c.toLowerCase().replace(/\s+/g, '-')).join(',')}
+          data-categories={fatwa.data.categories.map((c: string) => c.toLowerCase().replace(/\s+/g, '-')).join(',')}
         >
           <FatwaCard fatwa={fatwa} />
         </div>
@@ -50,7 +69,7 @@ const allCategories = [...categorySet].sort();
     </div>
 
     <!-- Empty state -->
-    <p id="empty-state" class="hidden text-center py-16 font-serif text-xl" style="color: var(--text-secondary);">
+    <p id="empty-state" class="hidden text-center py-16 font-serif text-xl text-secondary">
       No fatwas match this filter.
     </p>
   </div>

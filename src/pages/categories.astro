@@ -6,35 +6,28 @@ const allFatwas = await getCollection('fatwas');
 
 // Build category → count map
 const categoryMap = new Map<string, number>();
-allFatwas.forEach((f) => {
-  f.data.categories.forEach((cat) => {
-    categoryMap.set(cat, (categoryMap.get(cat) ?? 0) + 1);
+allFatwas.forEach((fatwa) => {
+  fatwa.data.categories.forEach((cat: string) => {
+    categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
   });
 });
 
-const categories = [...categoryMap.entries()]
-  .sort((a, b) => b[1] - a[1]) // sort by count desc
-  .map(([name, count]) => ({
-    name,
-    count,
-    slug: name.toLowerCase().replace(/\s+/g, '-'),
-  }));
+const categories = [...categoryMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 ---
 
 <Layout title="Categories">
-  <div class="max-w-4xl mx-auto px-4 py-10">
-    <h1 class="font-serif text-3xl mb-2" style="color: var(--text-primary);">Categories</h1>
-    <p style="color: var(--text-secondary);" class="text-sm mb-8">Browse all fatwa categories. Numbers show how many fatwas are in each.</p>
+  <div class="max-w-5xl mx-auto px-4 py-10">
+    <h1 class="font-sans text-3xl font-medium mb-2 text-primary">Categories</h1>
+    <p class="text-sm mb-8 text-secondary">Browse all fatwa categories. Numbers show how many fatwas are in each.</p>
 
-    <div class="flex flex-wrap gap-3">
-      {categories.map(({ name, count, slug }) => (
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+      {categories.map(([name, count]) => (
         <a
-          href={`/category/${slug}`}
-          class="group flex items-center gap-2 rounded-sm px-4 py-2.5 transition-all"
-          style="background-color: var(--bg-card); border: 1px solid var(--border-default);"
+          href={`/category/${name.toLowerCase().replace(/\s+/g, '-')}`}
+          class="flex items-center justify-between rounded-sm p-4 transition-colors bg-card border border-border hover:border-emphasis"
         >
-          <span class="font-sans text-sm transition-colors" style="color: var(--text-primary);">{name}</span>
-          <span class="text-xs font-medium rounded-full px-2 py-0.5 transition-colors" style="background-color: var(--bg-tag); color: var(--text-muted);">
+          <span class="font-sans text-sm text-primary">{name}</span>
+          <span class="text-xs font-medium rounded-full px-2 py-0.5 bg-tag text-muted">
             {count}
           </span>
         </a>

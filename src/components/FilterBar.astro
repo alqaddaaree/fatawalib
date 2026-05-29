@@ -1,10 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 
-// Fetch scholars from the collection and build a simple array
 const scholarsData = await getCollection('scholars');
 const scholars = scholarsData.map(s => ({
-  id: s.id,
+  slug: s.id,
   name: s.data.name,
 }));
 
@@ -17,7 +16,7 @@ export interface Props {
 const { activeScholar, activeCategory, allCategories } = Astro.props;
 ---
 
-<div data-filter-bar class="rounded-sm p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center" style="background-color: var(--bg-card); border: 1px solid var(--border-default); color: var(--text-primary);">
+<div data-filter-bar class="rounded-sm p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-card border border-border text-primary">
 
   <!-- Scholar filter -->
   <div class="flex flex-wrap gap-2 flex-1">
@@ -27,24 +26,22 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
       class:list={[
         'text-xs font-medium px-3 py-1.5 rounded-sm border transition-colors font-sans',
         !activeScholar
-          ? 'text-white'
-          : 'border-current text-stone-600 hover:border-teal-800 hover:text-teal-800',
+          ? 'bg-accent text-page border-accent'
+          : 'border-border text-secondary hover:border-accent hover:text-accent',
       ]}
-      style={!activeScholar ? `background-color: var(--accent); color: var(--bg-page); border: 1px solid var(--accent);` : `border-color: var(--border-default); color: var(--text-secondary);`}
     >
       All Scholars
     </a>
     {scholars.map((s) => (
       <a
-        data-scholar-link={s.id}
-        href={`/?scholar=${s.id}`}
+        data-scholar-link={s.slug}
+        href={`/?scholar=${s.slug}`}
         class:list={[
           'text-xs font-medium px-3 py-1.5 rounded-sm border transition-colors font-sans',
-          activeScholar === s.id
-            ? 'text-white'
-            : 'border-current text-stone-600 hover:border-teal-800 hover:text-teal-800',
+          activeScholar === s.slug
+            ? 'bg-accent text-page border-accent'
+            : 'border-border text-secondary hover:border-accent hover:text-accent',
         ]}
-        style={activeScholar === s.id ? `background-color: var(--accent); color: var(--bg-page); border: 1px solid var(--accent);` : `border-color: var(--border-default); color: var(--text-secondary);`}
       >
         {s.name.replace('Shaykh ', '')}
       </a>
@@ -56,8 +53,7 @@ const { activeScholar, activeCategory, allCategories } = Astro.props;
     <div class="shrink-0">
       <select
         id="category-filter"
-        class="text-xs font-sans px-3 py-1.5 focus:outline-none cursor-pointer rounded-sm"
-        style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);"
+        class="text-xs font-sans px-3 py-1.5 focus:outline-none cursor-pointer rounded-sm bg-page text-primary border border-border"
       >
         <option value="">All Categories</option>
         {allCategories.map((cat) => (

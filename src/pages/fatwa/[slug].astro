@@ -3,21 +3,20 @@ import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import FatwaHeader from '../../components/FatwaHeader.astro';
 import SourceBlock from '../../components/SourceBlock.astro';
-import ShareBar from '../../components/ShareBar.astro';
+import ShareMenu from '../../components/ShareMenu.astro';   // new component
 import RelatedFatwas from '../../components/RelatedFatwas.astro';
 import MarkdocRenderer from '../../components/MarkdocRenderer.astro';
 
 export async function getStaticPaths() {
   const fatwas = await getCollection('fatwas');
   return fatwas.map((fatwa) => ({
-    params: { slug: fatwa.id },   // fatwa.id = filename without .yaml
+    params: { slug: fatwa.id },
     props:  { fatwa },
   }));
 }
 
 // Fetch all scholars for the lookup map
 const allScholars = await getCollection('scholars');
-// 🔥 Force the map keys to be strings, not literal unions
 const scholarMap = new Map<string, any>(allScholars.map(s => [s.id, s.data]));
 
 function getScholar(scholarId: string) {
@@ -66,9 +65,7 @@ if (!fatwa) {
   return Astro.redirect('/404');
 }
 
-// 🔥 Store the current fatwa's id (slug) in a variable
 const currentId = fatwa.id;
-
 const { title, scholar, categories, source_url, translator, reviewer, date_issued, date_issued_gregorian, date_added, arabic_question, arabic_answer, audience, tags, question, answer, footnotes, notes } = fatwa.data;
 const scholarInfo = getScholar(scholar);
 
@@ -81,7 +78,6 @@ const generatedDescription = answerPlain
 // Related fatwas
 const allFatwas = await getCollection('fatwas');
 const relatedItems = allFatwas
-  // 🔥 Fixed: use currentId instead of undefined 'id'
   .filter(entry => entry.id !== currentId && entry.data.categories.some((cat: string) => categories.includes(cat)))
   .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime())
   .slice(0, 4)
@@ -105,6 +101,13 @@ const qaSchema = JSON.stringify({
     },
   },
 });
+
+// Determine if Arabic content exists
+const hasArabic = !!(arabic_question || arabic_answer);
+// Determine if English content exists (always true, but we keep symmetry)
+const hasEnglish = true;
+// Grid column classes: if both, use 1fr 1fr; if only one, use 1fr
+const gridCols = hasArabic && hasEnglish ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1';
 ---
 
 <Layout
@@ -115,95 +118,92 @@ const qaSchema = JSON.stringify({
     <script type="application/ld+json" set:html={qaSchema}></script>
   </Fragment>
 
-  <div id="top" class="max-w-3xl mx-auto px-4 py-10">
+  <div id="top" class="max-w-5xl mx-auto px-4 py-10">
 
     <!-- Breadcrumb -->
-    <nav class="text-xs text-stone-400 dark:text-stone-500 font-sans mb-6 flex items-center gap-2">
-      <a href="/" class="hover:text-teal-800 dark:hover:text-gold-400 transition-colors">Home</a>
+    <nav class="text-xs font-sans mb-6 flex items-center gap-2 text-muted">
+      <a href="/" class="hover:text-accent transition-colors">Home</a>
       <span>/</span>
-      <a href={`/scholar/${scholar}`} class="hover:text-teal-800 dark:hover:text-gold-400 transition-colors">{scholarInfo.name}</a>
+      <a href={`/scholar/${scholar}`} class="hover:text-accent transition-colors">{scholarInfo.name}</a>
       <span>/</span>
-      <span class="text-stone-600 dark:text-stone-300">{title || `Fatwa #${currentId}`}</span>
+      <span class="text-primary">{title || `Fatwa #${currentId}`}</span>
     </nav>
 
     <FatwaHeader fatwa={fatwa} scholarInfo={scholarInfo} />
 
-    <ShareBar id={currentId} title={title || `Fatwa #${currentId}`} />
+    <!-- Share menu instead of old ShareBar -->
+    <ShareMenu id={currentId} title={title || `Fatwa #${currentId}`} question={questionPlain} answer={answerPlain} />
 
-    <div class="prose prose-stone dark:prose-invert max-w-none mt-8" dir="auto">
-      <MarkdocRenderer content={question} />
+    <!-- Bilingual two‑column layout (conditional columns) -->
+    <div class={`grid ${gridCols} gap-10 mt-10`}>
+      <!-- English column (always shown) -->
+      <div class="space-y-8">
+        <div class="prose prose-stone dark:prose-invert max-w-none">
+          <h2 class="font-sans text-xl font-medium text-primary border-b border-border pb-2 mb-4">Question</h2>
+          <MarkdocRenderer content={question} />
+        </div>
+        <div class="prose prose-stone dark:prose-invert max-w-none">
+          <h2 class="font-sans text-xl font-medium text-primary border-b border-border pb-2 mb-4">Answer</h2>
+          <MarkdocRenderer content={answer} />
+        </div>
+      </div>
+
+      <!-- Arabic column (only if content exists) -->
+      {hasArabic && (
+        <div class="space-y-8" dir="rtl">
+          {arabic_question && (
+            <div class="prose prose-stone dark:prose-invert max-w-none">
+              <h2 class="font-arabic text-xl font-medium text-primary border-b border-border pb-2 mb-4">السؤال</h2>
+              <MarkdocRenderer content={arabic_question} />
+            </div>
+          )}
+          {arabic_answer && (
+            <div class="prose prose-stone dark:prose-invert max-w-none">
+              <h2 class="font-arabic text-xl font-medium text-primary border-b border-border pb-2 mb-4">الجواب</h2>
+              <MarkdocRenderer content={arabic_answer} />
+            </div>
+          )}
+        </div>
+      )}
     </div>
 
-    {arabic_question && (
-      <div class="prose prose-stone dark:prose-invert max-w-none mt-6" dir="rtl" lang="ar">
-        <MarkdocRenderer content={arabic_question} />
-      </div>
-    )}
-
-    <div class="prose prose-stone dark:prose-invert max-w-none mt-8" dir="auto">
-      <MarkdocRenderer content={answer} />
-    </div>
-
-    {arabic_answer && (
-      <div class="prose prose-stone dark:prose-invert max-w-none mt-6" dir="rtl" lang="ar">
-        <MarkdocRenderer content={arabic_answer} />
-      </div>
-    )}
-
+    <!-- Footnotes and Notes (if any) -->
     {footnotes && (
-      <div class="prose prose-stone dark:prose-invert max-w-none mt-8 border-t border-sand-200 dark:border-stone-700 pt-4">
-        <h2 class="font-serif text-xl text-teal-900 dark:text-gold-400">Footnotes</h2>
-        <MarkdocRenderer content={footnotes} />
+      <div class="mt-10 pt-6 border-t border-border">
+        <h2 class="font-sans text-xl font-medium text-primary mb-3">Footnotes</h2>
+        <div class="prose prose-stone dark:prose-invert max-w-none">
+          <MarkdocRenderer content={footnotes} />
+        </div>
       </div>
     )}
 
     {notes && (
-      <div class="prose prose-stone dark:prose-invert max-w-none mt-8 border-t border-sand-200 dark:border-stone-700 pt-4">
-        <h2 class="font-serif text-xl text-teal-900 dark:text-gold-400">Notes</h2>
-        <MarkdocRenderer content={notes} />
+      <div class="mt-8 pt-6 border-t border-border">
+        <h2 class="font-sans text-xl font-medium text-primary mb-3">Notes</h2>
+        <div class="prose prose-stone dark:prose-invert max-w-none">
+          <MarkdocRenderer content={notes} />
+        </div>
       </div>
     )}
 
+    <!-- Single SourceBlock (no duplicate) -->
     <SourceBlock source_url={source_url} />
 
     <RelatedFatwas items={relatedItems} />
 
-    <div class="mt-10 pt-6 border-t border-sand-200 dark:border-stone-700">
-      <p class="text-xs text-stone-400 dark:text-stone-500 font-sans mb-3">
-        This is a translation. Always consult the original Arabic for accuracy.
-      </p>
-      <details class="group rounded-lg border border-sand-200 dark:border-stone-700 bg-white dark:bg-stone-900 p-4">
-        <summary class="cursor-pointer list-none text-sm font-sans text-teal-800 dark:text-gold-400 font-medium flex items-center justify-between">
-          <span>View Original Source</span>
-          <span class="transition-transform group-open:rotate-180">▾</span>
-        </summary>
-        <div class="mt-3 text-xs text-stone-600 dark:text-stone-300 break-all">
-          <p class="mb-2">{source_url}</p>
-          <a
-            href={source_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center gap-1.5 bg-teal-900 hover:bg-teal-800 text-white px-3 py-1.5 rounded-md transition-colors"
-          >
-            Open source URL
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>
-            </svg>
-          </a>
-        </div>
-      </details>
-    </div>
-
-    <div class="mt-6 flex items-center justify-between gap-3 flex-wrap">
-      <a href="/" class="text-sm text-teal-800 dark:text-gold-400 hover:text-gold-600 font-sans font-medium transition-colors">← Back to all fatwas</a>
-      <a href={`mailto:fatawalib@example.com?subject=Report%20a%20mistake%20in%20Fatwa%20%23${currentId}`} class="text-xs text-stone-500 dark:text-stone-400 hover:text-teal-800 dark:hover:text-gold-400 transition-colors">
-        Report a mistake
-      </a>
+    <!-- Footer links (moved from SourceBlock duplication) -->
+    <div class="mt-10 pt-6 border-t border-border">
+      <div class="mt-6 flex items-center justify-between gap-3 flex-wrap">
+        <a href="/" class="text-sm text-accent hover:text-accent-hover font-sans font-medium transition-colors">← Back to all fatwas</a>
+        <a href={`mailto:fatawalib@example.com?subject=Report%20a%20mistake%20in%20Fatwa%20%23${currentId}`} class="text-xs text-muted hover:text-accent transition-colors">
+          Report a mistake
+        </a>
+      </div>
     </div>
 
     <a
       href="#top"
-      class="fixed bottom-5 right-5 z-30 print:hidden inline-flex items-center justify-center rounded-full bg-teal-900 hover:bg-teal-800 text-white shadow-lg w-10 h-10 transition-colors"
+      class="fixed bottom-5 right-5 z-30 print:hidden inline-flex items-center justify-center rounded-full bg-accent hover:bg-accent-hover text-page shadow-lg w-10 h-10 transition-colors"
       aria-label="Back to top"
     >
       ↑
