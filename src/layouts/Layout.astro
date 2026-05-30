@@ -1,194 +1,118 @@
 ---
+import '/src/styles/global.css';
 export interface Props {
   title: string;
   description?: string;
 }
-
-const { title, description = 'Fatawa Library is a curated archive of Islamic fatwas from senior scholars.' } = Astro.props;
+const { title, description = 'Fatawa Library – Islamic legal rulings in translation' } = Astro.props;
 const siteOrigin = Astro.site ?? new URL('https://fatawalib.com');
 const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
-const ogImage = new URL('/og-image-placeholder.jpg', siteOrigin);
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
-<html lang="en" data-theme="parchment">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" href="/favicon.ico" />
-
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonicalURL.toString()} />
-    <meta property="og:image" content={ogImage.toString()} />
-
-    <!-- Restore saved theme (data-theme) -->
-    <script is:inline>
-      (() => {
-        try {
-          const savedTheme = localStorage.getItem('theme');
-          if (savedTheme && ['parchment', 'slate', 'vellum', 'ink'].includes(savedTheme)) {
-            document.documentElement.setAttribute('data-theme', savedTheme);
-          } else {
-            // default to parchment
-            document.documentElement.setAttribute('data-theme', 'parchment');
-          }
-        } catch {
-          document.documentElement.setAttribute('data-theme', 'parchment');
-        }
-      })();
-    </script>
-
-    <!-- Google Fonts: Inter (sans) + Amiri (Arabic) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
-      rel="stylesheet"
-    />
-
-    <title>{title} — Fatawa Library</title>
-    <style>@import url('/src/styles/global.css');</style>
+    <title>{title} – Fatawa Library</title>
     <slot name="head" />
   </head>
-
-  <body class="min-h-screen flex flex-col antialiased" style="background-color: var(--bg-page); color: var(--text-primary);">
-
-    <!-- █████ FIXED THEME BAR (as in preview) █████ -->
-    <div class="fixed top-0 left-0 right-0 z-50 h-[52px] flex items-center px-5 gap-4 text-[10px] font-medium uppercase tracking-wide"
-         style="background: #111010; border-bottom: 1px solid #1E1E1E;">
-      <span class="text-[#3A3830]">Theme</span>
-      <div class="w-px h-[18px] bg-[#1E1E1E]"></div>
-      <div class="flex gap-1">
-        <button data-theme-btn="parchment" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
-          <span class="w-2 h-2 rounded-full bg-[#8B7355]"></span>Parchment
-        </button>
-        <button data-theme-btn="slate" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
-          <span class="w-2 h-2 rounded-full bg-[#C4A25A]"></span>Slate
-        </button>
-        <button data-theme-btn="vellum" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
-          <span class="w-2 h-2 rounded-full bg-[#345C27]"></span>Vellum
-        </button>
-        <button data-theme-btn="ink" class="theme-btn flex items-center gap-1.5 px-3 py-1 rounded-sm text-[11px] font-medium text-[#524E48] hover:text-[#A8A098] transition-colors">
-          <span class="w-2 h-2 rounded-full bg-[#A8621A]"></span>Ink
-        </button>
-      </div>
-      <div class="ml-auto text-[10px] text-[#282620] tracking-wide">fatawa-library / refactored</div>
-    </div>
-
-    <!-- █████ SITE HEADER █████ -->
-    <header class="site-header mt-[52px] border-b border-border/20" style="background-color: var(--hdr-bg, var(--accent));">
-      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-4 flex-wrap">
-        <a href="/" class="flex flex-col leading-tight group">
-          <span class="font-arabic text-xl transition-colors" style="color: var(--hdr-ar, var(--accent-hover));">مكتبة الفتاوى</span>
-          <span class="font-sans text-sm tracking-wide transition-colors" style="color: var(--hdr-text, var(--bg-page)); opacity: 0.85;">Fatawa Library</span>
-        </a>
-        <nav class="flex items-center gap-4 text-sm font-sans font-medium">
-          <a href="/" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">Home</a>
-          <a href="/scholars" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">Scholars</a>
-          <a href="/categories" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">Categories</a>
-          <a href="/about" class="opacity-65 hover:opacity-100 transition-opacity" style="color: var(--hdr-text, var(--bg-page));">About</a>
-
-          <form action="/search" method="get" class="hidden md:flex items-center gap-1">
-            <input type="search" name="q" placeholder="Search fatwas"
-                   class="w-44 lg:w-52 px-2.5 py-1.5 text-xs focus:outline-none rounded-sm"
-                   style="background-color: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-default);" />
-            <button type="submit"
-                    class="px-3 py-1.5 text-xs font-medium transition-colors rounded-sm"
-                    style="background-color: var(--accent); color: var(--bg-page); border: 1px solid var(--accent);">
-              Search
-            </button>
-          </form>
-
-          <a href="/search" class="md:hidden opacity-65 hover:opacity-100 transition-opacity" aria-label="Search">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-3.5-3.5" />
-            </svg>
-          </a>
-        </nav>
+  <body>
+    <header class="fl-nav">
+      <a href="/" class="fl-logo">
+        <span class="fl-logo-dot"></span>
+        Fatawa Library
+      </a>
+      <div class="fl-nav-links">
+        <a href="/" class:list={['', currentPath === '/' && 'active']}>Browse</a>
+        <a href="/scholars" class:list={['', currentPath === '/scholars' && 'active']}>Scholars</a>
+        <a href="/categories" class:list={['', currentPath === '/categories' && 'active']}>Categories</a>
+        <a href="/search" class:list={['', currentPath === '/search' && 'active']}>Search</a>
       </div>
     </header>
 
-    <!-- █████ MAIN CONTENT (slot for page-specific layout) █████ -->
-    <main class="flex-1">
+    <main>
       <slot />
     </main>
 
-    <!-- █████ FOOTER █████ -->
-    <footer class="site-footer mt-12 border-t border-border/20" style="background-color: var(--hdr-bg, var(--accent));">
-      <div class="max-w-5xl mx-auto px-4 py-6 flex flex-col sm:flex-row gap-4 justify-between items-start text-sm">
-        <div>
-          <p class="font-arabic text-lg mb-1" style="color: var(--hdr-ar, var(--accent-hover));">مكتبة الفتاوى</p>
-          <p class="text-xs" style="color: var(--hdr-sub, rgba(245,241,234,0.7));">Fatawa Library: translations of Islamic legal rulings from senior scholars.</p>
-        </div>
-        <div class="text-right text-xs" style="color: var(--hdr-sub, rgba(245,241,234,0.5));">
-          <p>Translations are provided for educational purposes.</p>
-          <p class="mt-1">Always refer to a qualified scholar for personal guidance.</p>
-          <p class="mt-1">2026 Fatawa Library</p>
-        </div>
-      </div>
+    <footer class="fl-footer">
+      <p>© {new Date().getFullYear()} Fatawa Library – translations for educational purposes</p>
     </footer>
-
-    <script is:inline>
-      (() => {
-        // Theme switcher logic (supports 4 themes)
-        const html = document.documentElement;
-        const btns = document.querySelectorAll('[data-theme-btn]');
-
-        const setTheme = (themeName) => {
-          html.setAttribute('data-theme', themeName);
-          localStorage.setItem('theme', themeName);
-          // Optional: update active button style
-          btns.forEach(btn => {
-            if (btn.getAttribute('data-theme-btn') === themeName) {
-              btn.classList.add('active');
-              btn.style.color = '#D0C8B8';
-              btn.style.borderColor = '#2A2A2A';
-              btn.style.backgroundColor = '#1A1918';
-            } else {
-              btn.classList.remove('active');
-              btn.style.color = '';
-              btn.style.borderColor = '';
-              btn.style.backgroundColor = '';
-            }
-          });
-        };
-
-        const saved = localStorage.getItem('theme');
-        const defaultTheme = (saved && ['parchment','slate','vellum','ink'].includes(saved)) ? saved : 'parchment';
-        setTheme(defaultTheme);
-
-        btns.forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const theme = btn.getAttribute('data-theme-btn');
-            if (theme) setTheme(theme);
-          });
-        });
-      })();
-    </script>
-
-    <style>
-      /* Additional header/footer adaptation for dark themes (as per preview) */
-      html[data-theme="slate"] .site-header,
-      html[data-theme="slate"] .site-footer,
-      html[data-theme="ink"] .site-header,
-      html[data-theme="ink"] .site-footer {
-        background-color: var(--bg-card) !important;
-      }
-      html[data-theme="slate"] .site-header,
-      html[data-theme="ink"] .site-header {
-        border-bottom-color: var(--border-default);
-      }
-      .theme-btn.active {
-        color: #D0C8B8;
-        border-color: #2A2A2A;
-        background: #1A1918;
-        border-radius: 2px;
-      }
-    </style>
   </body>
 </html>
+
+<style>
+  .fl-nav {
+    background: var(--bg-page);
+    border-bottom: 2px solid var(--accent-light);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+  .fl-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text-primary);
+  }
+  .fl-logo:hover {
+    text-decoration: none;
+  }
+  .fl-logo-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+  .fl-nav-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .fl-nav-links a {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .fl-nav-links a.active {
+    color: var(--accent);
+    border-bottom: 1.5px solid var(--accent);
+    padding-bottom: 2px;
+  }
+  .fl-nav-links a:hover {
+    color: var(--accent);
+  }
+
+  /* Footer positioning – keeps footer at bottom */
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+  }
+  main {
+    flex: 1;
+  }
+
+  .fl-footer {
+    background: var(--bg-page);
+    border-top: 1px solid var(--border-default);
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+</style>

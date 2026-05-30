@@ -1,59 +1,74 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import FatwaCard from '../../components/FatwaCard.astro';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const allScholars = await getCollection('scholars');
   const allFatwas = await getCollection('fatwas');
-  
-  return allScholars.map((scholarEntry) => {
-    const scholarId = scholarEntry.id;
-    return {
-      params: { scholar: scholarId },
-      props: {
-        scholar: scholarEntry.data,
-        fatwas: allFatwas
-          .filter((f) => f.data.scholar === scholarId)
-          .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime()),
-      },
-    };
-  });
+  return allScholars.map(scholar => ({
+    params: { scholar: scholar.id },
+    props: {
+      scholar: scholar.data,
+      fatwas: allFatwas
+        .filter(f => f.data.scholar === scholar.id)
+        .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime()),
+    },
+  }));
 }
 
 const { scholar, fatwas } = Astro.props;
 ---
 
-<Layout title={scholar.name} description={scholar.bio}>
-  <div class="max-w-5xl mx-auto px-4 py-10">
+<Layout title={`${scholar.name} – Fatwas`}>
+  <div class="scholar-header">
+    <h1>{scholar.name}</h1>
+    {scholar.arabicName && <p class="scholar-arabic">{scholar.arabicName}</p>}
+    <p class="scholar-bio">{scholar.bio}</p>
+  </div>
 
-    <!-- Scholar header (accent background) -->
-    <div class="rounded-sm p-8 mb-8 flex flex-col sm:flex-row gap-6 items-start bg-accent text-page border border-emphasis relative overflow-hidden">
-      <!-- Subtle watermark -->
-      <span class="absolute right-4 top-2 font-arabic text-6xl leading-none pointer-events-none select-none opacity-20">عالم</span>
-      <div class="flex-1 relative z-10">
-        <p class="font-arabic text-5xl mb-2 leading-none text-accent-hover">{scholar.arabicName}</p>
-        <h1 class="font-sans text-2xl font-medium mb-1 text-page">{scholar.name}</h1>
-        <p class="text-sm font-sans mb-4 text-page/60">{scholar.lifespan}</p>
-        <p class="text-sm max-w-xl text-page/80">{scholar.bio}</p>
-      </div>
-      <div class="text-center rounded-sm px-8 py-5 shrink-0 bg-accent-hover/40 border border-emphasis/30">
-        <p class="font-serif text-4xl text-page/90">{fatwas.length}</p>
-        <p class="text-[10px] font-semibold uppercase tracking-wider text-page/60">Translated Fatwas</p>
-      </div>
-    </div>
-
-    <!-- Fatwas grid -->
-    {fatwas.length > 0 ? (
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} scholar={scholar} />)}
-      </div>
-    ) : (
-      <p class="text-center py-16 font-sans text-xl text-secondary">No fatwas yet for this scholar.</p>
-    )}
-
-    <div class="mt-8">
-      <a href="/scholars" class="text-sm font-sans font-medium text-accent hover:text-accent-hover transition-colors">← All Scholars</a>
-    </div>
+  <div class="cards-grid">
+    {fatwas.map(f => (
+      <FatwaCard
+        id={f.id}
+        title={f.data.title}
+        categories={f.data.categories}
+        scholarName={scholar.name}
+        date={f.data.date_added}
+      />
+    ))}
   </div>
 </Layout>
+
+<style>
+  .scholar-header {
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--border-default);
+    margin-bottom: 1rem;
+  }
+  .scholar-header h1 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  .scholar-arabic {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+  .scholar-bio {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--text-secondary);
+    max-width: 65ch;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    padding: 0 2rem 2rem;
+  }
+</style>

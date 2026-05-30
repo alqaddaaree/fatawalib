@@ -1,212 +1,360 @@
 ---
-import { getCollection, getEntry, type CollectionEntry } from 'astro:content';
-import Layout from '../../layouts/Layout.astro';
-import FatwaHeader from '../../components/FatwaHeader.astro';
-import SourceBlock from '../../components/SourceBlock.astro';
-import ShareMenu from '../../components/ShareMenu.astro';   // new component
-import RelatedFatwas from '../../components/RelatedFatwas.astro';
-import MarkdocRenderer from '../../components/MarkdocRenderer.astro';
+import Layout from "../../layouts/Layout.astro";
+import { getEntry, getCollection } from "astro:content";
+import MarkdocRenderer from "../../components/MarkdocRenderer.astro";
+import ShareMenu from "../../components/ShareMenu.astro";
+import SourceBlock from "../../components/SourceBlock.astro";
 
 export async function getStaticPaths() {
-  const fatwas = await getCollection('fatwas');
-  return fatwas.map((fatwa) => ({
-    params: { slug: fatwa.id },
-    props:  { fatwa },
-  }));
+  const fatwas = await getCollection("fatwas");
+  return fatwas.map((f) => ({ params: { slug: f.id }, props: { fatwa: f } }));
 }
 
-// Fetch all scholars for the lookup map
-const allScholars = await getCollection('scholars');
-const scholarMap = new Map<string, any>(allScholars.map(s => [s.id, s.data]));
+const { fatwa } = Astro.props;
+if (!fatwa) return Astro.redirect("/404");
 
-function getScholar(scholarId: string) {
-  const scholar = scholarMap.get(scholarId);
-  if (!scholar) {
-    return {
-      name: scholarId,
-      arabicName: '',
-      lifespan: '',
-      bio: '',
-    };
-  }
-  return scholar;
-}
-
-function toPlainText(content: any): string {
-  if (!content) return '';
-  if (typeof content === 'string') return content.replace(/\n/g, ' ');
-  function extract(node: any): string {
-    if (!node) return '';
-    if (typeof node === 'string') return node;
-    if (Array.isArray(node)) return node.map(extract).join(' ');
-    if (node.text) return node.text;
-    if (node.children) return extract(node.children);
-    return '';
-  }
-  try {
-    return extract(content).replace(/\s+/g, ' ').trim();
-  } catch {
-    return '';
-  }
-}
-
-function truncateText(input: string, max = 100): string {
-  if (!input) return '';
-  if (input.length <= max) return input;
-  return `${input.slice(0, max).trimEnd()}...`;
-}
-
-const { slug } = Astro.params;
-let fatwa = Astro.props.fatwa as CollectionEntry<'fatwas'> | undefined;
-if (!fatwa) {
-  fatwa = await getEntry('fatwas', slug!);
-}
-if (!fatwa) {
-  return Astro.redirect('/404');
-}
-
-const currentId = fatwa.id;
-const { title, scholar, categories, source_url, translator, reviewer, date_issued, date_issued_gregorian, date_added, arabic_question, arabic_answer, audience, tags, question, answer, footnotes, notes } = fatwa.data;
-const scholarInfo = getScholar(scholar);
-
-const questionPlain = toPlainText(question);
-const answerPlain = toPlainText(answer);
-const generatedDescription = answerPlain
-  ? `${truncateText(answerPlain, 160)}...`
-  : `A translated fatwa by ${scholarInfo.name}, covering: ${categories.join(', ')}.`;
-
-// Related fatwas
-const allFatwas = await getCollection('fatwas');
-const relatedItems = allFatwas
-  .filter(entry => entry.id !== currentId && entry.data.categories.some((cat: string) => categories.includes(cat)))
-  .sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime())
-  .slice(0, 4)
-  .map(entry => ({
-    fatwa: entry,
-    scholar: getScholar(entry.data.scholar),
-    question: truncateText(toPlainText(entry.data.question), 100),
-  }));
-
-const qaSchema = JSON.stringify({
-  '@context': 'https://schema.org',
-  '@type': 'QAPage',
-  mainEntity: {
-    '@type': 'Question',
-    name: questionPlain || `Fatwa #${currentId}`,
-    text: questionPlain || `Fatwa #${currentId}`,
-    answerCount: 1,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: answerPlain || 'Refer to the fatwa page for the complete answer.',
-    },
-  },
-});
-
-// Determine if Arabic content exists
-const hasArabic = !!(arabic_question || arabic_answer);
-// Determine if English content exists (always true, but we keep symmetry)
-const hasEnglish = true;
-// Grid column classes: if both, use 1fr 1fr; if only one, use 1fr
-const gridCols = hasArabic && hasEnglish ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1';
+const {
+  title,
+  scholar,
+  date_added,
+  translator,
+  categories,
+  question,
+  answer,
+  source_url,
+  notes,
+  footnotes,
+} = fatwa.data;
+const scholarEntry = await getEntry("scholars", scholar);
+const scholarName = scholarEntry?.data.name || scholar;
 ---
 
-<Layout
-  title={`Fatwa — ${scholarInfo.name}`}
-  description={generatedDescription}
->
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={qaSchema}></script>
-  </Fragment>
+<Layout title={title || `Fatwa #${fatwa.id}`}>
+  <div class="fatwa-page">
 
-  <div id="top" class="max-w-5xl mx-auto px-4 py-10">
-
-    <!-- Breadcrumb -->
-    <nav class="text-xs font-sans mb-6 flex items-center gap-2 text-muted">
-      <a href="/" class="hover:text-accent transition-colors">Home</a>
-      <span>/</span>
-      <a href={`/scholar/${scholar}`} class="hover:text-accent transition-colors">{scholarInfo.name}</a>
-      <span>/</span>
-      <span class="text-primary">{title || `Fatwa #${currentId}`}</span>
-    </nav>
-
-    <FatwaHeader fatwa={fatwa} scholarInfo={scholarInfo} />
-
-    <!-- Share menu instead of old ShareBar -->
-    <ShareMenu id={currentId} title={title || `Fatwa #${currentId}`} question={questionPlain} answer={answerPlain} />
-
-    <!-- Bilingual two‑column layout (conditional columns) -->
-    <div class={`grid ${gridCols} gap-10 mt-10`}>
-      <!-- English column (always shown) -->
-      <div class="space-y-8">
-        <div class="prose prose-stone dark:prose-invert max-w-none">
-          <h2 class="font-sans text-xl font-medium text-primary border-b border-border pb-2 mb-4">Question</h2>
-          <MarkdocRenderer content={question} />
-        </div>
-        <div class="prose prose-stone dark:prose-invert max-w-none">
-          <h2 class="font-sans text-xl font-medium text-primary border-b border-border pb-2 mb-4">Answer</h2>
-          <MarkdocRenderer content={answer} />
-        </div>
+    <!-- Page header: full width, left-aligned -->
+    <header class="fatwa-page-header">
+      <div class="fatwa-page-header-inner">
+        <p class="fatwa-eyebrow">Fatwa</p>
+        <h1 class="fatwa-title">{title || `Fatwa #${fatwa.id}`}</h1>
       </div>
+    </header>
 
-      <!-- Arabic column (only if content exists) -->
-      {hasArabic && (
-        <div class="space-y-8" dir="rtl">
-          {arabic_question && (
-            <div class="prose prose-stone dark:prose-invert max-w-none">
-              <h2 class="font-arabic text-xl font-medium text-primary border-b border-border pb-2 mb-4">السؤال</h2>
-              <MarkdocRenderer content={arabic_question} />
+    <!-- Two‑column body -->
+    <div class="fatwa-body">
+
+      <!-- LEFT: main reading column -->
+      <main class="fatwa-main">
+
+        <!-- QUESTION (label outside tinted box) -->
+        <div class="fatwa-question-wrapper">
+          <span class="fatwa-block-label">Question</span>
+          <div class="fatwa-block--question">
+            <div class="fatwa-block-content">
+              <MarkdocRenderer content={question} />
+            </div>
+          </div>
+        </div>
+
+        <!-- ANSWER (label above clean content) -->
+        <section class="fatwa-block fatwa-block--answer">
+          <span class="fatwa-block-label">Answer</span>
+          <div class="fatwa-block-content">
+            <MarkdocRenderer content={answer} />
+          </div>
+        </section>
+
+        <!-- Footnotes & Notes -->
+        {(footnotes || notes) && (
+          <div class="fatwa-supplements">
+            {footnotes && (
+              <div class="fatwa-supplement">
+                <span class="fatwa-block-label">Footnotes</span>
+                <div class="fatwa-supplement-content">
+                  <MarkdocRenderer content={footnotes} />
+                </div>
+              </div>
+            )}
+            {notes && (
+              <div class="fatwa-supplement">
+                <span class="fatwa-block-label">Notes</span>
+                <div class="fatwa-supplement-content">
+                  <MarkdocRenderer content={notes} />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </main>
+
+      <!-- RIGHT: sticky metadata sidebar -->
+      <aside class="fatwa-sidebar">
+        <!-- Metadata card -->
+        <div class="fatwa-sidebar-card">
+          <div class="fatwa-meta-row">
+            <span class="fatwa-meta-label">Scholar</span>
+            <span class="fatwa-meta-value">{scholarName}</span>
+          </div>
+          <div class="fatwa-meta-row">
+            <span class="fatwa-meta-label">Date</span>
+            <time class="fatwa-meta-value">{date_added.toLocaleDateString()}</time>
+          </div>
+          {translator && (
+            <div class="fatwa-meta-row">
+              <span class="fatwa-meta-label">Translator</span>
+              <span class="fatwa-meta-value">{translator}</span>
             </div>
           )}
-          {arabic_answer && (
-            <div class="prose prose-stone dark:prose-invert max-w-none">
-              <h2 class="font-arabic text-xl font-medium text-primary border-b border-border pb-2 mb-4">الجواب</h2>
-              <MarkdocRenderer content={arabic_answer} />
+          {categories?.length > 0 && (
+            <div class="fatwa-meta-row fatwa-meta-row--cats">
+              <span class="fatwa-meta-label">Categories</span>
+              <div class="fatwa-cats">
+                {categories.map((cat: string) => (
+                  <a
+                    href={`/category/${cat.toLowerCase().replace(/\s+/g, "-")}`}
+                    class="fatwa-cat"
+                  >
+                    {cat}
+                  </a>
+                ))}
+              </div>
             </div>
           )}
         </div>
-      )}
+
+        <!-- Source block (no extra wrapper) -->
+        {source_url && <SourceBlock source_url={source_url} />}
+
+        <!-- Share menu (no extra wrapper) -->
+        <ShareMenu id={fatwa.id} title={title} question={question} answer={answer} />
+      </aside>
     </div>
-
-    <!-- Footnotes and Notes (if any) -->
-    {footnotes && (
-      <div class="mt-10 pt-6 border-t border-border">
-        <h2 class="font-sans text-xl font-medium text-primary mb-3">Footnotes</h2>
-        <div class="prose prose-stone dark:prose-invert max-w-none">
-          <MarkdocRenderer content={footnotes} />
-        </div>
-      </div>
-    )}
-
-    {notes && (
-      <div class="mt-8 pt-6 border-t border-border">
-        <h2 class="font-sans text-xl font-medium text-primary mb-3">Notes</h2>
-        <div class="prose prose-stone dark:prose-invert max-w-none">
-          <MarkdocRenderer content={notes} />
-        </div>
-      </div>
-    )}
-
-    <!-- Single SourceBlock (no duplicate) -->
-    <SourceBlock source_url={source_url} />
-
-    <RelatedFatwas items={relatedItems} />
-
-    <!-- Footer links (moved from SourceBlock duplication) -->
-    <div class="mt-10 pt-6 border-t border-border">
-      <div class="mt-6 flex items-center justify-between gap-3 flex-wrap">
-        <a href="/" class="text-sm text-accent hover:text-accent-hover font-sans font-medium transition-colors">← Back to all fatwas</a>
-        <a href={`mailto:fatawalib@example.com?subject=Report%20a%20mistake%20in%20Fatwa%20%23${currentId}`} class="text-xs text-muted hover:text-accent transition-colors">
-          Report a mistake
-        </a>
-      </div>
-    </div>
-
-    <a
-      href="#top"
-      class="fixed bottom-5 right-5 z-30 print:hidden inline-flex items-center justify-center rounded-full bg-accent hover:bg-accent-hover text-page shadow-lg w-10 h-10 transition-colors"
-      aria-label="Back to top"
-    >
-      ↑
-    </a>
   </div>
 </Layout>
+
+<style>
+  /* ── Page shell ── */
+  .fatwa-page {
+    background: var(--bg-page);
+    min-height: 100vh;
+  }
+
+  /* ── Header: full width, left-aligned ── */
+  .fatwa-page-header {
+    border-bottom: 1px solid var(--border-default);
+    padding: 2.5rem 2rem 2rem;
+  }
+
+  .fatwa-page-header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .fatwa-eyebrow {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 0.5rem;
+  }
+
+  .fatwa-title {
+    font-family: var(--font-serif);
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-primary);
+    margin: 0;
+    max-width: 70ch;
+  }
+
+  /* ── Two‑column body ── */
+  .fatwa-body {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* ── Main reading column ── */
+  .fatwa-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* ── Question: label outside, tinted box inside ── */
+  .fatwa-question-wrapper {
+    margin-bottom: 2rem;
+  }
+
+  .fatwa-block--question {
+    background: var(--bg-hover);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 6px 6px 0;
+    padding: 1.25rem 1.5rem;
+  }
+
+  /* ── Answer: label above, no extra background ── */
+  .fatwa-block--answer {
+    border-bottom: none;
+    margin-bottom: 0;
+  }
+
+  /* Common label style */
+  .fatwa-block-label {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  /* Common content style */
+  .fatwa-block-content {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    line-height: 1.85;
+    color: var(--text-primary);
+  }
+
+  .fatwa-block-content p {
+    margin: 0 0 1.4rem;
+  }
+  .fatwa-block-content p:last-child {
+    margin-bottom: 0;
+  }
+  .fatwa-block-content h2,
+  .fatwa-block-content h3 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    margin: 1.75rem 0 0.6rem;
+    color: var(--text-primary);
+  }
+  .fatwa-block-content h2 { font-size: 18px; }
+  .fatwa-block-content h3 { font-size: 16px; }
+
+  /* ── Footnotes / Notes ── */
+  .fatwa-supplements {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .fatwa-supplement-content {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .fatwa-supplement-content p {
+    margin: 0 0 0.75rem;
+  }
+
+  /* ── Sidebar ── */
+  .fatwa-sidebar {
+    position: sticky;
+    top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .fatwa-sidebar-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border-default);
+    border-top: 2.5px solid var(--accent);
+    border-radius: var(--radius-card);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .fatwa-meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border-default);
+  }
+  .fatwa-meta-row:first-child {
+    padding-top: 0;
+  }
+  .fatwa-meta-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .fatwa-meta-label {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .fatwa-meta-value {
+    font-family: var(--font-serif);
+    font-size: 14px;
+    color: var(--text-primary);
+  }
+
+  .fatwa-meta-row--cats {
+    gap: 6px;
+  }
+
+  .fatwa-cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .fatwa-cat {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-pill);
+    color: var(--accent);
+    border: 1px solid var(--accent-light);
+    text-decoration: none;
+    transition: background var(--transition);
+    letter-spacing: 0.03em;
+  }
+  .fatwa-cat:hover {
+    background: var(--accent-light);
+  }
+
+  /* ── Responsive: stack on mobile/tablet ── */
+  @media (max-width: 768px) {
+    .fatwa-page-header {
+      padding: 1.5rem 1.25rem 1.25rem;
+    }
+
+    .fatwa-body {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 1.5rem 1.25rem;
+    }
+
+    .fatwa-sidebar {
+      position: static;
+    }
+
+    .fatwa-block-content {
+      font-size: 16px;
+    }
+  }
+</style>

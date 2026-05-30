@@ -1,37 +1,83 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
 
 const allFatwas = await getCollection('fatwas');
-
-// Build category → count map
 const categoryMap = new Map<string, number>();
-allFatwas.forEach((fatwa) => {
-  fatwa.data.categories.forEach((cat: string) => {
+allFatwas.forEach(f => {
+  f.data.categories.forEach((cat: string) => {
     categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
   });
 });
-
 const categories = [...categoryMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 ---
 
 <Layout title="Categories">
-  <div class="max-w-5xl mx-auto px-4 py-10">
-    <h1 class="font-sans text-3xl font-medium mb-2 text-primary">Categories</h1>
-    <p class="text-sm mb-8 text-secondary">Browse all fatwa categories. Numbers show how many fatwas are in each.</p>
+  <div class="categories-header">
+    <h1>Categories</h1>
+    <p>Browse fatwas by category</p>
+  </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-      {categories.map(([name, count]) => (
-        <a
-          href={`/category/${name.toLowerCase().replace(/\s+/g, '-')}`}
-          class="flex items-center justify-between rounded-sm p-4 transition-colors bg-card border border-border hover:border-emphasis"
-        >
-          <span class="font-sans text-sm text-primary">{name}</span>
-          <span class="text-xs font-medium rounded-full px-2 py-0.5 bg-tag text-muted">
-            {count}
-          </span>
-        </a>
-      ))}
-    </div>
+  <div class="categories-grid">
+    {categories.map(([name, count]) => (
+      <a href={`/category/${name.toLowerCase().replace(/\s+/g, '-')}`} class="category-card">
+        <span class="category-name">{name}</span>
+        <span class="category-count">{count}</span>
+      </a>
+    ))}
   </div>
 </Layout>
+
+<style>
+  .categories-header {
+    padding: 2rem 2rem 1rem;
+    border-bottom: 1px solid var(--border-default);
+    margin-bottom: 1rem;
+  }
+  .categories-header h1 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  .categories-header p {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    padding: 0 2rem 2rem;
+  }
+  .category-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--bg-card);
+    border: 0.5px solid var(--border-default);
+    border-radius: var(--radius-card);
+    text-decoration: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  .category-card:hover {
+    background: var(--bg-hover);
+    border-color: var(--accent-light);
+  }
+  .category-name {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--text-primary);
+  }
+  .category-count {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    background: var(--bg-pill);
+    color: var(--accent);
+    padding: 2px 8px;
+    border-radius: 99px;
+  }
+</style>

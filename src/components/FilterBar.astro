@@ -1,97 +1,82 @@
 ---
 import { getCollection } from 'astro:content';
 
-const scholarsData = await getCollection('scholars');
-const scholars = scholarsData.map(s => ({
-  slug: s.id,
-  name: s.data.name,
-}));
+const scholars = (await getCollection('scholars')).map(s => ({ slug: s.id, name: s.data.name }));
 
 export interface Props {
   activeScholar?: string;
   activeCategory?: string;
   allCategories: string[];
 }
-
 const { activeScholar, activeCategory, allCategories } = Astro.props;
 ---
 
-<div data-filter-bar class="rounded-sm p-4 mb-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center bg-card border border-border text-primary">
+<div class="fl-filters">
+  <span class="fl-filters-label">Filter</span>
+  <a href="/" class:list={['fl-btn', !activeScholar && !activeCategory && 'on']}>All</a>
 
-  <!-- Scholar filter -->
-  <div class="flex flex-wrap gap-2 flex-1">
+  {scholars.map(s => (
     <a
-      data-scholar-link=""
-      href="/"
-      class:list={[
-        'text-xs font-medium px-3 py-1.5 rounded-sm border transition-colors font-sans',
-        !activeScholar
-          ? 'bg-accent text-page border-accent'
-          : 'border-border text-secondary hover:border-accent hover:text-accent',
-      ]}
+      href={`/?scholar=${s.slug}`}
+      class:list={['fl-btn', activeScholar === s.slug && 'on']}
     >
-      All Scholars
+      {s.name.replace('Shaykh ', '')}
     </a>
-    {scholars.map((s) => (
-      <a
-        data-scholar-link={s.slug}
-        href={`/?scholar=${s.slug}`}
-        class:list={[
-          'text-xs font-medium px-3 py-1.5 rounded-sm border transition-colors font-sans',
-          activeScholar === s.slug
-            ? 'bg-accent text-page border-accent'
-            : 'border-border text-secondary hover:border-accent hover:text-accent',
-        ]}
-      >
-        {s.name.replace('Shaykh ', '')}
-      </a>
-    ))}
-  </div>
+  ))}
 
-  <!-- Category filter -->
-  {allCategories.length > 0 && (
-    <div class="shrink-0">
-      <select
-        id="category-filter"
-        class="text-xs font-sans px-3 py-1.5 focus:outline-none cursor-pointer rounded-sm bg-page text-primary border border-border"
+  {allCategories.map(cat => {
+    const catSlug = cat.toLowerCase().replace(/\s+/g, '-');
+    return (
+      <a
+        href={`/?category=${catSlug}`}
+        class:list={['fl-btn', activeCategory === catSlug && 'on']}
       >
-        <option value="">All Categories</option>
-        {allCategories.map((cat) => (
-          <option
-            value={encodeURIComponent(cat.toLowerCase().replace(/\s+/g, '-'))}
-            selected={activeCategory === cat.toLowerCase().replace(/\s+/g, '-')}
-          >
-            {cat}
-          </option>
-        ))}
-      </select>
-    </div>
-  )}
+        {cat}
+      </a>
+    );
+  })}
 </div>
 
-<script>
-  const params = new URLSearchParams(window.location.search);
-  const scholar = params.get('scholar') ?? '';
-  const category = params.get('category') ?? '';
-
-  document.querySelectorAll<HTMLAnchorElement>('[data-scholar-link]').forEach((link) => {
-    const scholarId = link.dataset.scholarLink ?? '';
-    const next = new URLSearchParams();
-    if (scholarId) next.set('scholar', scholarId);
-    if (category) next.set('category', category);
-    link.href = next.toString() ? `/?${next.toString()}` : '/';
-  });
-
-  const select = document.getElementById('category-filter') as HTMLSelectElement | null;
-  if (select) {
-    const baseParams = new URLSearchParams();
-    if (scholar) baseParams.set('scholar', scholar);
-    select.dataset.base = baseParams.toString() ? `/?${baseParams.toString()}` : '/?';
-    select.value = category;
-    select.addEventListener('change', () => {
-      const base = select.dataset.base ?? '/?';
-      const categoryPart = select.value ? `${base.includes('?') ? '&' : '?'}category=${select.value}` : '';
-      window.location.href = `${base}${categoryPart}`.replace('/?&', '/?');
-    });
+<style>
+  .fl-filters {
+    padding: 0.75rem 2rem;
+    border-bottom: 1px solid var(--border-default);
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    background: var(--bg-page);
+    flex-wrap: wrap;
   }
-</script>
+  .fl-filters-label {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-right: 0.3rem;
+  }
+  .fl-btn {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 99px;
+    border: 1px solid var(--border-default);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-block;
+  }
+  .fl-btn.on {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .fl-btn:not(.on):hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-pill);
+  }
+</style>

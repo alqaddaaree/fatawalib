@@ -5,10 +5,10 @@ const shareText = `${title}\n\n${question || ''}\n\n${answer ? answer.slice(0, 2
 const fullMessage = encodeURIComponent(`${title}\n\nRead more: ${pageURL}`);
 ---
 
-<div class="relative" x-data="{ open: false }">
+<div class="share-dropdown" x-data="{ open: false }">
   <button
     @click="open = !open"
-    class="text-xs px-3 py-1 rounded-sm font-medium transition-colors bg-accent text-page hover:bg-accent-hover"
+    class="share-btn"
     aria-label="Share this fatwa"
   >
     Share
@@ -18,49 +18,97 @@ const fullMessage = encodeURIComponent(`${title}\n\nRead more: ${pageURL}`);
     x-show="open"
     @click.away="open = false"
     x-cloak
-    class="absolute left-0 mt-2 w-48 rounded-sm shadow-lg bg-card border border-border z-50"
+    class="share-menu"
   >
-    <div class="py-1">
-      <a
-        href={`https://wa.me/?text=${fullMessage}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="block px-4 py-2 text-xs text-primary hover:bg-tag transition-colors"
-      >
-        WhatsApp
-      </a>
-      <a
-        href={`https://t.me/share/url?url=${encodeURIComponent(pageURL)}&text=${encodeURIComponent(shareText)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="block px-4 py-2 text-xs text-primary hover:bg-tag transition-colors"
-      >
-        Telegram
-      </a>
-      <a
-        href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${shareText}\n\n${pageURL}`)}`}
-        class="block px-4 py-2 text-xs text-primary hover:bg-tag transition-colors"
-      >
-        Email
-      </a>
-      <button
-        @click="navigator.clipboard.writeText($el.getAttribute('data-url')); alert('Link copied to clipboard'); open = false"
-        data-url={pageURL}
-        class="block w-full text-left px-4 py-2 text-xs text-primary hover:bg-tag transition-colors"
-      >
-        Copy link
-      </button>
-      <button
-        @click="navigator.clipboard.writeText($el.getAttribute('data-text')); alert('Fatwa text copied to clipboard'); open = false"
-        data-text={shareText}
-        class="block w-full text-left px-4 py-2 text-xs text-primary hover:bg-tag transition-colors"
-      >
-        Copy fatwa
-      </button>
-    </div>
+    <a
+      href={`https://wa.me/?text=${fullMessage}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="share-menu-item"
+    >
+      WhatsApp
+    </a>
+    <a
+      href={`https://t.me/share/url?url=${encodeURIComponent(pageURL)}&text=${encodeURIComponent(shareText)}`}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="share-menu-item"
+    >
+      Telegram
+    </a>
+    <a
+      href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${shareText}\n\n${pageURL}`)}`}
+      class="share-menu-item"
+    >
+      Email
+    </a>
+    <button
+      @click="navigator.clipboard.writeText($el.getAttribute('data-url')); alert('Link copied to clipboard'); open = false"
+      data-url={pageURL}
+      class="share-menu-item"
+    >
+      Copy link
+    </button>
+    <button
+      @click="navigator.clipboard.writeText($el.getAttribute('data-text')); alert('Fatwa text copied to clipboard'); open = false"
+      data-text={shareText}
+      class="share-menu-item"
+    >
+      Copy fatwa
+    </button>
   </div>
 </div>
 
 <style>
+  .share-dropdown {
+    position: relative;
+  }
+  .share-btn {
+    background: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: 99px;
+    padding: 6px 16px;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+  }
+  .share-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-pill);
+  }
+  .share-menu {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 8px;
+    width: 180px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    z-index: 50;
+    padding: 0.25rem 0;
+  }
+  .share-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-primary);
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  .share-menu-item:hover {
+    background: var(--bg-hover);
+  }
   [x-cloak] { display: none !important; }
 </style>

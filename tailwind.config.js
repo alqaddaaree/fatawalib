@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class', // we use data-theme, but keep 'class' for fallback
+  darkMode: 'class',
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
@@ -10,6 +10,12 @@ export default {
         accent: {
           DEFAULT: 'var(--accent)',
           hover: 'var(--accent-hover)',
+        },
+        gold: {
+          100: 'var(--gold-100)',
+          200: 'var(--gold-200)',
+          300: 'var(--gold-300)',
+          400: 'var(--gold-400)',
         },
         border: {
           DEFAULT: 'var(--border-default)',
@@ -24,7 +30,8 @@ export default {
       },
       fontFamily: {
         arabic: ['Amiri', 'serif'],
-        sans: ['Inter', 'sans-serif'],
+        sans: ['DM Sans', 'system-ui', 'sans-serif'],
+        serif: ['Libre Baskerville', 'Georgia', 'serif'],
       },
     },
   },

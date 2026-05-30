@@ -1,0 +1,18 @@
+{
+  "id": "d02df304",
+  "baseDir": "/home/abderrahmene-mhb/Desktop/al-qaddaaree/fatawalib/fatwa-site",
+  "name": "critique this for contrast bugs",
+  "archived": false,
+  "aiderTotalCost": 0,
+  "agentTotalCost": 0,
+  "mainModel": "",
+  "currentMode": "ask",
+  "weakModelLocked": false,
+  "parentId": null,
+  "workingMode": "local",
+  "updatedAt": "2026-05-29T19:02:39.109Z",
+  "startedAt": "2026-05-29T18:58:25.631Z",
+  "state": "INTERRUPTED",
+  "createdAt": "2026-05-29T18:58:25.631Z",
+  "interruptedAt": "2026-05-29T19:02:39.109Z"
+}

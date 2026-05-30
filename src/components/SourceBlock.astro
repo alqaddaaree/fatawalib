@@ -2,18 +2,85 @@
 const { source_url } = Astro.props;
 ---
 
-<div class="mt-10 pt-6 border-t border-border">
-  <p class="text-xs font-sans mb-3 text-muted">This is a translation. Always consult the original Arabic for accuracy.</p>
-  <details class="group rounded-sm p-4 bg-card border border-border">
-    <summary class="cursor-pointer list-none text-sm font-sans font-medium flex items-center justify-between text-accent">
+<div class="source-card">
+  <p class="source-note">This is a translation. Always consult the original Arabic for accuracy.</p>
+  <details class="source-details">
+    <summary class="source-summary">
       <span>View Original Source</span>
-      <span class="transition-transform group-open:rotate-180">▾</span>
+      <span class="chevron">▾</span>
     </summary>
-    <div class="mt-3 text-xs break-all text-secondary">
-      <p class="mb-2">{source_url}</p>
-      <a href={source_url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-page px-3 py-1.5 rounded-sm transition-colors font-medium bg-accent hover:bg-accent-hover">
-        Open source URL
-      </a>
+    <div class="source-content">
+      <p class="source-url">{source_url}</p>
+      <a href={source_url} target="_blank" rel="noopener noreferrer" class="source-link">Open source URL</a>
     </div>
   </details>
 </div>
+
+<style>
+  .source-card {
+    background: var(--bg-card);
+    border: 0.5px solid var(--border-default);
+    border-top: 2.5px solid var(--accent);
+    border-radius: var(--radius-card);
+    padding: 1rem 1.25rem;
+    margin-top: 2rem;
+  }
+  .source-note {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0 0 0.75rem 0;
+  }
+  .source-details {
+    font-family: var(--font-ui);
+    font-size: 12px;
+  }
+  .source-summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 500;
+    color: var(--accent);
+    transition: color var(--transition);
+  }
+  .source-summary:hover {
+    color: var(--text-secondary);
+  }
+  .source-summary::-webkit-details-marker {
+    display: none;
+  }
+  .chevron {
+    transition: transform var(--transition);
+  }
+  .source-details[open] .chevron {
+    transform: rotate(180deg);
+  }
+  .source-content {
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-default);
+  }
+  .source-url {
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-muted);
+    word-break: break-all;
+    margin-bottom: 0.75rem;
+  }
+  .source-link {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    padding: 0.3rem 0.9rem;
+    border-radius: 99px;
+    text-decoration: none;
+    transition: background var(--transition);
+  }
+  .source-link:hover {
+    background: var(--text-secondary);
+  }
+</style>

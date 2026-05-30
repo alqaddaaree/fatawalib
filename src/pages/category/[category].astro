@@ -5,18 +5,14 @@ import FatwaCard from '../../components/FatwaCard.astro';
 
 export async function getStaticPaths() {
   const allFatwas = await getCollection('fatwas');
-
-  // Build slug → original name + fatwas map
   const slugMap = new Map<string, { name: string; fatwas: typeof allFatwas }>();
-
-  allFatwas.forEach((fatwa) => {
+  allFatwas.forEach(fatwa => {
     fatwa.data.categories.forEach((cat: string) => {
       const slug = cat.toLowerCase().replace(/\s+/g, '-');
       if (!slugMap.has(slug)) slugMap.set(slug, { name: cat, fatwas: [] });
       slugMap.get(slug)!.fatwas.push(fatwa);
     });
   });
-
   return [...slugMap.entries()].map(([slug, { name, fatwas }]) => ({
     params: { category: slug },
     props: {
@@ -27,31 +23,53 @@ export async function getStaticPaths() {
 }
 
 const { categoryName, fatwas } = Astro.props;
+
+// Fetch scholar names for each fatwa (we need to map scholar id to name)
+const allScholars = await getCollection('scholars');
+const scholarMap = new Map(allScholars.map(s => [s.id, s.data.name]));
 ---
 
-<Layout title={categoryName}>
-  <div class="max-w-5xl mx-auto px-4 py-10">
+<Layout title={`${categoryName} – Fatwas`}>
+  <div class="category-header">
+    <h1>{categoryName}</h1>
+    <p>{fatwas.length} fatwa{fatwas.length !== 1 ? 's' : ''}</p>
+  </div>
 
-    <!-- Category header -->
-    <div class="mb-8">
-      <nav class="text-xs font-sans mb-4 flex items-center gap-2 text-muted">
-        <a href="/" class="text-accent hover:text-accent-hover transition-colors">Home</a>
-        <span>/</span>
-        <a href="/categories" class="text-accent hover:text-accent-hover transition-colors">Categories</a>
-        <span>/</span>
-        <span class="text-secondary">{categoryName}</span>
-      </nav>
-      <h1 class="font-sans text-3xl font-medium text-primary mb-1">{categoryName}</h1>
-      <p class="text-sm text-secondary">{fatwas.length} fatwa{fatwas.length !== 1 ? 's' : ''} in this category</p>
-    </div>
-
-    <!-- Fatwas grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {fatwas.map((fatwa) => <FatwaCard fatwa={fatwa} />)}
-    </div>
-
-    <div class="mt-8">
-      <a href="/categories" class="text-sm font-sans font-medium text-accent hover:text-accent-hover transition-colors">← All Categories</a>
-    </div>
+  <div class="cards-grid">
+    {fatwas.map(f => (
+      <FatwaCard
+        id={f.id}
+        title={f.data.title}
+        categories={f.data.categories}
+        scholarName={scholarMap.get(f.data.scholar) || f.data.scholar}
+        date={f.data.date_added}
+      />
+    ))}
   </div>
 </Layout>
+
+<style>
+  .category-header {
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--border-default);
+    margin-bottom: 1rem;
+  }
+  .category-header h1 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+  .category-header p {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    padding: 0 2rem 2rem;
+  }
+</style>

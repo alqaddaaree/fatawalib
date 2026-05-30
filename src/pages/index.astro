@@ -1,107 +1,87 @@
 ---
-import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import FatwaCard from '../components/FatwaCard.astro';
+import Hero from '../components/Hero.astro';
 import FilterBar from '../components/FilterBar.astro';
+import { getCollection } from 'astro:content';
 
-// Fetch and sort all fatwas newest-first
-const allFatwas = (await getCollection('fatwas')).sort(
-  (a, b) => b.data.date_added.getTime() - a.data.date_added.getTime()
-);
-
-// Build flat category list
+const allFatwas = (await getCollection('fatwas')).sort((a, b) => b.data.date_added.getTime() - a.data.date_added.getTime());
+const scholarCount = (await getCollection('scholars')).length;
+const fatwaCount = allFatwas.length;
 const categorySet = new Set<string>();
-allFatwas.forEach((f) => f.data.categories.forEach((c: string) => categorySet.add(c)));
+allFatwas.forEach(f => f.data.categories.forEach((c: string) => categorySet.add(c)));
+const categoryCount = categorySet.size;
 const allCategories = [...categorySet].sort();
 
-// Stats for hero
-const scholarCount = (await getCollection('scholars')).length;
-const categoryCount = allCategories.length;
-const fatwaCount = allFatwas.length;
+const activeScholar = Astro.url.searchParams.get('scholar') || undefined;
+const activeCategory = Astro.url.searchParams.get('category') || undefined;
+
+const allScholars = await getCollection('scholars');
+const scholarNameMap = new Map(allScholars.map(s => [s.id, s.data.name]));
 ---
 
-<Layout title="Recent Fatāwā">
+<Layout title="Home">
+  <Hero
+    rulingsCount={fatwaCount}
+    scholarsCount={scholarCount}
+    categoriesCount={categoryCount}
+    eyebrow="Islamic Legal Rulings"
+    title="A Scholarly Archive of Verified Fatwas"
+    subtitle="Authentic religious rulings from trusted scholars across traditions — carefully collected, categorised, and made readable."
+  />
 
-  <!-- Hero strip (using CSS variables from theme) -->
-  <div class="hero relative overflow-hidden border-b border-border" style="background-color: var(--hero-bg, var(--accent));">
-    <!-- Watermark text -->
-    <div class="absolute right-0 top-1/2 -translate-y-1/2 pointer-events-none select-none font-arabic text-[220px] leading-none opacity-10" style="color: var(--hero-ar, rgba(0,0,0,0.1));">
-      فتاوى
-    </div>
-    <div class="max-w-5xl mx-auto px-4 py-10 flex flex-col gap-3 relative">
-      <p class="font-arabic text-5xl leading-none" style="color: var(--hero-ar, var(--accent-hover));">مكتبة الفتاوى</p>
-      <h1 class="font-sans text-3xl font-medium tracking-tight" style="color: var(--hero-text, var(--text-primary));">Islamic Legal Rulings — Translated</h1>
-      <p class="text-sm max-w-xl" style="color: var(--hero-sub, rgba(0,0,0,0.6));">
-        Fatawa Library is a curated archive of fatwas from senior scholars, translated for English-speaking readers.
-        All content links back to the original Arabic source.
-      </p>
-      <div class="flex gap-6 mt-2">
-        <div>
-          <div class="font-serif text-2xl" style="color: var(--hero-text, var(--text-primary));">{fatwaCount}</div>
-          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--hero-sub);">Rulings</div>
-        </div>
-        <div>
-          <div class="font-serif text-2xl" style="color: var(--hero-text, var(--text-primary));">{scholarCount}</div>
-          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--hero-sub);">Scholars</div>
-        </div>
-        <div>
-          <div class="font-serif text-2xl" style="color: var(--hero-text, var(--text-primary));">{categoryCount}</div>
-          <div class="text-[10px] font-semibold uppercase tracking-wider" style="color: var(--hero-sub);">Categories</div>
-        </div>
-      </div>
-    </div>
+  <FilterBar
+    allCategories={allCategories}
+    activeScholar={activeScholar}
+    activeCategory={activeCategory}
+  />
+
+  <div id="fatwa-grid">
+    <ul class="fatwa-registry">
+      {allFatwas.map(fatwa => {
+        const fullName = scholarNameMap.get(fatwa.data.scholar) || fatwa.data.scholar;
+        const shortName = fullName.split(' ').pop();
+        return (
+          <li
+            class="fatwa-registry-item"
+            data-scholar={fatwa.data.scholar}
+            data-categories={fatwa.data.categories.map((c: string) => c.toLowerCase().replace(/\s+/g, '-')).join(',')}
+            onclick={`window.location.href='/fatwa/${fatwa.id}'`}
+            style="cursor: pointer;"
+          >
+            <span class="fatwa-registry-date">{fatwa.data.date_added.toLocaleDateString()}</span>
+            <div class="fatwa-registry-title-wrap">
+              <span class="fatwa-registry-title">{fatwa.data.title || `Fatwa #${fatwa.id}`}</span>
+              {fatwa.data.categories.length > 0 && (
+                <span class="fl-cat-pill">{fatwa.data.categories[0]}</span>
+              )}
+            </div>
+            <span class="fatwa-registry-scholar">{shortName}</span>
+          </li>
+        );
+      })}
+    </ul>
   </div>
 
-  <!-- Main content area -->
-  <div class="max-w-5xl mx-auto px-4 py-8">
-    <FilterBar allCategories={allCategories} />
-
-    <!-- Grid of fatwas -->
-    <div id="fatwa-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {allFatwas.map((fatwa) => (
-        <div
-          data-scholar={fatwa.data.scholar}
-          data-categories={fatwa.data.categories.map((c: string) => c.toLowerCase().replace(/\s+/g, '-')).join(',')}
-        >
-          <FatwaCard fatwa={fatwa} />
-        </div>
-      ))}
-    </div>
-
-    <!-- Empty state -->
-    <p id="empty-state" class="hidden text-center py-16 font-serif text-xl text-secondary">
-      No fatwas match this filter.
-    </p>
-  </div>
+  <p id="empty-state" class="hidden text-center py-12 text-[var(--text-muted)]">No fatwas match this filter.</p>
 </Layout>
 
 <script>
-  // Client-side filtering from URL params
   function applyFilters() {
-    const params   = new URLSearchParams(window.location.search);
-    const scholar  = params.get('scholar');
+    const params = new URLSearchParams(window.location.search);
+    const scholar = params.get('scholar');
     const category = params.get('category');
 
-    const cards = document.querySelectorAll<HTMLDivElement>('#fatwa-grid > [data-scholar]');
+    const items = document.querySelectorAll<HTMLLIElement>('.fatwa-registry-item');
     let visible = 0;
-
-    cards.forEach((card) => {
-      const matchesScholar  = !scholar  || card.dataset.scholar === scholar;
-      const matchesCategory = !category || (card.dataset.categories ?? '').split(',').includes(category);
-      const show = scholar && category
-        ? matchesScholar && matchesCategory
-        : scholar
-          ? matchesScholar
-          : category
-            ? matchesCategory
-            : true;
-      card.style.display = show ? '' : 'none';
+    items.forEach(item => {
+      const matchesScholar = !scholar || item.dataset.scholar === scholar;
+      const matchesCategory = !category || (item.dataset.categories ?? '').split(',').includes(category);
+      const show = matchesScholar && matchesCategory;
+      item.style.display = show ? '' : 'none';
       if (show) visible++;
     });
-
     const empty = document.getElementById('empty-state');
     if (empty) empty.classList.toggle('hidden', visible > 0);
   }
-
   applyFilters();
 </script>
