@@ -21,19 +21,21 @@ const {
 <div class="fl-hero">
   <div class="fl-hero-eyebrow">{eyebrow}</div>
   <h1>{title}</h1>
-  <p class="fl-hero-sub">{subtitle}</p>
-  <div class="fl-stats">
-    <div class="fl-stat">
-      <div class="fl-stat-num">{rulingsCount.toLocaleString()}</div>
-      <div class="fl-stat-label">Rulings</div>
-    </div>
-    <div class="fl-stat">
-      <div class="fl-stat-num">{scholarsCount.toLocaleString()}</div>
-      <div class="fl-stat-label">Scholars</div>
-    </div>
-    <div class="fl-stat">
-      <div class="fl-stat-num">{categoriesCount.toLocaleString()}</div>
-      <div class="fl-stat-label">Categories</div>
+  <div class="fl-hero-sub-row">
+    <p class="fl-hero-sub">{subtitle}</p>
+    <div class="fl-stats">
+      <div class="fl-stat">
+        <div class="fl-stat-num">{rulingsCount.toLocaleString()}</div>
+        <div class="fl-stat-label">Rulings</div>
+      </div>
+      <div class="fl-stat">
+        <div class="fl-stat-num">{scholarsCount.toLocaleString()}</div>
+        <div class="fl-stat-label">Scholars</div>
+      </div>
+      <div class="fl-stat">
+        <div class="fl-stat-num">{categoriesCount.toLocaleString()}</div>
+        <div class="fl-stat-label">Categories</div>
+      </div>
     </div>
   </div>
 </div>
@@ -57,8 +59,15 @@ const {
     font-weight: 400;
     line-height: 1.35;
     color: var(--text-primary);
-    margin: 0 0 0.6rem;
+    margin: 0 0 1rem;
     max-width: 520px;
+  }
+  .fl-hero-sub-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
   }
   .fl-hero-sub {
     font-family: var(--font-serif);
@@ -66,11 +75,12 @@ const {
     color: var(--text-secondary);
     line-height: 1.7;
     max-width: 480px;
-    margin: 0 0 1.4rem;
+    margin: 0;
   }
   .fl-stats {
     display: flex;
-    gap: 2.5rem;
+    gap: 2rem;
+    flex-shrink: 0;
   }
   .fl-stat-num {
     font-size: 20px;
@@ -84,5 +94,14 @@ const {
     color: var(--text-muted);
     letter-spacing: 0.04em;
     margin-top: 2px;
+  }
+  @media (max-width: 720px) {
+    .fl-hero-sub-row {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .fl-stats {
+      margin-top: 0.5rem;
+    }
   }
 </style>

@@ -1,8 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SearchWidget from '../components/SearchWidget.astro';
+import { getCollection } from 'astro:content';
+
+const scholars = (await getCollection('scholars')).map(s => ({ slug: s.id, name: s.data.name }));
+
+// Build flat category list
+const allFatwas = await getCollection('fatwas');
+const categorySet = new Set<string>();
+allFatwas.forEach(f => f.data.categories.forEach((c: string) => categorySet.add(c)));
+const allCategories = [...categorySet].sort();
 ---
 
 <Layout title="Search" description="Search across all translated fatwas by keyword, scholar, or category.">
-  <SearchWidget />
+  <SearchWidget scholars={scholars} allCategories={allCategories} />
 </Layout>

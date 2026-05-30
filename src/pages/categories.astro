@@ -9,24 +9,59 @@ allFatwas.forEach(f => {
     categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
   });
 });
-const categories = [...categoryMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+const allCategories = [...categoryMap.entries()].sort((a, b) => a[0].localeCompare(b[0]));
 ---
 
 <Layout title="Categories">
   <div class="categories-header">
     <h1>Categories</h1>
-    <p>Browse fatwas by category</p>
+    <p class="categories-subtitle">Browse fatwas by category</p>
   </div>
 
-  <div class="categories-grid">
-    {categories.map(([name, count]) => (
-      <a href={`/category/${name.toLowerCase().replace(/\s+/g, '-')}`} class="category-card">
+  <!-- Search input -->
+  <div class="categories-search">
+    <input
+      type="text"
+      id="category-search"
+      placeholder="Filter categories…"
+      class="categories-search-input"
+    />
+  </div>
+
+  <div id="categories-grid" class="categories-grid">
+    {allCategories.map(([name, count]) => (
+      <a
+        href={`/category/${name.toLowerCase().replace(/\s+/g, '-')}`}
+        class="category-card"
+        data-category-name={name.toLowerCase()}
+      >
         <span class="category-name">{name}</span>
         <span class="category-count">{count}</span>
       </a>
     ))}
   </div>
 </Layout>
+
+<script>
+  const searchInput = document.getElementById('category-search') as HTMLInputElement;
+  const grid = document.getElementById('categories-grid');
+  const cards = grid?.querySelectorAll('.category-card');
+
+  if (searchInput && cards) {
+    searchInput.addEventListener('input', (e) => {
+      const term = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      cards.forEach((card) => {
+        const el = card as HTMLElement;
+        const name = el.getAttribute('data-category-name') || '';
+        if (term === '' || name.includes(term)) {
+          el.style.display = '';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+    });
+  }
+</script>
 
 <style>
   .categories-header {
@@ -41,10 +76,30 @@ const categories = [...categoryMap.entries()].sort((a, b) => a[0].localeCompare(
     color: var(--text-primary);
     margin-bottom: 0.25rem;
   }
-  .categories-header p {
+  .categories-subtitle {
     font-family: var(--font-ui);
     font-size: 13px;
     color: var(--text-muted);
+  }
+  .categories-search {
+    padding: 0 2rem 1rem;
+  }
+  .categories-search-input {
+    width: 100%;
+    max-width: 320px;
+    padding: 8px 1rem;
+    font-family: var(--font-ui);
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 99px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  .categories-search-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-light);
   }
   .categories-grid {
     display: grid;

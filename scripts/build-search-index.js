@@ -56,7 +56,9 @@ async function buildIndex()
     const body = [questionText, answerText].filter(Boolean).join(' ');
 
     index.push({
-      slug,                                      // use slug instead of old id
+      id: slug,                                   // add id field for link generation
+      title: data.title,                          // add title field
+      slug,                                       // keep for backward compatibility
       scholar: data.scholar,
       scholarName: SCHOLAR_NAMES[data.scholar] ?? data.scholar,
       categories: data.categories ?? [],

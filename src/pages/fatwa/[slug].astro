@@ -31,7 +31,6 @@ const scholarName = scholarEntry?.data.name || scholar;
 
 <Layout title={title || `Fatwa #${fatwa.id}`}>
   <div class="fatwa-page">
-
     <!-- Page header: full width, left-aligned -->
     <header class="fatwa-page-header">
       <div class="fatwa-page-header-inner">
@@ -42,10 +41,8 @@ const scholarName = scholarEntry?.data.name || scholar;
 
     <!-- Two‑column body -->
     <div class="fatwa-body">
-
       <!-- LEFT: main reading column -->
       <main class="fatwa-main">
-
         <!-- QUESTION (label outside tinted box) -->
         <div class="fatwa-question-wrapper">
           <span class="fatwa-block-label">Question</span>
@@ -65,26 +62,28 @@ const scholarName = scholarEntry?.data.name || scholar;
         </section>
 
         <!-- Footnotes & Notes -->
-        {(footnotes || notes) && (
-          <div class="fatwa-supplements">
-            {footnotes && (
-              <div class="fatwa-supplement">
-                <span class="fatwa-block-label">Footnotes</span>
-                <div class="fatwa-supplement-content">
-                  <MarkdocRenderer content={footnotes} />
+        {
+          (footnotes || notes) && (
+            <div class="fatwa-supplements">
+              {footnotes && (
+                <div class="fatwa-supplement">
+                  <span class="fatwa-block-label">Footnotes</span>
+                  <div class="fatwa-supplement-content">
+                    <MarkdocRenderer content={footnotes} />
+                  </div>
                 </div>
-              </div>
-            )}
-            {notes && (
-              <div class="fatwa-supplement">
-                <span class="fatwa-block-label">Notes</span>
-                <div class="fatwa-supplement-content">
-                  <MarkdocRenderer content={notes} />
+              )}
+              {notes && (
+                <div class="fatwa-supplement">
+                  <span class="fatwa-block-label">Notes</span>
+                  <div class="fatwa-supplement-content">
+                    <MarkdocRenderer content={notes} />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+            </div>
+          )
+        }
       </main>
 
       <!-- RIGHT: sticky metadata sidebar -->
@@ -97,36 +96,51 @@ const scholarName = scholarEntry?.data.name || scholar;
           </div>
           <div class="fatwa-meta-row">
             <span class="fatwa-meta-label">Date</span>
-            <time class="fatwa-meta-value">{date_added.toLocaleDateString()}</time>
+            <time class="fatwa-meta-value"
+              >{date_added.toLocaleDateString()}</time
+            >
           </div>
-          {translator && (
-            <div class="fatwa-meta-row">
-              <span class="fatwa-meta-label">Translator</span>
-              <span class="fatwa-meta-value">{translator}</span>
-            </div>
-          )}
-          {categories?.length > 0 && (
-            <div class="fatwa-meta-row fatwa-meta-row--cats">
-              <span class="fatwa-meta-label">Categories</span>
-              <div class="fatwa-cats">
-                {categories.map((cat: string) => (
-                  <a
-                    href={`/category/${cat.toLowerCase().replace(/\s+/g, "-")}`}
-                    class="fatwa-cat"
-                  >
-                    {cat}
-                  </a>
-                ))}
+          {
+            translator && (
+              <div class="fatwa-meta-row">
+                <span class="fatwa-meta-label">Translator</span>
+                <span class="fatwa-meta-value">{translator}</span>
               </div>
-            </div>
-          )}
+            )
+          }
+          {
+            categories?.length > 0 && (
+              <div class="fatwa-meta-row fatwa-meta-row--cats">
+                <span class="fatwa-meta-label">Categories</span>
+                <div class="fatwa-cats">
+                  {categories.map((cat: string) => (
+                    <a
+                      href={`/category/${cat.toLowerCase().replace(/\s+/g, "-")}`}
+                      class="fatwa-cat"
+                    >
+                      {cat}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )
+          }
         </div>
 
         <!-- Source block (no extra wrapper) -->
         {source_url && <SourceBlock source_url={source_url} />}
 
         <!-- Share menu (no extra wrapper) -->
-        <ShareMenu id={fatwa.id} title={title} question={question} answer={answer} />
+        <ShareMenu
+          id={fatwa.id}
+          title={title}
+          question={question}
+          answer={answer}
+          scholarName={scholarName}
+          translator={translator}
+          date={date_added}
+          sourceUrl={source_url}
+        />
       </aside>
     </div>
   </div>
@@ -238,8 +252,12 @@ const scholarName = scholarEntry?.data.name || scholar;
     margin: 1.75rem 0 0.6rem;
     color: var(--text-primary);
   }
-  .fatwa-block-content h2 { font-size: 18px; }
-  .fatwa-block-content h3 { font-size: 16px; }
+  .fatwa-block-content h2 {
+    font-size: 18px;
+  }
+  .fatwa-block-content h3 {
+    font-size: 16px;
+  }
 
   /* ── Footnotes / Notes ── */
   .fatwa-supplements {
