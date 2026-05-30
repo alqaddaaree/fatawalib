@@ -3,16 +3,85 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="About">
-  <div class="max-w-3xl mx-auto px-4 py-10">
-    <h1 class="font-sans text-3xl font-medium mb-6 text-primary">About Fatawa Library</h1>
-    <div class="prose prose-stone dark:prose-invert max-w-none">
-      <p>Fatawa Library is a curated archive of Islamic legal rulings (fatāwā) from major scholars, translated into English for the benefit of English‑speaking readers.</p>
+  <div class="about-page">
+    <div class="about-header">
+      <h1>About Fatawa Library</h1>
+    </div>
+    <div class="about-content">
       <h2>Our Mission</h2>
-      <p>We strive to provide accurate, reliable translations of fatwas from trusted scholars, with full references to original Arabic sources. All content is reviewed for accuracy.</p>
+      <p>
+        Fatawa Library is a curated, scholarly archive of Islamic legal rulings (fatāwā)
+        from senior, trusted scholars. We translate and present these rulings in clear,
+        readable English while preserving the original Arabic source and full context.
+      </p>
+
+      <h2>Content Standards</h2>
+      <p>
+        Every fatwa includes the original source URL and is presented with its complete
+        evidence. We do not edit or paraphrase rulings; we translate faithfully.
+      </p>
+
+      <h2>Scholars Included</h2>
+      <p>
+        Our current archive features rulings from Shaykh ʿAbd al‑ʿAzīz ibn Bāz,
+        Shaykh Muḥammad ibn Ṣāliḥ al‑ʿUthaymīn, Shaykh Muḥammad Nāṣir al‑Dīn al‑Albānī,
+        Shaykh Muqbil al‑Wādiʿī, and Shaykh Yaḥyā al‑Ḥajūrī. More scholars will be added
+        over time.
+      </p>
+
       <h2>Disclaimer</h2>
-      <p>Translations are for informational purposes only. Always consult a qualified scholar for personal religious guidance.</p>
-      <h2>Contact</h2>
-      <p>For corrections or inquiries, please email <a href="mailto:fatawalib@example.com" class="text-accent hover:underline">fatawalib@example.com</a>.</p>
+      <p>
+        The translations are provided for educational and research purposes.
+        They are not a substitute for consulting a qualified scholar for personal
+        religious guidance. Always refer to the original Arabic when in doubt.
+      </p>
+
+      <h2>Contact & Corrections</h2>
+      <p>
+        If you find an error or have a suggestion, please email us at
+        <a href="mailto:fatawalib@example.com">fatawalib@example.com</a>.
+      </p>
     </div>
   </div>
 </Layout>
+
+<style>
+  .about-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  .about-header {
+    border-bottom: 1px solid var(--border-default);
+    padding-bottom: 1rem;
+    margin-bottom: 2rem;
+  }
+  .about-header h1 {
+    font-family: var(--font-serif);
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin: 0;
+  }
+  .about-content h2 {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 400;
+    color: var(--text-primary);
+    margin: 1.5rem 0 0.5rem;
+  }
+  .about-content p {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+  }
+  .about-content a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .about-content a:hover {
+    text-decoration: underline;
+  }
+</style>

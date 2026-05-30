@@ -1,11 +1,14 @@
 ---
-import '/src/styles/global.css';
+import "/src/styles/global.css";
 export interface Props {
   title: string;
   description?: string;
 }
-const { title, description = 'Fatawa Library – Islamic legal rulings in translation' } = Astro.props;
-const siteOrigin = Astro.site ?? new URL('https://fatawalib.com');
+const {
+  title,
+  description = "Fatawa Library – Islamic legal rulings in translation",
+} = Astro.props;
+const siteOrigin = Astro.site ?? new URL("https://fatawalib.com");
 const canonicalURL = new URL(Astro.url.pathname, siteOrigin);
 const currentPath = Astro.url.pathname;
 ---
@@ -28,10 +31,24 @@ const currentPath = Astro.url.pathname;
         Fatawa Library
       </a>
       <div class="fl-nav-links">
-        <a href="/" class:list={['', currentPath === '/' && 'active']}>Browse</a>
-        <a href="/scholars" class:list={['', currentPath === '/scholars' && 'active']}>Scholars</a>
-        <a href="/categories" class:list={['', currentPath === '/categories' && 'active']}>Categories</a>
-        <a href="/search" class:list={['', currentPath === '/search' && 'active']}>Search</a>
+        <a href="/" class:list={["", currentPath === "/" && "active"]}>Browse</a
+        >
+        <a
+          href="/scholars"
+          class:list={["", currentPath === "/scholars" && "active"]}>Scholars</a
+        >
+        <a
+          href="/categories"
+          class:list={["", currentPath === "/categories" && "active"]}
+          >Categories</a
+        >
+        <a
+          href="/search"
+          class:list={["", currentPath === "/search" && "active"]}>Search</a
+        >
+        <a href="/about" class:list={["", currentPath === "/about" && "active"]}
+          >About</a
+        >
       </div>
     </header>
 
@@ -40,7 +57,10 @@ const currentPath = Astro.url.pathname;
     </main>
 
     <footer class="fl-footer">
-      <p>© {new Date().getFullYear()} Fatawa Library – translations for educational purposes</p>
+      <p>
+        © {new Date().getFullYear()} Fatawa Library – translations for educational
+        purposes
+      </p>
     </footer>
   </body>
 </html>

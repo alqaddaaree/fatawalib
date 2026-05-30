@@ -3,105 +3,249 @@ interface Props {
   rulingsCount: number;
   scholarsCount: number;
   categoriesCount: number;
-  eyebrow?: string;
-  title?: string;
-  subtitle?: string;
+  scholars: { slug: string; name: string }[];
+  categories: string[];
 }
 
 const {
   rulingsCount,
   scholarsCount,
   categoriesCount,
-  eyebrow = 'Islamic Legal Rulings',
-  title = 'A Scholarly Archive of Verified Fatwas',
-  subtitle = 'Authentic religious rulings from trusted scholars across traditions — carefully collected, categorised, and made readable.'
+  scholars,
+  categories,
 } = Astro.props;
+
+const otherScholarsCount = scholarsCount - 3;
+const scholarNamesShort = scholars.slice(0, 3).map(s => s.name.replace('Shaykh ', '').split(' ')[0]).join(', ');
 ---
 
-<div class="fl-hero">
-  <div class="fl-hero-eyebrow">{eyebrow}</div>
-  <h1>{title}</h1>
-  <div class="fl-hero-sub-row">
-    <p class="fl-hero-sub">{subtitle}</p>
-    <div class="fl-stats">
-      <div class="fl-stat">
-        <div class="fl-stat-num">{rulingsCount.toLocaleString()}</div>
-        <div class="fl-stat-label">Rulings</div>
-      </div>
-      <div class="fl-stat">
-        <div class="fl-stat-num">{scholarsCount.toLocaleString()}</div>
-        <div class="fl-stat-label">Scholars</div>
-      </div>
-      <div class="fl-stat">
-        <div class="fl-stat-num">{categoriesCount.toLocaleString()}</div>
-        <div class="fl-stat-label">Categories</div>
+<div class="hero">
+  <h1 class="hero-h1">Search {rulingsCount.toLocaleString()} verified Islamic rulings</h1>
+  <p class="hero-subtitle">From {scholarNamesShort}, and {otherScholarsCount} other scholars</p>
+
+  <div class="search-block">
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input
+        type="text"
+        id="hero-search"
+        class="search-input"
+        placeholder="e.g. combining prayers while travelling…"
+        autocomplete="off"
+      />
+    </div>
+
+    <button id="adv-toggle" class="adv-toggle">
+      Advanced search
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </button>
+
+    <div id="adv-panel" class="adv-panel">
+      <div class="adv-inner">
+        <div class="filter-row">
+          <span class="filter-label">Scholar</span>
+          <div class="filter-buttons">
+            <button class="filter-pill active" data-filter-type="scholar" data-filter-value="">All</button>
+            {scholars.map(s => (
+              <button class="filter-pill" data-filter-type="scholar" data-filter-value={s.slug}>
+                {s.name.replace('Shaykh ', '')}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div class="filter-row">
+          <span class="filter-label">Category</span>
+          <div class="filter-buttons">
+            <button class="filter-pill active" data-filter-type="category" data-filter-value="">All</button>
+            {categories.map(cat => (
+              <button class="filter-pill" data-filter-type="category" data-filter-value={cat.toLowerCase().replace(/\s+/g, '-')}>
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
 <style>
-  .fl-hero {
-    padding: 2.5rem 2rem 1.8rem;
+  .hero {
+    padding: 3rem 1.5rem 2.5rem;
     border-bottom: 1px solid var(--border-default);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: var(--bg-page);
   }
-  .fl-hero-eyebrow {
-    font-family: var(--font-ui);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.6rem;
-  }
-  .fl-hero h1 {
+  .hero-h1 {
     font-family: var(--font-serif);
     font-size: 22px;
     font-weight: 400;
     line-height: 1.35;
     color: var(--text-primary);
-    margin: 0 0 1rem;
-    max-width: 520px;
+    margin: 0 0 0.35rem;
   }
-  .fl-hero-sub-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 1rem;
-  }
-  .fl-hero-sub {
-    font-family: var(--font-serif);
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    max-width: 480px;
-    margin: 0;
-  }
-  .fl-stats {
-    display: flex;
-    gap: 2rem;
-    flex-shrink: 0;
-  }
-  .fl-stat-num {
-    font-size: 20px;
-    font-weight: 400;
-    color: var(--accent);
-    letter-spacing: -0.01em;
-  }
-  .fl-stat-label {
+  .hero-subtitle {
     font-family: var(--font-ui);
     font-size: 11px;
     color: var(--text-muted);
-    letter-spacing: 0.04em;
-    margin-top: 2px;
+    letter-spacing: 0.02em;
+    margin: 0 0 1.6rem;
   }
-  @media (max-width: 720px) {
-    .fl-hero-sub-row {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-    .fl-stats {
-      margin-top: 0.5rem;
-    }
+  .search-block {
+    width: 100%;
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .search-wrap {
+    position: relative;
+    width: 100%;
+    margin-bottom: 0.65rem;
+  }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    width: 14px;
+    height: 14px;
+  }
+  .search-input {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border-default);
+    border-radius: var(--radius-pill);
+    padding: 11px 1.25rem 11px 2.5rem;
+    font-family: var(--font-serif);
+    font-size: 15px;
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color var(--transition);
+  }
+  .search-input::placeholder {
+    color: var(--text-muted);
+  }
+  .search-input:focus {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent-light);
+    outline-offset: 2px;
+  }
+  .adv-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-secondary);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    letter-spacing: 0.02em;
+    margin-top: 0.25rem;
+  }
+  .adv-toggle:hover {
+    color: var(--accent);
+  }
+  .adv-toggle svg {
+    transition: transform 0.2s ease;
+  }
+  .adv-toggle.open svg {
+    transform: rotate(180deg);
+  }
+  .adv-panel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    width: 100%;
+    max-width: 520px;
+    transition: max-height 0.25s ease, opacity 0.2s ease;
+  }
+  .adv-panel.open {
+    max-height: 200px;
+    opacity: 1;
+  }
+  .adv-inner {
+    padding: 1rem 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    text-align: left;
+  }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+  }
+  .filter-label {
+    font-family: var(--font-ui);
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    min-width: 56px;
+    flex-shrink: 0;
+  }
+  .filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  .filter-pill {
+    font-family: var(--font-ui);
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-default);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+  }
+  .filter-pill.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #ffffff;
+  }
+  .filter-pill:not(.active):hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-pill);
   }
 </style>
+
+<script>
+  // Toggle advanced panel
+  const toggle = document.getElementById('adv-toggle');
+  const panel = document.getElementById('adv-panel');
+  if (toggle && panel) {
+    toggle.addEventListener('click', () => {
+      toggle.classList.toggle('open');
+      panel.classList.toggle('open');
+    });
+  }
+
+  // Radio behavior for filter pills
+  document.querySelectorAll('.filter-row').forEach(row => {
+    row.querySelectorAll('.filter-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        row.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        // Optional: trigger search update (we'll implement later)
+      });
+    });
+  });
+</script>
